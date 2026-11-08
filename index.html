@@ -46,8 +46,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* Smooth scroll: the page sits in a fixed layer that eases after the real scroll position,
    and rows bend with the speed of the scroll, the way dionpieters.dev does it */
 html.glide{scroll-behavior:auto}
-html.glide #smooth{position:fixed;left:0;right:0;top:0;will-change:transform}
-html.glide .bend{will-change:transform;transform-origin:50% 50%}
+html.glide #view{position:fixed;inset:0;overflow:hidden;background:var(--night)}
+html.glide #smooth{position:absolute;left:0;right:0;top:0;will-change:transform}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:16px;border-bottom:1px solid var(--line)}
 .logo{font:400 26px/1 var(--display);letter-spacing:-0.02em;text-decoration:none}
 .nav{display:flex;gap:22px}
@@ -319,23 +319,41 @@ section{padding-block:96px 0}
   });
 })();
 
-// ---- Glide: eased scroll with a speed bend ----
+// ---- Glide: eased scroll, and the whole screen warps with the speed of the scroll ----
+// Like dionpieters.dev: one smooth surface that bends as it moves. A displacement filter pulls the
+// sides in around the middle and bows every row, scaled by how fast you're scrolling.
 (function () {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var root = document.documentElement, layer = document.getElementById('smooth'), sheet = document.getElementById('sheet');
+  var root = document.documentElement, layer = document.getElementById('smooth');
   root.classList.add('glide');
-  var items = [].slice.call(document.querySelectorAll('.mark span, .art, .eyebrow, .tabs, .lede > *, .sect, .panel, .h2, .rows li, .steps li, .beliefs, .contact p, .mail, .foot'));
-  items.forEach(function (e) { e.classList.add('bend'); });
-  var tops = [], cur = scrollY, last = scrollY, vel = 0, vh = innerHeight;
+  var view = document.createElement('div'); view.id = 'view';
+  layer.parentNode.insertBefore(view, layer); view.appendChild(layer);
 
-  // Remember where each piece sits in the page, ignoring the transforms we add
+  // The warp map: red moves pixels sideways, green moves them up and down
+  var N = 256, c = document.createElement('canvas'); c.width = c.height = N;
+  var g = c.getContext('2d'), img = g.createImageData(N, N);
+  for (var j = 0; j < N; j++) for (var i = 0; i < N; i++) {
+    var cx = i / (N - 1) * 2 - 1, cy = j / (N - 1) * 2 - 1, o = (j * N + i) * 4;
+    var ax = cx * (1 - cy * cy) * 0.7;          // sides pinch in around the middle of the screen
+    var ay = (cx * cx - 0.33) * 0.9;            // rows bow, ends trailing the middle
+    img.data[o] = 128 + 127 * ax; img.data[o + 1] = 128 + 127 * ay; img.data[o + 2] = 128; img.data[o + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  var NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('width', 0); svg.setAttribute('height', 0); svg.style.position = 'absolute';
+  svg.innerHTML = '<filter id="warp" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB" x="0" y="0">' +
+    '<feImage id="warpMap" preserveAspectRatio="none" x="0" y="0" result="map"/>' +
+    '<feDisplacementMap id="warpD" in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>';
+  document.body.appendChild(svg);
+  var fil = svg.querySelector('#warp'), map = svg.querySelector('#warpMap'), disp = svg.querySelector('#warpD');
+  map.setAttribute('href', c.toDataURL());
+
+  var cur = scrollY, last = scrollY, vel = 0, on = false;
   function measure() {
-    vh = innerHeight;
     document.body.style.height = layer.offsetHeight + 'px';
-    tops = items.map(function (e) {
-      var y = 0, n = e; while (n && n !== layer) { y += n.offsetTop; n = n.offsetParent; }
-      return { y: y, h: e.offsetHeight };
-    });
+    var w = innerWidth, h = innerHeight;
+    fil.setAttribute('width', w); fil.setAttribute('height', h);
+    map.setAttribute('width', w); map.setAttribute('height', h);
   }
   measure();
   addEventListener('resize', measure);
@@ -356,33 +374,14 @@ section{padding-block:96px 0}
     var target = scrollY;
     cur += (target - cur) * 0.085;
     if (Math.abs(target - cur) < 0.05) cur = target;
-    vel += ((cur - last) - vel) * 0.25; last = cur;
-    var v = Math.max(-40, Math.min(40, vel));
+    vel += ((cur - last) - vel) * 0.2; last = cur;
+    var v = Math.max(-45, Math.min(45, vel));
     layer.style.transform = 'translate3d(0,' + (-cur).toFixed(2) + 'px,0)';
-    // The sheet's sides bow inward around the middle of the screen, more the faster you go
-    var bow = Math.abs(v) * 0.9;
-    if (bow < 0.3) { if (sheet.style.clipPath) sheet.style.clipPath = ''; }
-    else {
-      var W = sheet.offsetWidth, H = sheet.offsetHeight, top0 = cur - sheet.offsetTop, L = [], R = [];
-      for (var k = -2; k <= 12; k++) {
-        var yy = top0 + vh * k / 10, dd = (k - 5) / 5, x = bow * Math.max(0, 1 - dd * dd);
-        yy = Math.max(0, Math.min(H, yy));
-        R.push((W - x).toFixed(1) + 'px ' + yy.toFixed(1) + 'px'); L.unshift(x.toFixed(1) + 'px ' + yy.toFixed(1) + 'px');
-      }
-      sheet.style.clipPath = 'polygon(0 0, ' + W + 'px 0, ' + R.join(', ') + ', ' + W + 'px ' + H + 'px, 0 ' + H + 'px, ' + L.join(', ') + ')';
-    }
-    for (var i = 0; i < items.length; i++) {
-      var t = tops[i]; if (!t) continue;
-      var mid = t.y - cur + t.h / 2;
-      if (mid < -vh || mid > vh * 2) continue;
-      // d is -1 at the top of the screen, 0 in the middle, 1 at the bottom
-      var d = Math.max(-1, Math.min(1, (mid - vh / 2) / (vh / 2)));
-      var lag = -v * 0.55 * d * d;                 // rows away from the middle trail behind, so the page bows
-      var pinch = 1 - Math.abs(v) * 0.0018 * (1 - d * d); // the middle narrows a touch
-      var stretch = 1 + Math.abs(v) * 0.0025;     // letters stretch tall at speed
-      items[i].style.transform = Math.abs(v) < 0.02 ? '' :
-        'translate3d(0,' + lag.toFixed(2) + 'px,0) scale(' + pinch.toFixed(4) + ',' + stretch.toFixed(4) + ')';
-    }
+    var amt = v * Math.min(innerWidth, 900) / 300;   // stronger on bigger screens, signed by direction
+    if (Math.abs(amt) > 0.4) {
+      disp.setAttribute('scale', amt.toFixed(1));
+      if (!on) { view.style.filter = 'url(#warp)'; on = true; }
+    } else if (on) { view.style.filter = ''; disp.setAttribute('scale', 0); on = false; }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
