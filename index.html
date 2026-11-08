@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="full auto builds no-nonsense, design-led apps that do exactly what they say. privacy first, no half measures.">
+<meta property="og:title" content="full auto">
+<meta property="og:description" content="no-nonsense apps. privacy first. no half measures.">
+<meta name="theme-color" content="#0b0b0b">
+<title>full auto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Redaction+50:ital,wght@0,400;1,400&family=Manrope:wght@400..800&display=swap">
+<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: one narrow column like the apps, with full-bleed rows of sliding pixel titles. Single white look on purpose, same as ops. */
+:root{
+  --paper:#ffffff; --ink:#111111; --night:#0b0b0b; --mute:#9a9a9a; --soft:#c4c4c4; --line:#e3e3e3; --wash:#f4f4f4;
+  --display:'Redaction 50',Georgia,serif;
+  --body:Manrope,Arial,sans-serif;
+  --mono:Manrope,Arial,sans-serif;
+  --col:none; --gut:clamp(16px,2.2vw,30px);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{background:var(--night);color:var(--ink);font:400 16px/1.55 var(--body);text-transform:lowercase;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+.wrap{margin:0;padding-left:max(var(--gut), env(safe-area-inset-left, 0px));padding-right:max(var(--gut), env(safe-area-inset-right, 0px))}
+.mono{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.01em}
+button{font:inherit;color:inherit;text-transform:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:2px}
+
+/* Top bar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--night)}
+.bar{position:relative;z-index:2;background:var(--paper);border-radius:22px 22px 0 0}
+/* Everything that scrolls lives on one white sheet over a black page */
+.mark{margin:0;padding:clamp(14px,2vw,26px) var(--gut) 0;font:400 100px/.82 var(--display);letter-spacing:-0.045em;white-space:nowrap;overflow:hidden;color:var(--ink)}
+.mark span{display:block;transform-origin:0 0}
+.mark svg{display:block;width:100%;height:auto;overflow:visible}
+.mark svg{fill:var(--ink)}
+.mark .ghost{fill:var(--mute)}
+.hero{padding-top:28px!important}
+.sheet{background:var(--paper);margin:12px max(12px, env(safe-area-inset-left, 0px)) 12px max(12px, env(safe-area-inset-right, 0px));border-radius:22px;overflow:hidden}
+/* Smooth scroll: the page sits in a fixed layer that eases after the real scroll position,
+   and rows bend with the speed of the scroll, the way dionpieters.dev does it */
+html.glide{scroll-behavior:auto}
+html.glide #smooth{position:fixed;left:0;right:0;top:0;will-change:transform}
+html.glide .bend{will-change:transform;transform-origin:50% 50%}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:16px;border-bottom:1px solid var(--line)}
+.logo{font:400 26px/1 var(--display);letter-spacing:-0.02em;text-decoration:none}
+.nav{display:flex;gap:22px}
+.nav a{text-decoration:none;color:var(--mute);transition:color .2s}
+.nav a:hover{color:var(--ink)}
+@media (max-width:560px){.nav a:not(.cta){display:none}}
+.nav .cta{color:var(--ink)}
+
+/* Sliding pixel titles, the apps' signature */
+.tabs{display:flex;gap:30px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;padding-left:max(var(--gut), env(safe-area-inset-left, 0px));padding-right:max(var(--gut), env(safe-area-inset-right, 0px));scroll-padding-left:var(--gut);-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;padding:0;margin:0;cursor:pointer;font:400 var(--tsize,clamp(64px,13vw,150px))/1 var(--display);letter-spacing:-0.025em;color:var(--soft);transition:color .3s}
+.tab.on{color:var(--ink)}
+.tab:hover{color:#8a8a8a}.tab.on:hover{color:var(--ink)}
+.inset{margin:0}
+
+/* Hero */
+.hero{padding-block:56px 0;position:relative}
+.eyebrow{position:relative;z-index:4;margin-top:clamp(10px,1.4vw,18px)!important;display:flex;gap:14px;align-items:center;margin-bottom:20px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--ink);display:inline-block;animation:blink 1.6s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.lede{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;margin-top:40px;padding-bottom:48px}
+#heroTabs{margin-top:8px;gap:22px}
+#heroTabs .tab{font:500 clamp(28px,4.6vw,56px)/1.1 var(--body);letter-spacing:-0.045em}
+.rule{margin-top:56px;border-bottom:2px dotted var(--soft)}
+.lede p.pitch{color:var(--ink);max-width:none;margin:0;font:500 clamp(28px,4vw,44px)/1.12 var(--body);letter-spacing:-0.035em;text-wrap:balance}
+.lede .pitch .g{color:var(--mute)}
+.lede p{margin:22px 0 0;max-width:46ch;color:#444}
+.art{position:relative;width:min(900px,calc(85% - 2 * var(--gut)));margin:clamp(-90px,-6vw,-18px) auto 0;z-index:3}
+.art img{display:block;width:100%;height:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;transform-origin:50% 50%;will-change:transform}
+.art img.held{cursor:grabbing}
+.art .hint{display:block;text-align:center;color:var(--mute);margin-top:6px;transition:opacity .4s}
+.byline{display:block;text-align:center;color:var(--mute);margin-top:10px}
+
+
+/* Die-cut sticker */
+.sticker{position:absolute;right:-6px;top:-18px;transform:rotate(-7deg);font:400 clamp(40px,5vw,58px)/.9 var(--display);letter-spacing:-0.03em;color:var(--ink);padding:10px;white-space:nowrap;pointer-events:none;
+  text-shadow:9px 0 0 #fff,8.3px 3.4px 0 #fff,6.4px 6.4px 0 #fff,3.4px 8.3px 0 #fff,0 9px 0 #fff,-3.4px 8.3px 0 #fff,-6.4px 6.4px 0 #fff,-8.3px 3.4px 0 #fff,-9px 0 0 #fff,-8.3px -3.4px 0 #fff,-6.4px -6.4px 0 #fff,-3.4px -8.3px 0 #fff,0 -9px 0 #fff,3.4px -8.3px 0 #fff,6.4px -6.4px 0 #fff,8.3px -3.4px 0 #fff,5px 0 0 #fff,3.5px 3.5px 0 #fff,0 5px 0 #fff,-3.5px 3.5px 0 #fff,-5px 0 0 #fff,-3.5px -3.5px 0 #fff,0 -5px 0 #fff,3.5px -3.5px 0 #fff;
+  filter:drop-shadow(0 0 .8px rgba(0,0,0,.6)) drop-shadow(0 14px 18px rgba(0,0,0,.24));animation:slap .9s .5s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes slap{0%{transform:rotate(-16deg) scale(2.2);opacity:0}45%{transform:rotate(-6deg) scale(1);opacity:1}100%{transform:rotate(-7deg) scale(1);opacity:1}}
+
+/* Sections */
+section{padding-block:96px 0}
+.sect{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:0}
+.h2{margin:0 0 36px;font:400 clamp(48px,8vw,96px)/.95 var(--display);letter-spacing:-0.025em}
+
+/* Work */
+.work .tabs{--tsize:clamp(56px,10vw,120px);margin-top:4px}
+.panel{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:56px;align-items:start;margin-top:40px}
+@media (max-width:820px){.panel{grid-template-columns:1fr}.phone{justify-self:center}}
+.panel h3{margin:0;font:500 30px/1.15 var(--body);letter-spacing:-0.035em;text-wrap:balance}
+.panel p{margin:18px 0 0;max-width:52ch;color:#444}
+.facts{max-width:640px;margin:32px 0 0;padding:0;list-style:none}
+.facts li{display:flex;justify-content:space-between;gap:16px;padding:14px 0 12px;border-bottom:1px solid var(--line)}
+.facts li span:last-child{color:var(--ink);text-align:right}
+.facts li span:first-child{color:var(--mute)}
+.fade{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+
+/* Phone mock, drawn in the apps' own style */
+.phone{width:300px;max-width:100%;aspect-ratio:9/18.5;border-radius:38px;border:1.5px solid var(--ink);padding:10px;background:var(--paper);box-shadow:0 30px 60px -30px rgba(0,0,0,.35)}
+.screen{position:relative;height:100%;border-radius:29px;overflow:hidden;background:var(--paper);border:1px solid var(--line);padding:30px 16px 16px;display:flex;flex-direction:column}
+.screen .st{display:flex;gap:12px;white-space:nowrap;font:400 46px/1 var(--display);letter-spacing:-0.025em;color:var(--soft)}
+.screen .st b{font-weight:400;color:var(--ink)}
+.screen .dt{display:flex;gap:10px;align-items:last baseline;margin-top:22px;padding-bottom:12px;border-bottom:2px dotted var(--soft)}
+.screen .dt .n{font:400 30px/.8 var(--mono);letter-spacing:-0.04em}
+.screen .dt .s{font:9px/1.3 var(--mono);color:#555}
+.screen .lab{display:flex;justify-content:space-between;font:9px var(--mono);margin:22px 0 2px}
+.screen .r{display:flex;align-items:center;gap:9px;padding:8px 0 7px;border-bottom:1px solid var(--line);font:500 15px/1.15 var(--body);letter-spacing:-0.035em}
+.screen .r .c{width:13px;height:13px;border:1.2px solid #c9c9c9;border-radius:3.5px;flex:none}
+.screen .r.d{color:var(--mute);text-decoration:line-through}
+.screen .r.d .c{background:var(--ink);border-color:var(--ink)}
+.screen .ball{position:absolute;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font:600 10px var(--body)}
+.screen .ball.g{background:#d6d6d6;color:var(--ink)}
+.screen .big{font:400 44px/1 var(--display);letter-spacing:-0.02em;margin-top:14px}
+.screen .big small{font:500 14px var(--body);vertical-align:baseline}
+.screen .tiny{font:9px/1.4 var(--mono);color:#666}
+.screen .pit{position:relative;flex:1;margin-top:12px;border-bottom:1px solid var(--line)}
+.screen .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}
+.screen .grid i{aspect-ratio:1;border-radius:3px;background:var(--wash)}
+.screen .grid i.on{background:var(--ink)}
+.screen .grid i.half{background:#bdbdbd}
+
+/* Services */
+.rows{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.rows li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:22px 0 20px;border-bottom:1px solid var(--line);align-items:baseline}
+.rows .t{font:500 clamp(24px,3.2vw,34px)/1.1 var(--body);letter-spacing:-0.035em}
+.rows .d{color:#444;max-width:48ch}
+@media (max-width:640px){.rows li{grid-template-columns:1fr;gap:8px}}
+
+/* Process: a real sequence, so it is numbered */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;border-top:2px solid var(--ink);padding-top:16px}
+.steps li::before{content:"0" counter(s);display:block;font:12px var(--mono);color:var(--mute);margin-bottom:28px}
+.steps b{display:block;font:400 40px/1 var(--display);letter-spacing:-0.02em;font-weight:400}
+.steps p{margin:12px 0 0;color:#444;font-size:15px}
+@media (max-width:820px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.steps{grid-template-columns:1fr}}
+
+/* Beliefs */
+.beliefs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:var(--line);border:1px solid var(--line)}
+.beliefs div{background:var(--paper);padding:28px 22px 30px}
+.beliefs b{display:block;font:500 22px/1.2 var(--body);letter-spacing:-0.03em;font-weight:500}
+.beliefs p{margin:10px 0 0;color:#555;font-size:15px}
+@media (max-width:760px){.beliefs{grid-template-columns:1fr}}
+
+/* Contact */
+.contact{padding-block:120px 0;text-align:center}
+.contact .h2{font-size:clamp(64px,13vw,160px);margin-bottom:24px}
+.contact p{margin:0 auto;max-width:40ch;color:#444}
+.mail{display:inline-flex;align-items:center;gap:14px;margin-top:36px;padding:16px 22px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);cursor:pointer;font:600 15px var(--body);letter-spacing:-0.01em;transition:background .2s,color .2s}
+.mail:hover{background:var(--ink);color:var(--paper)}
+.mail .mono{color:inherit;opacity:.6}
+.bar .wrap{border-bottom-color:var(--line)}
+.foot{margin-top:120px;text-align:center;padding-bottom:36px}
+.foot img{width:min(360px,80vw);height:auto;display:block;margin:0 auto}
+.foot .mono{display:block;color:var(--mute);margin-top:12px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head>
+<body>
+<div id="smooth"><div class="sheet" id="sheet"><h1 class="mark" id="mark" aria-label="full auto"><span><svg id="markSvg" viewBox="0 0 3186 795" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><g id="lg"><path d="M413.1 1.3584C425.037 5.44902 434.822 11.7954 441.576 20.8594C448.364 29.9699 451.457 40.978 451.457 53.2275C451.457 80.5951 438.167 105.358 413.869 127.405L329.905 203.604L323.579 199.93C293.239 182.304 267.704 169.229 246.898 160.59C229.754 153.471 216.43 149.626 206.585 148.445C205.993 150.144 205.384 152.204 204.785 154.672C203.398 160.39 202.188 167.733 201.2 176.801C199.225 194.935 198.212 219.268 198.212 249.934V297.887H340.764L340.664 298.047H443.44V569.532C443.44 608.297 451.508 636.17 466.131 654.655C480.963 672.045 503.631 681.497 536.061 681.497C556.606 681.497 574.5 676.67 590.041 667.24L590.106 667.2L590.173 667.161C606.267 657.732 618.835 644.136 627.888 626.04L627.942 625.933C637.521 607.349 642.548 584.366 642.548 556.596V298.047H773.488V783.73H656.506L650.267 725.533C636.908 742.993 620.262 757.609 600.399 769.353L600.4 769.354C572.109 786.45 539.138 794.818 501.854 794.818C462.945 794.818 428.868 787.163 399.994 771.423L399.874 771.357L399.757 771.289C371.341 754.778 349.672 730.374 334.712 698.52L334.695 698.484L334.68 698.449C319.738 665.985 312.5 626.581 312.5 580.619V343.17L277.722 398.891H198.212V673.573C198.212 724.522 199.126 757.326 200.856 772.605L202.117 783.73H69.126L70.3867 772.605C72.1174 757.326 73.0312 724.522 73.0312 673.573V398.891H0L73.0312 324.787V323.924C73.0312 284.557 76.9879 251.704 85.2363 225.705L86.0586 223.112L291.353 38.4541L297.146 40.8008C325.603 52.3267 348.975 60.8964 367.33 66.5693C385.977 72.3322 398.54 74.8085 405.795 74.8086C412.111 74.8086 417.283 73.071 421.722 69.7344C424.702 67.2634 427.395 62.2627 427.395 51.874C427.395 43.3933 425.418 37.0925 422.094 32.3457C418.768 27.5978 413.514 23.5783 405.527 20.6641L383.713 12.7041L409.136 0L413.1 1.3584ZM1602.45 286.959C1647.29 286.959 1686.14 294.836 1718.64 311.042L1720.16 311.779C1751.95 327.366 1776.41 350.032 1793.23 379.723C1810.93 409.279 1819.54 444.672 1819.54 485.45V783.73H1706.61L1698.22 727.16C1694.9 731.522 1691.32 735.745 1687.48 739.828C1677.63 750.958 1666.19 760.739 1653.2 769.181L1653.04 769.278L1652.89 769.371C1639.66 777.306 1624.6 783.491 1607.82 788.007C1591.38 792.595 1572.91 794.818 1552.52 794.818C1513.25 794.818 1479.83 788.18 1452.74 774.316C1426 760.626 1405.65 742.112 1392.22 718.636C1379.02 695.538 1372.42 670.416 1372.42 643.45C1372.42 612.137 1380.28 584.54 1396.36 561.103L1396.41 561.023L1396.47 560.945C1413.19 537.543 1437.37 519.854 1468.36 507.587C1499.48 494.649 1537.2 488.386 1581.18 488.386H1688.39C1687.59 469.214 1684.43 453.609 1679.22 441.302L1679.19 441.24L1679.17 441.178C1673.14 426.404 1664.08 415.936 1652.07 409.151C1639.85 402.244 1623.51 398.433 1602.45 398.433C1578.76 398.433 1559.18 403.899 1543.21 414.354L1543.11 414.421L1543 414.485C1527.85 423.884 1518.16 438.504 1514.28 459.543L1512.77 467.73H1384.18L1385.42 456.626C1389.29 421.778 1400.98 391.648 1420.72 366.616C1440.34 341.13 1466.11 321.643 1497.74 308.094C1529.9 293.966 1564.84 286.959 1602.45 286.959ZM1996.32 569.532C1996.32 608.288 2004.38 636.157 2019 654.643C2033.83 672.041 2056.5 681.497 2088.94 681.497C2109.48 681.497 2127.38 676.67 2142.92 667.24L2142.99 667.2L2143.05 667.161C2159.15 657.732 2171.71 644.136 2180.77 626.04L2180.79 625.986L2180.82 625.933C2190.4 607.349 2195.43 584.366 2195.43 556.596V298.047H2326.37V783.73H2209.38L2203.14 725.533C2189.79 742.992 2173.14 757.609 2153.28 769.353L2153.28 769.354C2124.99 786.45 2092.02 794.818 2054.73 794.818C2015.82 794.818 1981.75 787.163 1952.87 771.423L1952.75 771.357L1952.63 771.289C1924.22 754.778 1902.55 730.374 1887.59 698.52L1887.57 698.484L1887.56 698.449C1872.62 665.985 1865.38 626.581 1865.38 580.619V298.047H1996.32V569.532ZM2942.92 286.959C2988.89 286.959 3030.4 297.815 3067.18 319.71C3104.49 340.942 3133.52 370.594 3154.11 408.496L3155.1 410.285C3175.74 447.949 3185.9 491.588 3185.9 540.889C3185.9 590.971 3175.42 635.212 3154.11 673.281C3132.91 711.168 3103.6 741.107 3066.31 762.955L3066.29 762.969L3066.27 762.982C3029.47 784.271 2987.96 794.818 2942 794.818C2896.03 794.818 2854.24 784.271 2816.87 763.02L2816.78 762.969L2816.69 762.917C2780.02 741.059 2751.06 711.125 2729.88 673.281L2729.83 673.193L2729.78 673.105C2709.19 634.515 2699.02 590.666 2699.02 541.812C2699.02 491.73 2709.5 447.489 2730.8 409.42C2751.98 370.961 2780.97 340.984 2817.73 319.719C2855.1 297.831 2896.92 286.959 2942.92 286.959ZM961.64 783.73H830.698V98.4678H961.64V783.73ZM1150.15 783.73H1019.21V98.4678H1150.15V783.73ZM2561.67 298.047H2688.32V411.368H2561.67V617.578C2561.67 639.867 2566.41 652.607 2573.07 659.034C2580.88 665.3 2595.16 669.485 2618.23 669.485H2685.55V783.73H2596.04C2563.59 783.73 2534.79 778.643 2509.88 768.164L2509.84 768.146L2509.8 768.126C2484.88 757.359 2465.4 739.484 2451.45 714.914C2437.33 690.064 2430.73 657.343 2430.73 617.578V411.368H2351.22V298.047H2431.72L2444.67 175.157H2561.67V298.047ZM407.32 763.998C407.75 764.222 408.181 764.444 408.613 764.665C407.756 764.227 406.903 763.782 406.056 763.33L407.32 763.998ZM2507.48 756.005C2507.82 756.178 2508.16 756.349 2508.51 756.519C2508.02 756.28 2507.54 756.038 2507.07 755.793C2507.2 755.863 2507.34 755.935 2507.48 756.005ZM2506.46 755.481C2506.59 755.551 2506.73 755.62 2506.86 755.689C2506.39 755.445 2505.91 755.199 2505.44 754.948L2506.46 755.481ZM2490.19 745.131C2490.31 745.228 2490.44 745.323 2490.57 745.419C2490.14 745.094 2489.72 744.768 2489.3 744.437L2490.19 745.131ZM1686.31 726.071L1687.16 725.049C1687.25 724.93 1687.35 724.81 1687.44 724.691C1687.07 725.153 1686.69 725.613 1686.31 726.071ZM1692.34 718.313C1690.85 720.365 1689.31 722.386 1687.7 724.377C1687.79 724.258 1687.89 724.141 1687.99 724.021C1688.26 723.678 1688.54 723.334 1688.81 722.988C1689.62 721.952 1690.43 720.909 1691.21 719.856C1691.59 719.345 1691.97 718.829 1692.34 718.313ZM1694.59 715.114C1693.88 716.157 1693.15 717.193 1692.41 718.221C1692.52 718.061 1692.64 717.902 1692.75 717.741C1693.26 717.032 1693.76 716.32 1694.26 715.604C1694.37 715.442 1694.48 715.277 1694.59 715.114ZM82.957 696.959C82.968 695.269 82.9808 693.555 82.9893 691.816L82.9912 691.271C82.9822 693.197 82.9691 695.093 82.957 696.959ZM188.254 691.816C188.262 693.555 188.275 695.269 188.286 696.959C188.274 695.093 188.261 693.197 188.252 691.271L188.254 691.816ZM2753.01 691.143C2753.09 691.243 2753.16 691.342 2753.23 691.441C2753.09 691.243 2752.95 691.045 2752.8 690.847L2753.01 691.143ZM1593.2 580.456C1572.4 580.456 1555.86 583.142 1543.22 588.085L1543.04 588.154L1542.86 588.217C1530.21 592.617 1522.19 598.828 1517.55 606.249C1512.49 614.339 1509.83 623.855 1509.83 635.134C1509.83 646.427 1512.49 655.508 1517.39 662.848C1522.31 670.23 1529.59 676.152 1539.76 680.432C1549.97 684.727 1562.46 687.041 1577.49 687.041C1594.17 687.041 1608.4 684.174 1620.4 678.738C1633.3 672.562 1644.14 664.203 1653.04 653.638L1653.06 653.62L1653.07 653.603C1662.82 642.142 1670.23 629.588 1675.37 615.913C1679.57 604.7 1682.67 592.886 1684.64 580.456H1593.2ZM2942.92 403.053C2923.16 403.053 2904.91 408.104 2887.97 418.26C2871.35 428.229 2857.77 443.317 2847.39 464.053L2847.34 464.154C2837.19 483.895 2831.81 509.307 2831.81 540.889C2831.81 572.455 2837.18 598.23 2847.39 618.648C2857.8 639.443 2871.1 654.533 2887.12 664.482C2904.03 674.61 2922.26 679.648 2942 679.648C2962.43 679.648 2980.62 674.57 2996.82 664.52L2996.88 664.479L2996.95 664.441C3013.57 654.472 3027.15 639.384 3037.52 618.648C3047.74 598.23 3053.11 572.455 3053.11 540.889C3053.11 509.307 3047.73 483.895 3037.57 464.154L3037.5 464.004L3037.42 463.851C3027.67 443.21 3014.44 428.195 2997.87 418.26L2997.81 418.222L2997.74 418.182C2981.54 408.131 2963.35 403.053 2942.92 403.053ZM593.327 676.915C593.419 676.862 593.512 676.809 593.604 676.756L593.616 676.748C593.52 676.804 593.423 676.859 593.327 676.915ZM3141.36 675.324C3141.72 674.724 3142.08 674.12 3142.44 673.516C3142.08 674.121 3141.72 674.724 3141.36 675.324ZM3142.44 673.516C3142.46 673.485 3142.48 673.455 3142.5 673.425L3143.46 671.782C3143.12 672.362 3142.78 672.94 3142.44 673.516ZM1510.26 670.104C1510.36 670.246 1510.47 670.387 1510.57 670.527C1510.46 670.378 1510.35 670.229 1510.24 670.078L1510.26 670.104ZM1652.68 668.6L1652.89 668.397C1653.06 668.236 1653.22 668.072 1653.39 667.91C1653.15 668.141 1652.92 668.371 1652.68 668.6ZM1683.59 622.349C1683.61 622.294 1683.64 622.239 1683.66 622.184L1683.68 622.141C1683.65 622.21 1683.62 622.279 1683.59 622.349ZM3046.93 622.184L3046.98 622.079C3047.03 621.978 3047.08 621.877 3047.13 621.775C3047.06 621.912 3047 622.048 3046.93 622.184ZM1536.97 579.725C1536.67 579.839 1536.38 579.957 1536.08 580.073C1536.44 579.931 1536.8 579.791 1537.16 579.652L1536.97 579.725ZM1402.4 570.087C1402.12 570.525 1401.84 570.965 1401.57 571.406C1402.11 570.529 1402.67 569.658 1403.24 568.793L1402.4 570.087ZM3015.35 418.394L3014.57 417.756C3014.39 417.61 3014.21 417.466 3014.03 417.322C3014.47 417.676 3014.92 418.032 3015.35 418.394ZM1657.66 400.823C1657.87 400.95 1658.09 401.079 1658.31 401.208L1658.31 401.207C1657.88 400.949 1657.44 400.694 1656.99 400.444C1657.21 400.57 1657.44 400.696 1657.66 400.823ZM1608.01 388.521C1607.53 388.506 1607.05 388.491 1606.56 388.479L1606.5 388.479C1607 388.49 1607.51 388.506 1608.01 388.521ZM3087.49 345.121C3087.99 345.501 3088.48 345.883 3088.97 346.268C3087.99 345.499 3087 344.739 3086 343.986L3087.49 345.121ZM190.89 179.286C190.771 180.499 190.656 181.736 190.545 182.996L190.715 181.123C190.772 180.505 190.83 179.892 190.89 179.286ZM197.214 144.947L196.889 145.893C197.015 145.513 197.145 145.141 197.274 144.778C197.254 144.834 197.234 144.891 197.214 144.947ZM197.361 144.539C197.332 144.618 197.303 144.698 197.274 144.778C197.303 144.698 197.333 144.618 197.361 144.539ZM197.738 143.529C197.611 143.858 197.486 144.195 197.361 144.539C197.486 144.195 197.611 143.858 197.738 143.529ZM377.504 79.9238C377.683 79.9717 377.862 80.0183 378.04 80.0654C377.357 79.8847 376.665 79.699 375.964 79.5078L377.504 79.9238Z"/></g><g id="tx"><text id="markTx" x="0" y="784" textLength="3186" lengthAdjust="spacingAndGlyphs" font-family="'Redaction 50', Georgia, serif" font-size="900">full auto</text></g><clipPath id="gc0"><rect id="gr0" x="-400" width="3986" y="0" height="0"/></clipPath><clipPath id="gc1"><rect id="gr1" x="-400" width="3986" y="0" height="0"/></clipPath><clipPath id="gc2"><rect id="gr2" x="-400" width="3986" y="0" height="0"/></clipPath><clipPath id="gc3"><rect id="gr3" x="-400" width="3986" y="0" height="0"/></clipPath><clipPath id="gc4"><rect id="gr4" x="-400" width="3986" y="0" height="0"/></clipPath><clipPath id="gc5"><rect id="gr5" x="-400" width="3986" y="0" height="0"/></clipPath></defs><use id="gBase" href="#lg"/><use id="gu0" href="#lg" clip-path="url(#gc0)" visibility="hidden"/><use id="gu1" href="#lg" clip-path="url(#gc1)" visibility="hidden"/><use id="gu2" href="#lg" clip-path="url(#gc2)" visibility="hidden"/><use id="gu3" href="#lg" clip-path="url(#gc3)" visibility="hidden"/><use id="gu4" href="#lg" clip-path="url(#gc4)" visibility="hidden"/><use id="gu5" href="#lg" clip-path="url(#gc5)" visibility="hidden"/></svg></span></h1>
+<div class="wrap eyebrow mono" id="eyebrow"><i></i><span>independent studio · no-nonsense apps · privacy first</span></div>
+<div class="art" id="art">
+          <img id="beast" src="tigerdragon.webp" alt="ink illustration of a tiger and a dragon locked together" width="1100" height="688" draggable="false">
+          <span class="hint mono" id="beastHint">drag me around</span>
+        </div>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div class="lede">
+        <div>
+          <p class="pitch">apps that do exactly what they say. <span class="g">nothing more, nothing hidden.</span></p>
+          <p>full auto builds design-led apps with no nonsense in them. no trackers, no ads, no accounts you don't need, and no data leaving your phone unless the app can't work without it. fully automatic means we go all the way: designed, built, shipped and looked after. no half measures.</p>
+        </div>
+
+      </div>
+    </div>
+    <div class="tabs" id="heroTabs" role="tablist" aria-label="what we make">
+      <button class="tab on" role="tab">private</button>
+      <button class="tab" role="tab">focused</button>
+      <button class="tab" role="tab">honest</button>
+      <button class="tab" role="tab">finished</button>
+    </div>
+    <div class="wrap"><div class="rule"></div></div>
+  </div>
+
+  <section class="work" id="work">
+    <div class="wrap"><div class="sect mono"><span>work</span><span>apps we built and use every day</span></div></div>
+    <div class="tabs" id="workTabs" role="tablist" aria-label="projects">
+      <button class="tab on" role="tab" data-p="0">ops</button>
+      <button class="tab" role="tab" data-p="1">payload</button>
+      <button class="tab" role="tab" data-p="2">full auto</button>
+    </div>
+    <div class="wrap"><div class="panel" id="panel" aria-live="polite"></div></div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <h2 class="h2">what we do</h2>
+      <ul class="rows">
+        <li><span class="t">product design</span><span class="d">one idea per screen. if a button doesn't earn its place, it goes.</span></li>
+        <li><span class="t">android apps</span><span class="d">native and offline first, with no analytics or ad sdks. we ask for the fewest permissions the app can run on, and say why in plain words.</span></li>
+        <li><span class="t">brand identity</span><span class="d">a name, a wordmark and a look that holds from the app icon to a t-shirt.</span></li>
+        <li><span class="t">websites</span><span class="d">a page that says what the app does in plain words. no dark patterns, no cookie walls.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2 class="h2">all the way through</h2>
+      <ol class="steps">
+        <li><b>talk</b><p>tell us the idea. we cut it down to the one thing it has to do.</p></li>
+        <li><b>design</b><p>screens you can tap through in a browser, changed until they're right.</p></li>
+        <li><b>build</b><p>a real app on your phone in days. every change is a build you can install.</p></li>
+        <li><b>ship</b><p>store listing, a privacy policy in plain words, and the release. then we keep it running.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="beliefs">
+        <div><b>does what it says.</b><p>if the store page says it, the app does it. if it doesn't say it, the app doesn't do it.</p></div>
+        <div><b>your data stays put.</b><p>payload reads your bank texts and has no internet permission at all. that's the bar for everything we make.</p></div>
+        <div><b>no half measures.</b><p>fully automatic means finished: designed, built, shipped and looked after. not a prototype and a promise.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2 class="h2">got an idea?</h2>
+      <p>tell us the one thing your app should do. we'll build it all the way.</p>
+      <button class="mail" id="mail" type="button"><span>hello@fullauto</span><span class="mono" id="mailHint">copy</span></button>
+      <div class="foot">
+        <img src="samurai.webp" alt="ink illustration of a samurai riding a coiled dragon" width="1049" height="777" loading="lazy">
+        <span class="mono">full auto · no-nonsense apps</span>
+      </div>
+    </div>
+  </section>
+</main></div></div>
+
+<script>
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Make a pixel-title row behave like the apps: tap a title, it turns black and slides to the left edge
+  function tabs(el, onPick) {
+    var btns = [].slice.call(el.querySelectorAll('.tab'));
+    function pick(i, user) {
+      btns.forEach(function (b, j) { b.classList.toggle('on', j === i); b.setAttribute('aria-selected', j === i); });
+      el.scrollTo({ left: btns[i].offsetLeft - btns[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+      if (onPick) onPick(i, user);
+    }
+    btns.forEach(function (b, i) { b.addEventListener('click', function () { pick(i, true); }); });
+    return { pick: pick, n: btns.length };
+  }
+
+  // Hero titles cycle on their own until someone taps one
+  var auto = true, hi = 0;
+  var hero = tabs(document.getElementById('heroTabs'), function (i, user) { hi = i; if (user) auto = false; });
+  if (!reduce) setInterval(function () { if (auto) hero.pick((hi + 1) % hero.n); }, 2400);
+
+  var P = [
+    { h: 'a to-do list. that\u2019s it.', p: 'type, tick, done. no account, no sync, no streaks to guilt you. a black focus ball bounces around until you need it, then fills the screen as a timer. finish the list and it drops to the floor.',
+      f: [['type', 'to-do app'], ['account', 'none'], ['trackers', 'none'], ['good bit', 'the focus ball']], s: 'ops' },
+    { h: 'an expense tracker that can\u2019t go online.', p: 'payload reads your bank and upi texts on the phone and turns them into what you spent today, where it went and what to cut. it doesn\u2019t just promise not to send your data anywhere. it has no internet permission, so it can\u2019t.',
+      f: [['type', 'expense tracker'], ['internet access', 'none'], ['your data', 'stays on your phone'], ['good bit', 'categories you can throw']], s: 'payload' },
+    { h: 'where it started.', p: 'the first app, and the name everything else runs under. the sliding pixel titles, lowercase everything and the rule that every feature has to earn its place all started here.',
+      f: [['type', 'daily tracker'], ['platform', 'android'], ['made', 'design, build'], ['good bit', 'where the look came from']], s: 'fa' }
+  ];
+
+  function screen(k) {
+    if (k === 'ops') return '<div class="st"><b>today</b><span>history</span></div>' +
+      '<div class="dt"><span class="n">09</span><span class="s">monday<br>november 2026</span></div>' +
+      '<div class="lab"><span>to do</span><span>4</span></div>' +
+      '<div class="r"><i class="c"></i>call the printer</div><div class="r"><i class="c"></i>send payload build</div>' +
+      '<div class="r d"><i class="c"></i>gym</div><div class="r"><i class="c"></i>store screenshots</div><div class="r d"><i class="c"></i>groceries</div>' +
+      '<div class="ball" style="width:64px;height:64px;right:18px;bottom:36px">focus</div>';
+    if (k === 'payload') return '<div class="st"><span>today</span><b>spent</b><span>insights</span></div>' +
+      '<div class="tiny" style="margin-top:20px">spending in november</div><div class="big"><small>₹</small>35,311</div><div class="tiny">↗ 10% vs october</div>' +
+      '<div class="pit">' +
+      '<div class="ball" style="width:92px;height:92px;left:6px;bottom:0">shopping</div>' +
+      '<div class="ball" style="width:74px;height:74px;left:96px;bottom:0">food</div>' +
+      '<div class="ball g" style="width:58px;height:58px;left:168px;bottom:0">travel</div>' +
+      '<div class="ball g" style="width:50px;height:50px;left:58px;bottom:88px">grocery</div>' +
+      '<div class="ball" style="width:40px;height:40px;left:132px;bottom:72px">subs</div>' +
+      '<div class="ball g" style="width:34px;height:34px;left:200px;bottom:58px">fun</div></div>' +
+      '<div class="tiny" style="margin-top:10px">a normal day costs ₹1,992</div>';
+    var cells = '', pat = '1101110111011111011101101111010';
+    for (var i = 0; i < 28; i++) cells += '<i class="' + (pat[i] === '1' ? 'on' : (i % 5 === 2 ? 'half' : '')) + '"></i>';
+    return '<div class="st"><b>day</b><span>week</span></div>' +
+      '<div class="dt"><span class="n">09</span><span class="s">monday<br>day 313 of 365</span></div>' +
+      '<div class="lab"><span>last four weeks</span><span>22 / 28</span></div><div class="grid">' + cells + '</div>' +
+      '<div class="lab"><span>today</span><span>3 / 4</span></div>' +
+      '<div class="r d"><i class="c"></i>wake by 7</div><div class="r d"><i class="c"></i>train</div><div class="r d"><i class="c"></i>read 20 pages</div><div class="r"><i class="c"></i>sleep by 11</div>';
+  }
+
+  var panel = document.getElementById('panel');
+  function show(i) {
+    var x = P[i];
+    panel.innerHTML = '<div class="fade"><h3>' + x.h + '</h3><p>' + x.p + '</p><ul class="facts mono">' +
+      x.f.map(function (r) { return '<li><span>' + r[0] + '</span><span>' + r[1] + '</span></li>'; }).join('') + '</ul></div>' +
+      '<div class="phone fade" aria-hidden="true"><div class="screen">' + screen(x.s) + '</div></div>';
+  }
+  tabs(document.getElementById('workTabs'), show);
+  show(0);
+
+  // Copy the address; mailto links don't work for every viewer
+  var mail = document.getElementById('mail'), hint = document.getElementById('mailHint');
+  mail.addEventListener('click', function () {
+    var t = mail.firstElementChild.textContent;
+    function done(ok) { hint.textContent = ok ? 'copied' : 'select it'; setTimeout(function () { hint.textContent = 'copy'; }, 1600); }
+    try { navigator.clipboard.writeText(t).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+  });
+})();
+
+// ---- Glide: eased scroll with a speed bend ----
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var root = document.documentElement, layer = document.getElementById('smooth'), sheet = document.getElementById('sheet');
+  root.classList.add('glide');
+  var items = [].slice.call(document.querySelectorAll('.mark span, .art, .eyebrow, .tabs, .lede > *, .sect, .panel, .h2, .rows li, .steps li, .beliefs, .contact p, .mail, .foot'));
+  items.forEach(function (e) { e.classList.add('bend'); });
+  var tops = [], cur = scrollY, last = scrollY, vel = 0, vh = innerHeight;
+
+  // Remember where each piece sits in the page, ignoring the transforms we add
+  function measure() {
+    vh = innerHeight;
+    document.body.style.height = layer.offsetHeight + 'px';
+    tops = items.map(function (e) {
+      var y = 0, n = e; while (n && n !== layer) { y += n.offsetTop; n = n.offsetParent; }
+      return { y: y, h: e.offsetHeight };
+    });
+  }
+  measure();
+  addEventListener('resize', measure);
+  addEventListener('load', measure);
+  if (window.ResizeObserver) new ResizeObserver(measure).observe(layer);
+
+  // Nav links jump straight to the real position; the layer eases there
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (ev) {
+      var id = a.getAttribute('href').slice(1), t = id === 'top' ? layer : document.getElementById(id);
+      if (!t) return; ev.preventDefault();
+      var y = 0, n = t; while (n && n !== layer) { y += n.offsetTop; n = n.offsetParent; }
+      scrollTo(0, Math.max(0, y - 16));
+    });
+  });
+
+  function frame() {
+    var target = scrollY;
+    cur += (target - cur) * 0.085;
+    if (Math.abs(target - cur) < 0.05) cur = target;
+    vel += ((cur - last) - vel) * 0.25; last = cur;
+    var v = Math.max(-40, Math.min(40, vel));
+    layer.style.transform = 'translate3d(0,' + (-cur).toFixed(2) + 'px,0)';
+    // The sheet's sides bow inward around the middle of the screen, more the faster you go
+    var bow = Math.abs(v) * 0.9;
+    if (bow < 0.3) { if (sheet.style.clipPath) sheet.style.clipPath = ''; }
+    else {
+      var W = sheet.offsetWidth, H = sheet.offsetHeight, top0 = cur - sheet.offsetTop, L = [], R = [];
+      for (var k = -2; k <= 12; k++) {
+        var yy = top0 + vh * k / 10, dd = (k - 5) / 5, x = bow * Math.max(0, 1 - dd * dd);
+        yy = Math.max(0, Math.min(H, yy));
+        R.push((W - x).toFixed(1) + 'px ' + yy.toFixed(1) + 'px'); L.unshift(x.toFixed(1) + 'px ' + yy.toFixed(1) + 'px');
+      }
+      sheet.style.clipPath = 'polygon(0 0, ' + W + 'px 0, ' + R.join(', ') + ', ' + W + 'px ' + H + 'px, 0 ' + H + 'px, ' + L.join(', ') + ')';
+    }
+    for (var i = 0; i < items.length; i++) {
+      var t = tops[i]; if (!t) continue;
+      var mid = t.y - cur + t.h / 2;
+      if (mid < -vh || mid > vh * 2) continue;
+      // d is -1 at the top of the screen, 0 in the middle, 1 at the bottom
+      var d = Math.max(-1, Math.min(1, (mid - vh / 2) / (vh / 2)));
+      var lag = -v * 0.55 * d * d;                 // rows away from the middle trail behind, so the page bows
+      var pinch = 1 - Math.abs(v) * 0.0018 * (1 - d * d); // the middle narrows a touch
+      var stretch = 1 + Math.abs(v) * 0.0025;     // letters stretch tall at speed
+      items[i].style.transform = Math.abs(v) < 0.02 ? '' :
+        'translate3d(0,' + lag.toFixed(2) + 'px,0) scale(' + pinch.toFixed(4) + ',' + stretch.toFixed(4) + ')';
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+
+
+// The tiger and dragon stays centred: pull it anywhere and it springs back to the middle when you let go
+(function () {
+  var el = document.getElementById('beast'), hint = document.getElementById('beastHint');
+  var x = 0, y = 0, vx = 0, vy = 0, rot = 0, held = false, px = 0, py = 0, lt = 0, raf = 0;
+  function draw() { el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg)'; }
+  function glide() {
+    if (!held) { vx = (vx - x * 0.06) * 0.8; vy = (vy - y * 0.06) * 0.8; x += vx; y += vy; }
+    // Keep it on screen, bouncing softly off the edges
+    var r = el.getBoundingClientRect(), sw = document.documentElement.clientWidth, sh = innerHeight, pad = 40;
+    if (r.right < pad) { x += pad - r.right; vx = Math.abs(vx) * 0.5; }
+    if (r.left > sw - pad) { x -= r.left - (sw - pad); vx = -Math.abs(vx) * 0.5; }
+    if (r.bottom < pad) { y += pad - r.bottom; vy = Math.abs(vy) * 0.5; }
+    if (r.top > sh - pad) { y -= r.top - (sh - pad); vy = -Math.abs(vy) * 0.5; }
+    var target = Math.max(-14, Math.min(14, vx * 0.9));
+    rot += (target - rot) * 0.15;
+    draw();
+    if (held || Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05 || Math.abs(x) > 0.3 || Math.abs(y) > 0.3 || Math.abs(rot) > 0.05) raf = requestAnimationFrame(glide); else { x = y = 0; draw(); raf = 0; }
+  }
+  el.addEventListener('pointerdown', function (e) {
+    held = true; el.classList.add('held'); el.setPointerCapture(e.pointerId);
+    px = e.clientX; py = e.clientY; lt = performance.now(); vx = vy = 0;
+    if (hint) hint.style.opacity = 0;
+    if (!raf) raf = requestAnimationFrame(glide);
+  });
+  el.addEventListener('pointermove', function (e) {
+    if (!held) return;
+    var now = performance.now(), dt = Math.max(8, now - lt) / 16.7;
+    var dx = e.clientX - px, dy = e.clientY - py;
+    x += dx; y += dy; vx = dx / dt; vy = dy / dt; px = e.clientX; py = e.clientY; lt = now;
+  });
+  function drop() { if (!held) return; held = false; el.classList.remove('held'); if (performance.now() - lt > 80) { vx = vy = 0; } if (!raf) raf = requestAnimationFrame(glide); }
+  el.addEventListener('pointerup', drop); el.addEventListener('pointercancel', drop);
+  // Double-click puts it back in the middle
+  el.addEventListener('dblclick', function () { x = y = vx = vy = 0; draw(); });
+})();
+
+// The logo glitches into the pixel title font and back: a short burst of torn, shifted slices, then it holds
+(function () {
+  var base = document.getElementById('gBase'), tx = document.getElementById('markTx');
+  var us = [], rs = [];
+  for (var k = 0; k < 6; k++) { us.push(document.getElementById('gu' + k)); rs.push(document.getElementById('gr' + k)); }
+  // Size the pixel version to the same height and width as the logo
+  function fitText() {
+    var c = document.createElement('canvas').getContext('2d');
+    c.font = '400 100px "Redaction 50", Georgia, serif';
+    var m = c.measureText('full auto'), asc = m.actualBoundingBoxAscent || 72, desc = m.actualBoundingBoxDescent || 0;
+    var size = 686 / asc * 100;
+    tx.setAttribute('font-size', size.toFixed(0)); tx.setAttribute('y', (784 - Math.max(0, desc) * size / 100 * 0).toFixed(0));
+  }
+  fitText();
+  if (document.fonts) document.fonts.load('400 100px "Redaction 50"').then(fitText, function () {});
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var shows = ['#lg', '#tx'], cur = 0;
+  function set(el, ref) { el.setAttribute('href', ref); }
+  function clear() { us.forEach(function (u) { u.setAttribute('visibility', 'hidden'); u.removeAttribute('transform'); u.classList.remove('ghost'); }); base.removeAttribute('transform'); }
+  function frame(t) {
+    // t runs 0..1 through the burst; the new face takes over more as it goes
+    set(base, Math.random() < t ? shows[1 - cur] : shows[cur]);
+    base.setAttribute('transform', 'translate(' + ((Math.random() - .5) * 40).toFixed(0) + ',0)');
+    us.forEach(function (u, k) {
+      if (Math.random() < 0.25) { u.setAttribute('visibility', 'hidden'); return; }
+      var y = Math.random() * 795, h = 12 + Math.random() * 70;
+      rs[k].setAttribute('y', y.toFixed(0)); rs[k].setAttribute('height', h.toFixed(0));
+      set(u, Math.random() < 0.5 ? '#lg' : '#tx');
+      u.setAttribute('transform', 'translate(' + ((Math.random() - .5) * 260).toFixed(0) + ',0)');
+      u.classList.toggle('ghost', Math.random() < 0.3);
+      u.setAttribute('visibility', 'visible');
+    });
+  }
+  function burst() {
+    var n = 0, steps = 9;
+    var id = setInterval(function () {
+      n++;
+      if (n > steps) { clearInterval(id); clear(); cur = 1 - cur; set(base, shows[cur]); setTimeout(burst, cur ? 1800 : 2600); return; }
+      frame(n / steps);
+    }, 55);
+  }
+  setTimeout(burst, 2200);
+})();
+</script>
+
+</body>
+</html>
