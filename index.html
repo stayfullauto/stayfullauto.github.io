@@ -188,13 +188,6 @@ section{padding-block:96px 0}
 
       </div>
     </div>
-    <div class="tabs" id="heroTabs" role="tablist" aria-label="what we make">
-      <button class="tab on" role="tab">private</button>
-      <button class="tab" role="tab">focused</button>
-      <button class="tab" role="tab">honest</button>
-      <button class="tab" role="tab">finished</button>
-    </div>
-    <div class="wrap"><div class="rule"></div></div>
   </div>
 
   <section class="work" id="work">
@@ -271,9 +264,6 @@ section{padding-block:96px 0}
   }
 
   // Hero titles cycle on their own until someone taps one
-  var auto = true, hi = 0;
-  var hero = tabs(document.getElementById('heroTabs'), function (i, user) { hi = i; if (user) auto = false; });
-  if (!reduce) setInterval(function () { if (auto) hero.pick((hi + 1) % hero.n); }, 2400);
 
   var P = [
     { h: 'a to-do list. that\u2019s it.', p: 'type, tick, done. no account, no sync, no streaks to guilt you. a black focus ball bounces around until you need it, then fills the screen as a timer. finish the list and it drops to the floor.',
