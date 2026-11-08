@@ -140,7 +140,7 @@ section{padding-block:96px 0}
 
 /* Process: a real sequence, so it is numbered */
 .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin:0;padding:0;list-style:none;counter-reset:s}
-.steps li{counter-increment:s;border-top:2px solid var(--ink);padding-top:16px}
+.steps li{counter-increment:s}
 .steps li::before{content:"0" counter(s);display:block;font:12px var(--mono);color:var(--mute);margin-bottom:28px}
 .steps b{display:block;font:400 40px/1 var(--display);letter-spacing:-0.02em;font-weight:400}
 .steps p{margin:12px 0 0;color:#444;font-size:15px}
