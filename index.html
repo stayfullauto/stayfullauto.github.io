@@ -498,7 +498,7 @@ section{padding-block:96px 0}
   }
   box.addEventListener('click', finish);
   if (!rows[0].animate) { finish(); return; }
-  var STAG = 90, IN = 560, HOLD = 380, UP = 620;
+  var STAG = 90, IN = 560, HOLD = 900, UP = 620;
   var flyIn = n * STAG + IN;
   rows.forEach(function (r, i) {
     // 1. the lines drop in one after another, top of the screen to the bottom,
@@ -510,16 +510,15 @@ section{padding-block:96px 0}
     // 2. then the stack folds up, bottom line first, into the top one
     if (i > 0) r.animate([
       { transform: 'translateY(0)', opacity: 1 },
-      { transform: 'translateY(' + (-i * rowH) + 'px)', opacity: 0 }
+      { transform: 'translateY(' + (-i * rowH) + 'px)', opacity: 1 }
     ], { duration: UP, delay: flyIn + HOLD + (n - 1 - i) * 55, easing: 'cubic-bezier(.7,0,.3,1)', fill: 'forwards' });
   });
   var end = flyIn + HOLD + (n - 1) * 55 + UP;
   // the top line lands with a little squash as the others hit it
   rows[0].animate([{ transform: 'scale(1,1)' }, { transform: 'scale(1.02,.94)' }, { transform: 'scale(1,1)' }],
     { duration: 380, delay: end - 140, easing: 'ease-out', transformOrigin: '50% 0%' });
-  box.animate([{ backgroundColor: getComputedStyle(box).backgroundColor }, { backgroundColor: 'rgba(255,255,255,0)' }],
-    { duration: 380, delay: end - 60, fill: 'forwards' });
-  setTimeout(finish, end + 340);
+  // hold on the landed logo for a beat, then hand straight over to the page
+  setTimeout(finish, end + 700);
 })();
 </script>
 </body>
