@@ -6,7 +6,7 @@
 <meta name="description" content="full auto builds no-nonsense, design-led apps that do exactly what they say. privacy first, no half measures.">
 <meta property="og:title" content="full auto">
 <meta property="og:description" content="no-nonsense apps. privacy first. no half measures.">
-<meta name="theme-color" content="#0b0b0b">
+<meta name="theme-color" content="#ffffff">
 <title>full auto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,7 +34,7 @@ button{font:inherit;color:inherit;text-transform:inherit}
 
 /* Top bar */
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--night)}
-.bar{position:relative;z-index:2;background:var(--paper);border-radius:22px 22px 0 0}
+.bar{position:relative;z-index:2;background:var(--paper);border-radius:0}
 /* Everything that scrolls lives on one white sheet over a black page */
 .mark{margin:0;padding:clamp(14px,2vw,26px) var(--gut) 0;font:400 100px/.82 var(--display);letter-spacing:-0.045em;white-space:nowrap;overflow:hidden;color:var(--ink)}
 .mark span{display:block;transform-origin:0 0}
@@ -42,7 +42,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .mark svg{fill:var(--ink)}
 .mark .ghost{fill:var(--mute)}
 .hero{padding-top:28px!important}
-.sheet{background:var(--paper);margin:12px max(12px, env(safe-area-inset-left, 0px)) 12px max(12px, env(safe-area-inset-right, 0px));border-radius:22px;overflow:hidden}
+.sheet{background:var(--paper);margin:0;border-radius:0;overflow:hidden}
 /* Smooth scroll: the page sits in a fixed layer that eases after the real scroll position,
    and rows bend with the speed of the scroll, the way dionpieters.dev does it */
 html.glide{scroll-behavior:auto}
