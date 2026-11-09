@@ -508,12 +508,14 @@ section{padding-block:96px 0}
       { transform: 'translateY(0)' }
     ], { duration: IN, delay: i * STAG, easing: 'cubic-bezier(.2,.9,.25,1)', fill: 'both' });
   });
-  // 2. every line but the top one fades away, bottom line first; the top one is already where the logo sits
-  var cut = flyIn + HOLD, FADE = 500, FSTAG = 45;
-  for (var k = 1; k < n; k++) rows[k].animate([{ opacity: 1 }, { opacity: 0 }],
-    { duration: FADE, delay: cut + (n - 1 - k) * FSTAG, easing: 'ease-in-out', fill: 'forwards' });
+  // 2. every line but the top one disappears, one by one from the bottom; the top one is already where the logo sits
+  var cut = flyIn + HOLD, GAP = 90;
+  rows.slice(1).forEach(function (r, j) {
+    // bottom line first, each one blinking out a beat after the one below it
+    setTimeout(function () { r.style.visibility = 'hidden'; }, cut + (n - 2 - j) * GAP);
+  });
   // hold on the logo for a beat, then hand straight over to the page
-  setTimeout(finish, cut + (n - 2) * FSTAG + FADE + 500);
+  setTimeout(finish, cut + (n - 2) * GAP + 600);
 })();
 </script>
 </body>
