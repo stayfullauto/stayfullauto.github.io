@@ -16,7 +16,8 @@
 #splash{display:none}
 html.splashing{overflow:hidden}
 html.splashing #splash{display:block;position:fixed;inset:0;z-index:100;background:var(--paper);overflow:hidden;cursor:pointer}
-#splash svg{position:absolute;left:0;display:block;fill:var(--ink);will-change:transform,opacity}
+#splash .cell{position:absolute;overflow:hidden;will-change:transform,opacity}
+#splash svg{display:block;fill:var(--ink);will-change:transform}
 html.splashing #mark svg{visibility:hidden}
 </style>
 <style>
@@ -482,10 +483,11 @@ section{padding-block:96px 0}
   for (var i = 0; i < n; i++) {
     var sv = document.createElementNS(NS, 'svg');
     sv.setAttribute('viewBox', '21 21 290 72'); sv.setAttribute('width', W); sv.setAttribute('height', H);
-    sv.style.left = mark.left + 'px'; sv.style.top = (mark.top + i * rowH) + 'px';
+    var cell = document.createElement('div'); cell.className = 'cell';
+    cell.style.cssText = 'left:' + mark.left + 'px;top:' + (mark.top + i * rowH) + 'px;width:' + W + 'px;height:' + H + 'px';
     var u = document.createElementNS(NS, 'use'); u.setAttribute('href', '#logoSym');
     u.setAttribute('x', 21); u.setAttribute('y', 21); u.setAttribute('width', 290); u.setAttribute('height', 72); sv.appendChild(u);
-    box.appendChild(sv); rows.push(sv);
+    cell.appendChild(sv); box.appendChild(cell); rows.push(cell);
   }
   function finish() {
     if (done) return; done = true;
@@ -496,14 +498,14 @@ section{padding-block:96px 0}
   }
   box.addEventListener('click', finish);
   if (!rows[0].animate) { finish(); return; }
-  var STAG = 85, IN = 700, HOLD = 350, UP = 620;
+  var STAG = 90, IN = 560, HOLD = 380, UP = 620;
   var flyIn = n * STAG + IN;
   rows.forEach(function (r, i) {
-    var from = (i % 2 ? 1 : -1) * (W + mark.left + 40);
-    // 1. each line flies in from alternating sides, leaning into the motion
-    r.animate([
-      { transform: 'translateX(' + from + 'px) skewX(' + (i % 2 ? -18 : 18) + 'deg)', opacity: 1 },
-      { transform: 'translateX(0) skewX(0)', opacity: 1 }
+    // 1. the lines drop in one after another, top of the screen to the bottom,
+    //    each one stretched tall as it falls and snapping square as it lands
+    r.firstChild.animate([
+      { transform: 'translateY(-105%)' },
+      { transform: 'translateY(0)' }
     ], { duration: IN, delay: i * STAG, easing: 'cubic-bezier(.2,.9,.25,1)', fill: 'both' });
     // 2. then the stack folds up, bottom line first, into the top one
     if (i > 0) r.animate([
