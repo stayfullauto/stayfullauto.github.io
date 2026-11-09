@@ -508,18 +508,11 @@ section{padding-block:96px 0}
       { transform: 'translateY(0)' }
     ], { duration: IN, delay: i * STAG, easing: 'cubic-bezier(.2,.9,.25,1)', fill: 'both' });
   });
-  // 2. every line but the last one vanishes at once, and the last one travels up to the top
-  // the last line is the lowest one that's fully on screen
-  var li = n - 1; while (li > 0 && mark.top + li * rowH + H > innerHeight) li--;
-  var last = rows[li], cut = flyIn + HOLD;
-  setTimeout(function () { for (var k = 0; k < n; k++) if (k !== li) rows[k].style.visibility = 'hidden'; }, cut);
-  last.animate([
-    { transform: 'translateY(0)' },
-    { transform: 'translateY(' + (-li * rowH) + 'px)' }
-  ], { duration: UP, delay: cut + 120, easing: 'cubic-bezier(.7,0,.2,1)', fill: 'forwards' });
-  var end = cut + 120 + UP;
-  // hold on the landed logo for a beat, then hand straight over to the page
-  setTimeout(finish, end + 700);
+  // 2. every line but the top one vanishes at once; the top one is already where the logo sits
+  var cut = flyIn + HOLD;
+  setTimeout(function () { for (var k = 1; k < n; k++) rows[k].style.visibility = 'hidden'; }, cut);
+  // hold on the logo for a beat, then hand straight over to the page
+  setTimeout(finish, cut + 700);
 })();
 </script>
 </body>
