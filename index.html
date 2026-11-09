@@ -507,16 +507,17 @@ section{padding-block:96px 0}
       { transform: 'translateY(-105%)' },
       { transform: 'translateY(0)' }
     ], { duration: IN, delay: i * STAG, easing: 'cubic-bezier(.2,.9,.25,1)', fill: 'both' });
-    // 2. then the stack folds up, bottom line first, into the top one
-    if (i > 0) r.animate([
-      { transform: 'translateY(0)', opacity: 1 },
-      { transform: 'translateY(' + (-i * rowH) + 'px)', opacity: 1 }
-    ], { duration: UP, delay: flyIn + HOLD + (n - 1 - i) * 55, easing: 'cubic-bezier(.7,0,.3,1)', fill: 'forwards' });
   });
-  var end = flyIn + HOLD + (n - 1) * 55 + UP;
-  // the top line lands with a little squash as the others hit it
-  rows[0].animate([{ transform: 'scale(1,1)' }, { transform: 'scale(1.02,.94)' }, { transform: 'scale(1,1)' }],
-    { duration: 380, delay: end - 140, easing: 'ease-out', transformOrigin: '50% 0%' });
+  // 2. every line but the last one vanishes at once, and the last one travels up to the top
+  // the last line is the lowest one that's fully on screen
+  var li = n - 1; while (li > 0 && mark.top + li * rowH + H > innerHeight) li--;
+  var last = rows[li], cut = flyIn + HOLD;
+  setTimeout(function () { for (var k = 0; k < n; k++) if (k !== li) rows[k].style.visibility = 'hidden'; }, cut);
+  last.animate([
+    { transform: 'translateY(0)' },
+    { transform: 'translateY(' + (-li * rowH) + 'px)' }
+  ], { duration: UP, delay: cut + 120, easing: 'cubic-bezier(.7,0,.2,1)', fill: 'forwards' });
+  var end = cut + 120 + UP;
   // hold on the landed logo for a beat, then hand straight over to the page
   setTimeout(finish, end + 700);
 })();
