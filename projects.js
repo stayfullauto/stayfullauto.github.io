@@ -36,6 +36,40 @@ window.FA_PROJECTS = [
     ]
   },
   {
+    slug: 'mita-ahara', title: 'mita ahara', lines: ['mita', 'ahara'],
+    client: 'mita ahara', year: '2026', type: 'branding',
+    services: ['brand identity', 'logo design', 'packaging', 'brand guidelines'],
+    url: '',
+    intro: 'real. fresh. food. a brand for honest, home-style meals.',
+    body: [
+      'mita ahara means measured food: real meals in the right amount. the logo is a hand-drawn wordmark on a plate, with a knife and fork tucked into the letters.',
+      'it lives in black and white, and turns green or red on food containers to mark veg and non-veg at a glance. on packaging it sits on bold blue, black, mint or saffron, or straight on top of the food photography.',
+      'satoshi carries everything else, from menus to social. the line real. fresh. food. repeats across bags, boxes, tape, posters and the delivery van.'
+    ],
+    colors: [['white', '#FFFFFF'], ['black', '#000000'], ['blue', '#004AE0'], ['mint', '#5EC4AF'], ['saffron', '#FFA700']],
+    images: [
+      { src: 'work/mita-ahara/cover.jpg', ratio: 1.4271, wide: true, alt: 'mita ahara: mita ahara logo on blue cloth with the food icon' },
+      { src: 'work/mita-ahara/bottle.jpg', ratio: 4 / 3, alt: 'mita ahara: blue bottle' },
+      { src: 'work/mita-ahara/box.jpg', ratio: 4 / 3, alt: 'mita ahara: blue box with real. fresh. food.' },
+      { src: 'work/mita-ahara/tote.jpg', ratio: 4 / 3, alt: 'mita ahara: blue tote bag' },
+      { src: 'work/mita-ahara/stand.jpg', ratio: 4 / 3, alt: 'mita ahara: sign on a stand' },
+      { src: 'work/mita-ahara/type.jpg', ratio: 4 / 3, wide: true, alt: 'mita ahara: real. fresh. food. typography' },
+      { src: 'work/mita-ahara/bags.jpg', ratio: 4 / 3, alt: 'mita ahara: kraft paper bags' },
+      { src: 'work/mita-ahara/cards.jpg', ratio: 4 / 3, alt: 'mita ahara: business cards' },
+      { src: 'work/mita-ahara/flyer.jpg', ratio: 4 / 3, alt: 'mita ahara: blue card on stone' },
+      { src: 'work/mita-ahara/sticker.jpg', ratio: 4 / 3, alt: 'mita ahara: round sticker' },
+      { src: 'work/mita-ahara/pattern.jpg', ratio: 4 / 3, wide: true, alt: 'mita ahara: repeating blue stickers' },
+      { src: 'work/mita-ahara/posters-food.jpg', ratio: 4 / 3, alt: 'mita ahara: posters with food photography' },
+      { src: 'work/mita-ahara/posters.jpg', ratio: 4 / 3, alt: 'mita ahara: black and blue posters' },
+      { src: 'work/mita-ahara/tee-black.jpg', ratio: 4 / 3, alt: 'mita ahara: black t-shirt' },
+      { src: 'work/mita-ahara/tee-white.jpg', ratio: 4 / 3, alt: 'mita ahara: white t-shirt' },
+      { src: 'work/mita-ahara/van.jpg', ratio: 4 / 3, wide: true, alt: 'mita ahara: blue delivery van' },
+      { src: 'work/mita-ahara/pouch.jpg', ratio: 4 / 3, alt: 'mita ahara: blue food pouch' },
+      { src: 'work/mita-ahara/parcel.jpg', ratio: 4 / 3, alt: 'mita ahara: parcels with blue tape' },
+      { src: 'work/mita-ahara/tape.jpg', ratio: 4 / 3, wide: true, alt: 'mita ahara: branded tape' }
+    ]
+  },
+  {
     slug: 'ops', title: 'ops', lines: ['ops'],
     client: 'full auto', year: '2026', type: 'to-do app',
     services: ['product design', 'android app', 'illustration'],
