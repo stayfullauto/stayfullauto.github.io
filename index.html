@@ -13,11 +13,15 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Redaction+50:ital,wght@0,400;1,400&family=Manrope:wght@400..800&display=swap">
 <style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}
 /* Splash: the name stacks down the screen line by line, then folds up into the logo at the top */
-#splash{display:none}
+
 html.splashing{overflow:hidden}
-html.splashing #splash{display:block;position:fixed;inset:0;z-index:100;background:var(--paper);overflow:hidden;cursor:pointer}
-#splash .cell{position:absolute;overflow:hidden;will-change:transform,opacity}
-#splash svg{display:block;fill:var(--ink);will-change:transform}
+#splash{position:fixed;inset:0;z-index:100;background:var(--ink);overflow:hidden;cursor:pointer;display:none;align-items:center;justify-content:center;will-change:transform}
+html.splashing #splash{display:flex}
+#splash .mini{width:min(300px,62vw);height:auto;overflow:visible;fill:var(--paper)}
+#splash .mini g{will-change:transform,opacity}
+#splash .sight{fill:none;stroke:var(--paper);stroke-width:3;stroke-linecap:round}
+#splash .sight .dot{fill:var(--paper);stroke:none}
+#splash .std{font:600 9px var(--body);fill:var(--paper);letter-spacing:.06em;opacity:0}
 html.splashing #mark svg{visibility:hidden}
 
 /* First fold: nav on top, the mask up high, a short intro beside it, and the logo across the bottom edge */
@@ -471,49 +475,70 @@ section{padding-block:96px 0}
 
 <script>
 // ---- Splash ----
+// Like heydaystudio.fr: a small "full auto" builds letter by letter in the middle of a dark screen,
+// splits apart to draw a mark between the words, then the whole panel lifts away and the big logo rolls in.
 (function () {
   var root = document.documentElement, box = document.getElementById('splash');
   if (!root.classList.contains('splashing') || !box) return;
   var NS = 'http://www.w3.org/2000/svg', done = false;
+  box.style.display = 'flex';
   scrollTo(0, 0);
-  var mark = document.querySelector('#mark svg').getBoundingClientRect();
-  var W = mark.width, H = mark.height, gap = Math.max(4, H * 0.06), rowH = H + gap;
-  var n = Math.max(3, Math.ceil(mark.top / rowH) + 1), rows = [], top0 = mark.top - (n - 1) * rowH;
-  for (var i = 0; i < n; i++) {
-    var sv = document.createElementNS(NS, 'svg');
-    sv.setAttribute('viewBox', '21 21 290 72'); sv.setAttribute('width', W); sv.setAttribute('height', H);
-    var cell = document.createElement('div'); cell.className = 'cell';
-    cell.style.cssText = 'left:' + mark.left + 'px;top:' + (top0 + i * rowH) + 'px;width:' + W + 'px;height:' + H + 'px';
-    var u = document.createElementNS(NS, 'use'); u.setAttribute('href', '#logoSym');
-    u.setAttribute('x', 21); u.setAttribute('y', 21); u.setAttribute('width', 290); u.setAttribute('height', 72); sv.appendChild(u);
-    cell.appendChild(sv); box.appendChild(cell); rows.push(cell);
-  }
+  // build the small logo from the same letter shapes as the big one, one element per letter
+  var reels = [].slice.call(document.querySelectorAll('#markSvg .reel'));
+  var svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '-24 10 412 94'); svg.setAttribute('class', 'mini');
+  svg.innerHTML = '<defs><clipPath id="miniO"><rect x="270" y="22" width="50" height="70"/></clipPath></defs>';
+  var halves = [document.createElementNS(NS, 'g'), document.createElementNS(NS, 'g')], letters = [];
+  reels.forEach(function (r, i) {
+    var g = document.createElementNS(NS, 'g'), path = r.querySelector('path').cloneNode(true);
+    path.removeAttribute('transform');
+    if (i === reels.length - 1) { path.setAttribute('transform', 'translate(0,10)'); var c = document.createElementNS(NS, 'g'); c.setAttribute('clip-path', 'url(#miniO)'); c.appendChild(path); g.appendChild(c); }
+    else g.appendChild(path);
+    halves[i < 4 ? 0 : 1].appendChild(g); letters.push(g);
+  });
+  // the mark drawn between the words: a sight, because full auto
+  var mk = document.createElementNS(NS, 'g'); mk.setAttribute('class', 'sight');
+  mk.innerHTML = '<circle cx="162" cy="57" r="24"/><circle cx="162" cy="57" r="3.5" class="dot"/><path d="M162 23v14M162 77v14M128 57h14M182 57h14"/>';
+  var std = document.createElementNS(NS, 'text'); std.setAttribute('x', 357); std.setAttribute('y', 30); std.setAttribute('class', 'std'); std.textContent = 'studio';
+  svg.appendChild(halves[0]); svg.appendChild(halves[1]); svg.appendChild(mk); svg.appendChild(std);
+  box.appendChild(svg);
+
   function finish() {
     if (done) return; done = true;
-    window.__splashed = true;
     root.classList.remove('splashing');
-    box.remove();
     if (window.__onSplashDone) window.__onSplashDone();
+    box.remove();
   }
   box.addEventListener('click', finish);
-  if (!rows[0].animate) { finish(); return; }
-  var STAG = 90, IN = 560, HOLD = 900, UP = 620;
-  var flyIn = n * STAG + IN;
-  rows.forEach(function (r, i) {
-    // 1. the lines drop in one after another, top of the screen to the bottom,
-    //    each one stretched tall as it falls and snapping square as it lands
-    r.firstChild.animate([
-      { transform: 'translateY(-105%)' },
-      { transform: 'translateY(0)' }
-    ], { duration: IN, delay: i * STAG, easing: 'cubic-bezier(.2,.9,.25,1)', fill: 'both' });
+  if (!svg.animate) { finish(); return; }
+  var ease = 'cubic-bezier(.2,.8,.2,1)';
+  // 1. letters arrive one by one, rising and coming into focus
+  letters.forEach(function (g, i) {
+    g.animate([
+      { transform: 'translateY(26px)', opacity: 0, filter: 'blur(6px)' },
+      { transform: 'translateY(0)', opacity: 1, filter: 'blur(0)' }
+    ], { duration: 650, delay: 150 + i * 75, easing: ease, fill: 'both' });
   });
-  // 2. every line but the bottom one disappears, one by one from the top; the bottom one is already where the logo sits
-  var cut = flyIn + HOLD, GAP = 90;
-  rows.slice(0, n - 1).forEach(function (r, j) {
-    setTimeout(function () { r.style.visibility = 'hidden'; }, cut + j * GAP);
+  // 2. the words part, and the sight draws itself in the gap
+  var T2 = 150 + letters.length * 75 + 650 + 150;
+  halves[0].animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-42px)' }], { duration: 700, delay: T2, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' });
+  halves[1].animate([{ transform: 'translateX(0)' }, { transform: 'translateX(42px)' }], { duration: 700, delay: T2, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' });
+  [].slice.call(mk.children).forEach(function (el, i) {
+    if (el.classList.contains('dot')) {
+      el.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 400, delay: T2 + 700, easing: 'cubic-bezier(.3,1.6,.5,1)', fill: 'both' });
+      el.style.transformOrigin = '162px 57px'; el.style.transformBox = 'view-box';
+      return;
+    }
+    var len = el.getTotalLength ? el.getTotalLength() : 160;
+    el.style.strokeDasharray = len; el.style.strokeDashoffset = len;
+    el.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: 750, delay: T2 + 250 + i * 120, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' });
   });
-  // hold on the logo for a beat, then hand straight over to the page
-  setTimeout(finish, cut + (n - 2) * GAP + 600);
+  std.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 500, delay: T2 + 650, easing: ease, fill: 'both' });
+  // 3. hold, then the dark panel lifts away and the page (and the big logo) comes in underneath
+  var T3 = T2 + 700 + 900;
+  box.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-100%)' }], { duration: 900, delay: T3, easing: 'cubic-bezier(.76,0,.24,1)', fill: 'forwards' });
+  setTimeout(function () { root.classList.remove('splashing'); if (window.__onSplashDone) window.__onSplashDone(); window.__onSplashDone = null; }, T3);
+  setTimeout(finish, T3 + 950);
 })();
 </script>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
