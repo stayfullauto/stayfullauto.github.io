@@ -587,7 +587,7 @@ if (art && renderer) {
 
   // which way round the model faces when it arrives; this turns it to look straight at you
   const FRONT = qs.has('front') ? +qs.get('front') : 0;
-  new GLTFLoader().load('model/mask.glb', (gltf) => {
+  new GLTFLoader().load('model/mask.glb?v=m2', (gltf) => {
     const m = gltf.scene;
     m.traverse((o) => { if (o.isMesh) o.material = mat; });
     m.updateMatrixWorld(true);
