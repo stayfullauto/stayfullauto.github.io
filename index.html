@@ -109,9 +109,7 @@ html.glide #smooth{position:absolute;left:0;right:0;top:0;will-change:transform}
 /* The 3D mask floats above the page in its own layer and follows you down as you scroll */
 #mask3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:50;pointer-events:none;opacity:0;transition:opacity .8s ease}
 #mask3d.ready{opacity:1}
-#maskGrip{position:fixed;z-index:51;cursor:grab;touch-action:none;border-radius:50%}
-#maskGrip.held{cursor:grabbing}
-html.splashing #maskGrip{display:none}
+
 .credit{display:block;color:var(--mute);margin-top:8px;font-size:11px}
 .credit a{color:inherit}
 .art .hint{display:block;text-align:center;color:var(--mute);margin-top:6px;transition:opacity .4s}
@@ -544,8 +542,7 @@ section{padding-block:96px 0}
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <script type="module">
 // The samurai mask: a real 3D model in carved grey stone, like the ink illustration.
-// It faces you on load, turns only as you scroll, travels down the page with you,
-// and you can grab it to turn it yourself.
+// It faces you on load, turns only as you scroll and travels down the page with you.
 import * as THREE from 'three';
 import { GLTFLoader } from './vendor/jsm/loaders/GLTFLoader.js';
 
@@ -557,9 +554,6 @@ if (art && renderer) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cv = renderer.domElement; cv.id = 'mask3d'; cv.setAttribute('aria-hidden', 'true');
   document.body.appendChild(cv);
-  // an invisible handle that sits over the mask so you can grab it, while the rest of the page scrolls as normal
-  const grip = document.createElement('div'); grip.id = 'maskGrip'; grip.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(grip);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   const scene = new THREE.Scene();
@@ -612,18 +606,9 @@ if (art && renderer) {
     facing.rotation.y = FRONT;
     facing.add(m);
     ready = true; cv.classList.add('ready');
-  }, undefined, () => { cv.remove(); grip.remove(); });
+  }, undefined, () => cv.remove());
 
-  // grab and turn: your turn stays where you leave it
-  let held = false, px = 0, py = 0, yaw = 0, pitch = 0;
-  grip.addEventListener('pointerdown', (e) => { held = true; px = e.clientX; py = e.clientY; grip.setPointerCapture(e.pointerId); grip.classList.add('held'); e.preventDefault(); });
-  grip.addEventListener('pointermove', (e) => {
-    if (!held) return;
-    yaw += (e.clientX - px) * 0.01; pitch += (e.clientY - py) * 0.01;
-    pitch = Math.max(-1.2, Math.min(1.2, pitch)); px = e.clientX; py = e.clientY;
-  });
-  const drop = () => { held = false; grip.classList.remove('held'); };
-  grip.addEventListener('pointerup', drop); grip.addEventListener('pointercancel', drop);
+  const yaw = 0, pitch = 0;
 
   function docTop(el) { let y = 0; for (let n = el; n && n.id !== 'smooth' && n !== document.body; n = n.offsetParent) y += n.offsetTop; return y; }
   let sm = scrollY, top0 = null;
@@ -641,7 +626,7 @@ if (art && renderer) {
     const drift = Math.min(1, past / (H * 0.6));
     let x = W / 2 + Math.sin(past / (H * 1.1)) * W * 0.22 * drift;
     let rad = Math.min(art.offsetHeight * 0.62, W * (W < 760 ? 0.62 : 0.5)) * (1 - 0.1 * drift);   // big: most of the top of the screen
-    // turns only with the scroll (and your hand); still and facing you at the top of the page
+    // turns only with the scroll; still and facing you at the top of the page
     const s = reduce ? 0 : sm;
     let rx = pitch + Math.sin(s * 0.0012) * 0.25, ry = yaw + s * 0.0035, yy = y;
     // Landing: over the last stretch of the page it flies to the spot in the footer and settles facing you
@@ -660,7 +645,6 @@ if (art && renderer) {
     holder.position.set((x - W / 2) * unit, -(yy - H / 2) * unit, 0);
     holder.scale.setScalar(rad * unit);
     spin.rotation.set(rx, ry, 0);
-    grip.style.cssText = 'left:' + (x - rad * 0.8) + 'px;top:' + (yy - rad * 0.6) + 'px;width:' + rad * 1.6 + 'px;height:' + rad * 1.2 + 'px';
     renderer.render(scene, camera);
   }
   frame();
