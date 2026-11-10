@@ -43,7 +43,7 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 @media (max-width:760px){.intro{top:auto;bottom:calc(31vw + 110px);right:auto;left:var(--gut);font-size:30px}.introsub{top:auto;bottom:calc(31vw + 190px);left:auto;right:var(--gut);text-align:right;max-width:20ch;font-size:12px}.scatter{padding:0 var(--gut)}.fold .art{top:8%;height:52%}}
 
 /* Work list: big titles down the page, type and client on the right; each row opens the project */
-.worklist{list-style:none;margin:8px 0 0;padding:0;border-top:1px solid var(--line)}
+.worklist{list-style:none;margin:8px 0 0;padding:0}
 .worklist li{border-bottom:1px solid var(--line)}
 .worklist a{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto;align-items:baseline;gap:16px;padding:clamp(14px,2vw,26px) 0 clamp(10px,1.6vw,20px);text-decoration:none;color:var(--ink)}
 .wl-n{font:500 12px var(--body);color:var(--mute);align-self:start;padding-top:.6em}
@@ -132,15 +132,15 @@ html.glide #smooth{position:absolute;left:0;right:0;top:0;will-change:transform}
 @keyframes slap{0%{transform:rotate(-16deg) scale(2.2);opacity:0}45%{transform:rotate(-6deg) scale(1);opacity:1}100%{transform:rotate(-7deg) scale(1);opacity:1}}
 
 /* Sections */
-section{padding-block:96px 0}
-.sect{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:0}
+section{padding-block:96px clamp(64px,9vw,140px)}
+.sect{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;margin-bottom:0}
 .h2{margin:0 0 36px;font:400 clamp(48px,8vw,96px)/.95 var(--display);letter-spacing:-0.025em}
 
 /* Work */
 /* Phone mock, drawn in the apps' own style */
 
 /* Services */
-.rows{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.rows{margin:0;padding:0;list-style:none}
 .rows li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:22px 0 20px;border-bottom:1px solid var(--line);align-items:baseline}
 .rows .t{font:500 clamp(24px,3.2vw,34px)/1.1 var(--body);letter-spacing:-0.035em}
 .rows .d{color:#444;max-width:48ch}
@@ -217,7 +217,7 @@ section{padding-block:96px 0}
   <nav class="topnav" aria-label="main">
     <a class="navlogo" href="index.html" aria-label="full auto, back to top"><svg viewBox="21 21 290 72" aria-hidden="true"><use href="#logoSym" x="21" y="21" width="290" height="72"/></svg></a>
     <span class="navnote"><i></i>independent studio</span>
-    <span class="navlinks"><a href="index.html#work">work</a><a href="index.html#services">what we do</a><a href="index.html#how">how</a></span>
+    <span class="navlinks"><a href="index.html#work">work</a><a href="index.html#services">what we do</a></span>
     <a class="navcta" href="index.html#contact">start a project <span aria-hidden="true">↗</span></a>
   </nav>
 <main class="proj" id="proj"></main>
