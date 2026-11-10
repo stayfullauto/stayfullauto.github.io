@@ -32,12 +32,12 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .navcta{border-bottom:1.5px solid var(--ink);padding-bottom:3px}
 @media (max-width:760px){.navnote,.navlinks{display:none}.topnav{grid-template-columns:auto 1fr}.navcta{justify-self:end}}
 .fold .art{position:absolute;left:0;right:0;top:9%;height:60%;width:auto;margin:0;pointer-events:none}
-.intro{position:absolute;z-index:55;right:var(--gut);top:40%;margin:0;text-align:left;font:500 clamp(26px,3.4vw,52px)/.95 var(--body);letter-spacing:-0.045em;pointer-events:none}
+.intro{position:absolute;z-index:55;right:var(--gut);top:calc(40% - 40px);margin:0;text-align:left;font:500 clamp(26px,3.4vw,52px)/.95 var(--body);letter-spacing:-0.045em;pointer-events:none}
 .intro .d{font:italic 400 1.1em/.9 var(--display);letter-spacing:-0.02em}
-.introsub{position:absolute;z-index:55;left:var(--gut);top:46%;margin:0;max-width:24ch;font:500 13px/1.45 var(--body);color:#444;pointer-events:none}
+.introsub{position:absolute;z-index:55;left:var(--gut);top:calc(46% - 40px);margin:0;max-width:24ch;font:500 13px/1.45 var(--body);color:#444;pointer-events:none}
 .scatter{display:flex;justify-content:space-between;margin-top:auto;padding:0 calc(var(--gut) + 6%);font:500 13px/1 var(--body);color:var(--ink);position:relative;z-index:55}
 .fold .mark{padding:clamp(8px,1.2vw,16px) var(--gut) var(--gut)}
-@media (max-width:760px){.intro{top:auto;bottom:calc(31vw + 70px);right:auto;left:var(--gut);font-size:30px}.introsub{top:auto;bottom:calc(31vw + 150px);left:auto;right:var(--gut);text-align:right;max-width:20ch;font-size:12px}.scatter{padding:0 var(--gut)}.fold .art{top:8%;height:52%}}
+@media (max-width:760px){.intro{top:auto;bottom:calc(31vw + 110px);right:auto;left:var(--gut);font-size:30px}.introsub{top:auto;bottom:calc(31vw + 190px);left:auto;right:var(--gut);text-align:right;max-width:20ch;font-size:12px}.scatter{padding:0 var(--gut)}.fold .art{top:8%;height:52%}}
 </style>
 <style>
 /* Layout: one narrow column like the apps, with full-bleed rows of sliding pixel titles. Single white look on purpose, same as ops. */
