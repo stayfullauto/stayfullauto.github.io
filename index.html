@@ -439,21 +439,26 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   function put(r, ty) { r.setAttribute('transform', 'translate(0,' + ty.toFixed(2) + ')'); }
   reels.forEach(function (r) { put(r, +r.dataset.base); });
   function ease(x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
-  var sm = reels.map(function () { return scrollY; });
+  // scroll spin, counted in whole letters; it always settles on a whole letter once you stop
+  var tgt = 0, cur = reels.map(function () { return 0; }), lastY = scrollY, lastMove = 0;
   var start = 0, INTRO = 700, LAG = 90, wave = 0, waveFrom = 0, waveT = 0;
   // Hide every letter below its window before the first frame
   reels.forEach(function (r) { put(r, +r.dataset.base + STEP); });
   function frame(now) {
     if (!start) { start = window.__splashed ? now - 1e5 : now; waveT = now + INTRO + LAG * n + 1800; }
     if (now > waveT + 600 + LAG * n + 1800) { waveFrom = wave; wave += 1; waveT = now; }
+    var dy = scrollY - lastY; lastY = scrollY;
+    if (dy) { tgt += Math.max(-0.5, Math.min(0.5, dy * 0.35 / STEP)); lastMove = now; }
+    else if (now - lastMove > 140) tgt = Math.round(tgt);
     for (var i = 0; i < n; i++) {
       var r = reels[i], base = +r.dataset.base, isO = i === n - 1, rest = isO ? STEP / 2 : 0, spins = isO ? 3 : 1;
       var pin = Math.min(1, Math.max(0, (now - start - i * LAG) / INTRO));
       if (pin < 1) { put(r, base - rest + (STEP + rest) * (1 - ease(pin))); continue; }
-      sm[i] += (scrollY - sm[i]) * Math.max(0.05, 0.2 - i * 0.018);
+      cur[i] += (tgt - cur[i]) * Math.max(0.06, 0.2 - i * 0.017);
+      if (Math.abs(tgt - cur[i]) < 0.001) cur[i] = tgt;
       // The o spins further than the rest and always comes to rest halfway between two o's
       var pw = Math.min(1, Math.max(0, (now - waveT - i * LAG) / (isO ? 1100 : 600)));
-      var off = (waveFrom + (wave - waveFrom) * ease(pw)) * STEP * spins + sm[i] * 0.35 + rest;
+      var off = ((waveFrom + (wave - waveFrom) * ease(pw)) * spins + cur[i]) * STEP + rest;
       var m = ((off % STEP) + STEP) % STEP;
       put(r, base - m);
     }
@@ -615,7 +620,14 @@ if (art && renderer) {
     const y = home + past;                           // never rises above the middle of the screen
     const drift = Math.min(1, past / (H * 0.6));
     let x = W / 2 + Math.sin(past / (H * 1.1)) * W * 0.22 * drift;
-    let rad = Math.min(art.offsetHeight * 0.62, W * (W < 760 ? 0.62 : 0.5)) * (1 - 0.1 * drift);   // big: most of the top of the screen
+    // Size: big on the first screen, shrinks once you scroll past it, grows back as the end of the page nears
+    let shrink = Math.min(1, past / (H * 0.8)); shrink = shrink * shrink * (3 - 2 * shrink);
+    if (landing) {
+      const lt = docTop(landing), g0 = lt - H * 2.4, g1 = lt - H * 1.1;
+      let grow = Math.max(0, Math.min(1, (sm - g0) / Math.max(1, g1 - g0))); grow = grow * grow * (3 - 2 * grow);
+      shrink *= 1 - grow;
+    }
+    let rad = Math.min(art.offsetHeight * 0.62, W * (W < 760 ? 0.62 : 0.5)) * (1 - 0.5 * shrink);
     // turns only with the scroll; still and facing you at the top of the page
     const s = reduce ? 0 : sm;
     let rx = pitch + Math.sin(s * 0.0012) * 0.25, ry = yaw + s * 0.0035, yy = y;
