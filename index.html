@@ -521,7 +521,7 @@ if (cv) {
       camera.aspect = w / h;
       // keep the whole medallion in frame whatever the shape of the canvas
       const fit = radius / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * (camera.aspect < 1 ? 1 / camera.aspect : 1);
-      camera.position.set(0, 0, fit * 1.05);
+      camera.position.set(0, 0, fit * 0.8);
       camera.near = fit / 50; camera.far = fit * 4;
       camera.updateProjectionMatrix();
     }
