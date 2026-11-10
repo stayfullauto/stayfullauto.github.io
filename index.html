@@ -15,12 +15,11 @@
 /* Splash: the name stacks down the screen line by line, then folds up into the logo at the top */
 
 html.splashing{overflow:hidden}
-#splash{position:fixed;inset:0;z-index:100;background:var(--ink);overflow:hidden;cursor:pointer;display:none;align-items:center;justify-content:center;will-change:transform}
+#splash{position:fixed;inset:0;z-index:100;background:#000;overflow:hidden;cursor:pointer;display:none;align-items:center;justify-content:center;will-change:transform}
 html.splashing #splash{display:flex}
 #splash .mini{width:min(300px,62vw);height:auto;overflow:visible;fill:var(--paper)}
 #splash .mini g{will-change:transform,opacity}
-#splash .sight{fill:none;stroke:var(--paper);stroke-width:3;stroke-linecap:round}
-#splash .sight .dot{fill:var(--paper);stroke:none}
+#splash .emblem{opacity:0}
 #splash .std{font:600 9px var(--body);fill:var(--paper);letter-spacing:.06em;opacity:0}
 html.splashing #mark svg{visibility:hidden}
 
@@ -110,8 +109,6 @@ html.glide #smooth{position:absolute;left:0;right:0;top:0;will-change:transform}
 #mask3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:50;pointer-events:none;opacity:0;transition:opacity .8s ease}
 #mask3d.ready{opacity:1}
 
-.credit{display:block;color:var(--mute);margin-top:8px;font-size:11px}
-.credit a{color:inherit}
 .art .hint{display:block;text-align:center;color:var(--mute);margin-top:6px;transition:opacity .4s}
 .byline{display:block;text-align:center;color:var(--mute);margin-top:10px}
 
@@ -286,7 +283,6 @@ section{padding-block:96px 0}
       <div class="foot">
         <div class="landing" id="landing" aria-hidden="true"></div>
         <span class="mono">full auto · no-nonsense apps</span>
-        <!-- 3d model: "samurai mask model 2" by flioink (https://sketchfab.com/flioink), CC BY 4.0. See CREDITS.md -->
       </div>
     </div>
   </section>
@@ -494,9 +490,9 @@ section{padding-block:96px 0}
     else g.appendChild(path);
     halves[i < 4 ? 0 : 1].appendChild(g); letters.push(g);
   });
-  // the mark drawn between the words: a sight, because full auto
-  var mk = document.createElementNS(NS, 'g'); mk.setAttribute('class', 'sight');
-  mk.innerHTML = '<circle cx="162" cy="57" r="24"/><circle cx="162" cy="57" r="3.5" class="dot"/><path d="M162 23v14M162 77v14M128 57h14M182 57h14"/>';
+  // the mark between the words: the samurai emblem
+  var mk = document.createElementNS(NS, 'image'); mk.setAttribute('class', 'emblem');
+  mk.setAttribute('href', 'emblem.webp'); mk.setAttribute('x', 122); mk.setAttribute('y', 18.5); mk.setAttribute('width', 80); mk.setAttribute('height', 77);
   var std = document.createElementNS(NS, 'text'); std.setAttribute('x', 357); std.setAttribute('y', 30); std.setAttribute('class', 'std'); std.textContent = 'studio';
   svg.appendChild(halves[0]); svg.appendChild(halves[1]); svg.appendChild(mk); svg.appendChild(std);
   box.appendChild(svg);
@@ -521,16 +517,12 @@ section{padding-block:96px 0}
   var T2 = 150 + letters.length * 75 + 650 + 150;
   halves[0].animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-42px)' }], { duration: 700, delay: T2, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' });
   halves[1].animate([{ transform: 'translateX(0)' }, { transform: 'translateX(42px)' }], { duration: 700, delay: T2, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' });
-  [].slice.call(mk.children).forEach(function (el, i) {
-    if (el.classList.contains('dot')) {
-      el.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 400, delay: T2 + 700, easing: 'cubic-bezier(.3,1.6,.5,1)', fill: 'both' });
-      el.style.transformOrigin = '162px 57px'; el.style.transformBox = 'view-box';
-      return;
-    }
-    var len = el.getTotalLength ? el.getTotalLength() : 160;
-    el.style.strokeDasharray = len; el.style.strokeDashoffset = len;
-    el.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: 750, delay: T2 + 250 + i * 120, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' });
-  });
+  mk.style.transformOrigin = '162px 57px'; mk.style.transformBox = 'view-box';
+  mk.animate([
+    { opacity: 0, transform: 'scale(.55)', filter: 'blur(6px)' },
+    { opacity: 1, transform: 'scale(1.06)', filter: 'blur(0)', offset: .7 },
+    { opacity: 1, transform: 'scale(1)', filter: 'blur(0)' }
+  ], { duration: 800, delay: T2 + 250, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
   std.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 500, delay: T2 + 650, easing: ease, fill: 'both' });
   // 3. hold, then the dark panel lifts away and the page (and the big logo) comes in underneath
   var T3 = T2 + 700 + 900;
