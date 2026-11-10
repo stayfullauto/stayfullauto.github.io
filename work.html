@@ -217,8 +217,8 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   <nav class="topnav" aria-label="main">
     <a class="navlogo" href="index.html" aria-label="full auto, back to top"><svg viewBox="21 21 290 72" aria-hidden="true"><use href="#logoSym" x="21" y="21" width="290" height="72"/></svg></a>
     <span class="navnote"><i></i>independent studio</span>
-    <span class="navlinks"><a href="index.html#work">work</a><a href="index.html#services">what we do</a></span>
-    <a class="navcta" href="index.html#contact">start a project <span aria-hidden="true">↗</span></a>
+    <span class="navlinks"><a href="index.html#work">work</a><a href="index.html#services">what we do</a><a href="index.html#about">about</a></span>
+    <a class="navcta" href="index.html#contact">let's talk <span aria-hidden="true">↗</span></a>
   </nav>
 <main class="proj" id="proj"></main>
 </div></div>
@@ -229,8 +229,18 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   var all = window.FA_PROJECTS || [], el = document.getElementById('proj');
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function render() {
-    var slug = location.hash.slice(1), i = Math.max(0, all.findIndex(function (p) { return p.slug === slug; })), p = all[i];
-    if (!p) { el.innerHTML = '<div class="p-head"><h1 class="p-title"><span><i>no work yet</i></span></h1></div>'; return; }
+    var slug = location.hash.slice(1), i = all.findIndex(function (p) { return p.slug === slug; }), p = all[i];
+    if (!p) {
+      // no project named: the full list of work
+      document.title = 'work · full auto';
+      el.innerHTML = '<header class="p-head"><h1 class="p-title"><span><i>all work</i></span></h1></header>' +
+        '<section class="p-copy"><p class="lead">less talk. more show.</p><div class="body"><p>a selection of brands, digital experiences and products we\u2019ve brought to life. different challenges, different directions, one thing in common: we take the work seriously.</p></div></section>' +
+        '<div style="margin:clamp(40px,6vw,80px) var(--gut) 0"><ol class="worklist">' + all.map(function (q, k) {
+          return '<li><a href="work.html#' + q.slug + '"><span class="wl-n">' + String(k + 1).padStart(2, '0') + '</span><span class="wl-t">' + esc(q.title) + '</span><span class="wl-c">' + esc(q.type) + '<br><b>' + esc(q.client) + '</b></span></a></li>';
+        }).join('') + '</ol></div>' +
+        '<footer class="p-foot"><a href="index.html">\u2190 home</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';
+      scrollTo(0, 0); window.dispatchEvent(new Event('resize')); return;
+    }
     var next = all[(i + 1) % all.length];
     document.title = p.title + ' · full auto';
     var gal = (p.images || []).map(function (im, k) {
@@ -247,7 +257,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
       '<section class="p-copy"><p class="lead">' + esc(p.intro) + '</p><div class="body">' + p.body.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div></section>' +
       '<section class="p-gal">' + gal + '</section>' +
       '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + ' \u2192</span></a>' +
-      '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto \u00b7 no-nonsense apps</span></footer>';
+      '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';
     scrollTo(0, 0);
     window.dispatchEvent(new Event('resize'));
   }

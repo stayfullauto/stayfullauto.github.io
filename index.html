@@ -53,6 +53,40 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .worklist:hover .wl-t{color:var(--soft)}
 .worklist a:hover .wl-t,.worklist a:focus-visible .wl-t{color:var(--ink);transform:translateX(clamp(8px,2vw,28px));font-style:italic}
 @media (max-width:560px){.worklist a{grid-template-columns:minmax(0,1fr) auto}.wl-n{display:none}.wl-c{font-size:11px}}
+
+/* Copy sections: a small label, a big pixel headline, then the words */
+.eyebrow2{margin:0 0 18px;font:500 13px/1 var(--body);color:var(--mute);letter-spacing:.01em}
+.h2{max-width:16ch;text-wrap:balance}
+.lead2{margin:-8px 0 40px;max-width:52ch;color:#444;font-size:17px}
+.cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,6vw,96px);align-items:start}
+.cols .big{margin:0;font:500 clamp(22px,2.6vw,34px)/1.2 var(--body);letter-spacing:-0.035em;text-wrap:balance}
+.cols p{margin:0 0 1em;color:#444;max-width:52ch}
+.sign{font-weight:600;color:var(--ink)!important}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0}
+.btns.center{justify-content:center}
+.btn{display:inline-flex;align-items:center;padding:14px 22px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font:600 14px var(--body);border:1.5px solid var(--ink);transition:background .2s,color .2s}
+.btn:hover{background:var(--paper);color:var(--ink)}
+.btn.ghost{background:var(--paper);color:var(--ink)}.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.logos{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;list-style:none;margin:8px 0 0;padding:0}
+.logos li{display:flex;align-items:center;justify-content:center;aspect-ratio:2/1;background:var(--wash);color:#b0b0b0;font:500 12px var(--body)}
+@media (max-width:760px){.logos{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.svc{list-style:none;margin:0;padding:0}
+.svc li{display:grid;grid-template-columns:3.2em minmax(0,.9fr) minmax(0,1.1fr);gap:20px;padding:28px 0 26px;border-bottom:1px solid var(--line);align-items:baseline}
+.svc .n{font:500 12px var(--body);color:var(--mute)}
+.svc h3{margin:0;font:500 clamp(24px,3vw,34px)/1.1 var(--body);letter-spacing:-0.035em}
+.svc b{display:block;font-weight:600;margin-bottom:8px}
+.svc p{margin:0;color:#444;max-width:52ch}
+.svc .tags{margin-top:12px;font-size:13px;color:var(--mute)}
+@media (max-width:760px){.svc li{grid-template-columns:1fr;gap:8px}}
+.steps li::before{content:"0" counter(s) " /";margin-bottom:14px}
+.steps b{font-size:clamp(28px,3vw,40px)}
+.contact p{margin:0 auto 8px}
+.contact .eyebrow2{margin-bottom:18px}
+.contact .h2{max-width:none;font-size:clamp(48px,9vw,128px)}
+.foot p{margin:4px 0;font:500 13px var(--body);color:var(--mute)}
+.foot .fname{font:400 28px var(--display);color:var(--ink);margin-top:20px}
+.foot .copy{margin-top:16px;font-size:11px}
 </style>
 <style>
 /* Layout: one narrow column like the apps, with full-bleed rows of sliding pixel titles. Single white look on purpose, same as ops. */
@@ -156,10 +190,6 @@ section{padding-block:96px clamp(64px,9vw,140px)}
 @media (max-width:460px){.steps{grid-template-columns:1fr}}
 
 /* Beliefs */
-.beliefs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:var(--line);border:1px solid var(--line)}
-.beliefs div{background:var(--paper);padding:28px 22px 30px}
-.beliefs b{display:block;font:500 22px/1.2 var(--body);letter-spacing:-0.03em;font-weight:500}
-.beliefs p{margin:10px 0 0;color:#555;font-size:15px}
 @media (max-width:760px){.beliefs{grid-template-columns:1fr}}
 
 /* Contact */
@@ -186,65 +216,125 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   <nav class="topnav" aria-label="main">
     <a class="navlogo" href="#fold" aria-label="full auto, back to top"><svg viewBox="21 21 290 72" aria-hidden="true"><use href="#logoSym" x="21" y="21" width="290" height="72"/></svg></a>
     <span class="navnote"><i></i>independent studio</span>
-    <span class="navlinks"><a href="#work">work</a><a href="#services">what we do</a></span>
-    <a class="navcta" href="#contact">start a project <span aria-hidden="true">↗</span></a>
+    <span class="navlinks"><a href="#work">work</a><a href="#services">what we do</a><a href="#about">about</a></span>
+    <a class="navcta" href="#contact">let's talk <span aria-hidden="true">↗</span></a>
   </nav>
   <div class="art" id="art" aria-hidden="true"></div>
-  <p class="intro"><span class="d">no half</span> <span class="s">measures,</span><br><span class="s">nothing</span> <span class="d">hidden</span></p>
-  <p class="introsub">apps, brands and websites,<br>built all the way and private by default.</p>
-  <div class="scatter" aria-hidden="true"><span>so,</span><span>we</span><span>go</span><span>all</span><span>the</span><span>way</span></div>
+  <p class="intro"><span class="s">we make</span> <span class="d">things</span><br><span class="s">that mean</span> <span class="d">business.</span></p>
+  <p class="introsub">an independent creative studio bringing brands, digital experiences and technology together.</p>
+  <div class="scatter" aria-hidden="true"><span>no</span><span>half</span><span>measures.</span><span>nothing</span><span>hidden.</span></div>
   <h1 class="mark" id="mark" aria-label="full auto"><span><svg id="markSvg" viewBox="21 21 290 72" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><clipPath id="lw"><rect x="0" y="22" width="400" height="70"/></clipPath></defs><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M33.2 92H21.5V22H51V33.7H35.7C35.0333 33.7667 34.4667 34.0667 34 34.6C33.5333 35.0667 33.2667 35.6333 33.2 36.3V40.2H46.5V51.9H33.2V92Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M33.2 92H21.5V22H51V33.7H35.7C35.0333 33.7667 34.4667 34.0667 34 34.6C33.5333 35.0667 33.2667 35.6333 33.2 36.3V40.2H46.5V51.9H33.2V92Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M71.6453 92H68.1453C62.0786 92 57.8786 90 55.5453 86C54.6786 84.4 54.1453 82.7333 53.9453 81C53.812 79.2667 53.7453 77.5667 53.7453 75.9V22H65.4453C65.4453 58.4667 65.4453 77.0667 65.4453 77.8C65.512 78.4667 65.7786 79.0333 66.2453 79.5C66.712 79.9667 67.312 80.2333 68.0453 80.3H71.6453C72.3786 80.2333 72.9786 79.9667 73.4453 79.5C73.9786 79.0333 74.2453 78.4667 74.2453 77.8C74.312 77.0667 74.3453 58.4667 74.3453 22H86.0453V75.9C86.0453 77.5667 85.9453 79.2667 85.7453 81C85.612 82.7333 85.0787 84.4 84.1453 86C81.8786 90 77.712 92 71.6453 92Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M71.6453 92H68.1453C62.0786 92 57.8786 90 55.5453 86C54.6786 84.4 54.1453 82.7333 53.9453 81C53.812 79.2667 53.7453 77.5667 53.7453 75.9V22H65.4453C65.4453 58.4667 65.4453 77.0667 65.4453 77.8C65.512 78.4667 65.7786 79.0333 66.2453 79.5C66.712 79.9667 67.312 80.2333 68.0453 80.3H71.6453C72.3786 80.2333 72.9786 79.9667 73.4453 79.5C73.9786 79.0333 74.2453 78.4667 74.2453 77.8C74.312 77.0667 74.3453 58.4667 74.3453 22H86.0453V75.9C86.0453 77.5667 85.9453 79.2667 85.7453 81C85.612 82.7333 85.0787 84.4 84.1453 86C81.8786 90 77.712 92 71.6453 92Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M121.159 92H107.759C106.093 92 104.393 91.9333 102.659 91.8C100.926 91.6 99.2594 91.0667 97.6594 90.2C93.6594 87.8667 91.6594 83.6667 91.6594 77.6V22H103.359V77.7C103.426 78.4333 103.693 79.0333 104.159 79.5C104.626 79.9667 105.193 80.2333 105.859 80.3C106.593 80.3 111.693 80.3 121.159 80.3V92Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M121.159 92H107.759C106.093 92 104.393 91.9333 102.659 91.8C100.926 91.6 99.2594 91.0667 97.6594 90.2C93.6594 87.8667 91.6594 83.6667 91.6594 77.6V22H103.359V77.7C103.426 78.4333 103.693 79.0333 104.159 79.5C104.626 79.9667 105.193 80.2333 105.859 80.3C106.593 80.3 111.693 80.3 121.159 80.3V92Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M153.8 92H140.4C138.733 92 137.033 91.9333 135.3 91.8C133.567 91.6 131.9 91.0667 130.3 90.2C126.3 87.8667 124.3 83.6667 124.3 77.6V22H136V77.7C136.067 78.4333 136.333 79.0333 136.8 79.5C137.267 79.9667 137.833 80.2333 138.5 80.3C139.233 80.3 144.333 80.3 153.8 80.3V92Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M153.8 92H140.4C138.733 92 137.033 91.9333 135.3 91.8C133.567 91.6 131.9 91.0667 130.3 90.2C126.3 87.8667 124.3 83.6667 124.3 77.6V22H136V77.7C136.067 78.4333 136.333 79.0333 136.8 79.5C137.267 79.9667 137.833 80.2333 138.5 80.3C139.233 80.3 144.333 80.3 153.8 80.3V92Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M204.141 92H192.341L189.841 63.7H184.041L181.541 92H169.741L175.841 22H198.041L204.141 92ZM188.841 51.9L187.241 33.7H186.641L185.041 51.9H188.841Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M204.141 92H192.341L189.841 63.7H184.041L181.541 92H169.741L175.841 22H198.041L204.141 92ZM188.841 51.9L187.241 33.7H186.641L185.041 51.9H188.841Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M225.985 92H222.485C216.418 92 212.218 90 209.885 86C209.018 84.4 208.485 82.7333 208.285 81C208.152 79.2667 208.085 77.5667 208.085 75.9V22H219.785C219.785 58.4667 219.785 77.0667 219.785 77.8C219.852 78.4667 220.118 79.0333 220.585 79.5C221.052 79.9667 221.652 80.2333 222.385 80.3H225.985C226.718 80.2333 227.318 79.9667 227.785 79.5C228.318 79.0333 228.585 78.4667 228.585 77.8C228.652 77.0667 228.685 58.4667 228.685 22H240.385V75.9C240.385 77.5667 240.285 79.2667 240.085 81C239.952 82.7333 239.418 84.4 238.485 86C236.218 90 232.052 92 225.985 92Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M225.985 92H222.485C216.418 92 212.218 90 209.885 86C209.018 84.4 208.485 82.7333 208.285 81C208.152 79.2667 208.085 77.5667 208.085 75.9V22H219.785C219.785 58.4667 219.785 77.0667 219.785 77.8C219.852 78.4667 220.118 79.0333 220.585 79.5C221.052 79.9667 221.652 80.2333 222.385 80.3H225.985C226.718 80.2333 227.318 79.9667 227.785 79.5C228.318 79.0333 228.585 78.4667 228.585 77.8C228.652 77.0667 228.685 58.4667 228.685 22H240.385V75.9C240.385 77.5667 240.285 79.2667 240.085 81C239.952 82.7333 239.418 84.4 238.485 86C236.218 90 232.052 92 225.985 92Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="0"><path fill-rule="evenodd" d="M265.199 92H253.399V33.7H242.999V22H275.599V33.7H265.199V92Z"/><path fill-rule="evenodd" transform="translate(0,76)" d="M265.199 92H253.399V33.7H242.999V22H275.599V33.7H265.199V92Z"/></g></g><g clip-path="url(#lw)"><g class="reel" data-base="48"><path fill-rule="evenodd" d="M296 44H292.5C286.433 44 282.233 42 279.9 38C279.033 36.4 278.5 34.7333 278.3 33C278.167 31.2667 278.1 29.5667 278.1 27.9V-9.9C278.1 -11.5667 278.167 -13.2667 278.3 -15C278.5 -16.7333 279.033 -18.4333 279.9 -20.1C282.233 -24.0333 286.433 -26 292.5 -26H296C302.067 -26 306.233 -24.0333 308.5 -20.1C309.433 -18.4333 309.967 -16.7333 310.1 -15C310.3 -13.2667 310.4 -11.5667 310.4 -9.9V27.9C310.4 29.5667 310.3 31.2667 310.1 33C309.967 34.7333 309.433 36.4 308.5 38C306.233 42 302.067 44 296 44ZM296 32.3C296.733 32.2333 297.333 31.9667 297.8 31.5C298.333 31.0333 298.6 30.4667 298.6 29.8C298.667 29.0667 298.7 22.1333 298.7 9C298.7 -4.13334 298.667 -11.0333 298.6 -11.7C298.6 -12.4333 298.333 -13.0333 297.8 -13.5C297.333 -14.0333 296.733 -14.3 296 -14.3H292.5C291.767 -14.3 291.133 -14.0333 290.6 -13.5C290.133 -13.0333 289.867 -12.4333 289.8 -11.7C289.8 -11.0333 289.8 -4.13334 289.8 9C289.8 22.1333 289.8 29.0667 289.8 29.8C289.867 30.4667 290.133 31.0333 290.6 31.5C291.067 31.9667 291.667 32.2333 292.4 32.3H296ZM296 120H292.5C286.433 120 282.233 118 279.9 114C279.033 112.4 278.5 110.733 278.3 109C278.167 107.267 278.1 105.567 278.1 103.9V66.1C278.1 64.4333 278.167 62.7333 278.3 61C278.5 59.2667 279.033 57.5667 279.9 55.9C282.233 51.9667 286.433 50 292.5 50H296C302.067 50 306.233 51.9667 308.5 55.9C309.433 57.5667 309.967 59.2667 310.1 61C310.3 62.7333 310.4 64.4333 310.4 66.1V103.9C310.4 105.567 310.3 107.267 310.1 109C309.967 110.733 309.433 112.4 308.5 114C306.233 118 302.067 120 296 120ZM296 108.3C296.733 108.233 297.333 107.967 297.8 107.5C298.333 107.033 298.6 106.467 298.6 105.8C298.667 105.067 298.7 98.1333 298.7 85C298.7 71.8667 298.667 64.9667 298.6 64.3C298.6 63.5667 298.333 62.9667 297.8 62.5C297.333 61.9667 296.733 61.7 296 61.7H292.5C291.767 61.7 291.133 61.9667 290.6 62.5C290.133 62.9667 289.867 63.5667 289.8 64.3C289.8 64.9667 289.8 71.8667 289.8 85C289.8 98.1333 289.8 105.067 289.8 105.8C289.867 106.467 290.133 107.033 290.6 107.5C291.067 107.967 291.667 108.233 292.4 108.3H296Z"/></g></g></svg></span></h1>
 </section>
 
 <main id="top">
-  <div class="hero">
+  <section class="intro2">
     <div class="wrap">
-      <div class="lede">
+      <p class="eyebrow2">full auto&reg;</p>
+      <div class="cols">
+        <p class="big">we're an independent creative studio bringing brands, digital experiences and technology together. we turn ambitious ideas into thoughtful design and products that deliver.</p>
         <div>
-          <p class="pitch">full auto is a studio that goes all the way. <span class="g">no half measures, nothing hidden.</span></p>
-          <p>we design and build apps, brands and websites, and we finish what we start. everything we make does exactly what it says and nothing behind your back: no trackers, no dark patterns, no data taken that isn't needed. fully automatic means one team from the first sketch to the final release, and still there after it ships.</p>
+          <p>no half measures. nothing hidden. just good work, done right.</p>
+          <p class="btns"><a class="btn" href="#work">explore our work</a><a class="btn ghost" href="#contact">let's talk</a></p>
         </div>
-
       </div>
     </div>
-  </div>
-
-  <section class="work" id="work">
-    <div class="wrap"><div class="sect mono"><span>work</span><span id="workcount">selected projects</span></div></div>
-    <div class="wrap"><ol class="worklist" id="worklist"></ol></div>
   </section>
 
-  <section id="services">
+  <section class="trusted">
     <div class="wrap">
-      <h2 class="h2">what we do</h2>
-      <ul class="rows">
-        <li><span class="t">product design</span><span class="d">one idea per screen. if a button doesn't earn its place, it goes.</span></li>
-        <li><span class="t">android apps</span><span class="d">native and offline first, with no analytics or ad sdks. we ask for the fewest permissions the app can run on, and say why in plain words.</span></li>
-        <li><span class="t">brand identity</span><span class="d">a name, a wordmark and a look that holds from the app icon to a t-shirt.</span></li>
-        <li><span class="t">websites</span><span class="d">a page that says what the app does in plain words. no dark patterns, no cookie walls.</span></li>
+      <p class="eyebrow2">trusted by the ambitious.</p>
+      <p class="lead2">good things happen when good ideas meet good execution.</p>
+      <ul class="logos" aria-label="clients">
+        <li>client logo</li><li>client logo</li><li>client logo</li><li>client logo</li><li>client logo</li><li>client logo</li>
       </ul>
     </div>
   </section>
 
-
-  <section>
+  <section class="work" id="work">
     <div class="wrap">
-      <div class="beliefs">
-        <div><b>does what it says.</b><p>if the store page says it, the app does it. if it doesn't say it, the app doesn't do it.</p></div>
-        <div><b>your data stays put.</b><p>payload reads your bank texts and has no internet permission at all. that's the bar for everything we make.</p></div>
-        <div><b>no half measures.</b><p>fully automatic means finished: designed, built, shipped and looked after. not a prototype and a promise.</p></div>
+      <p class="eyebrow2">selected work</p>
+      <h2 class="h2">less talk. more show.</h2>
+      <p class="lead2">a selection of brands, digital experiences and products we've brought to life. different challenges, different directions, one thing in common: we take the work seriously.</p>
+      <ol class="worklist" id="worklist"></ol>
+      <p class="btns"><a class="btn" href="work.html">view all projects</a></p>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <p class="eyebrow2">what we do</p>
+      <h2 class="h2">we make the complex look simple.</h2>
+      <p class="lead2">we're thinkers, designers and builders. we bring the right skills together to create work that looks good, works hard and makes a difference.</p>
+      <ol class="svc">
+        <li><span class="n">01</span><h3>digital experiences</h3><div><b>make every interaction count.</b><p>we design digital experiences that feel effortless. from the first click to the final interaction, every detail is considered and every decision has a purpose.</p><p class="tags">ux/ui design · websites · digital products · design systems · product strategy</p></div></li>
+        <li><span class="n">02</span><h3>branding &amp; identity</h3><div><b>look different. stand for something.</b><p>we build distinctive brands with a clear point of view. from strategy to visual identity, we create systems that give businesses a recognisable voice and presence.</p><p class="tags">brand strategy · visual identity · logo design · art direction · brand systems</p></div></li>
+        <li><span class="n">03</span><h3>development</h3><div><b>good ideas deserve good execution.</b><p>we turn concepts into functional digital products. clean builds, purposeful features and technology that does exactly what it's supposed to do.</p><p class="tags">app development · web development · product engineering · android applications</p></div></li>
+        <li><span class="n">04</span><h3>creative &amp; campaigns</h3><div><b>make some noise. for the right reasons.</b><p>we create visual communication that gets noticed and gets the message across. from everyday brand assets to big creative ideas.</p><p class="tags">campaigns · social media · digital advertising · presentations · marketing collateral</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="way">
+    <div class="wrap">
+      <p class="eyebrow2">the full auto way</p>
+      <h2 class="h2">no shortcuts. no funny business.</h2>
+      <p class="lead2">we believe great work comes from clear thinking, honest collaboration and attention to detail.</p>
+      <ol class="steps">
+        <li><b>think first.</b><p>understand the problem before jumping to the solution. good design starts with good questions.</p></li>
+        <li><b>aim better.</b><p>find the right direction. challenge the obvious. push beyond the first idea.</p></li>
+        <li><b>make it happen.</b><p>bring the thinking to life through design, technology and focused execution.</p></li>
+        <li><b>get it right.</b><p>refine, test and deliver. because almost finished isn't finished.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="principles">
+    <div class="wrap">
+      <p class="eyebrow2">built different. built on principle.</p>
+      <h2 class="h2">nothing to hide. everything to stand behind.</h2>
+      <div class="cols">
+        <p class="big">we believe good design is about more than appearances. it's about trust.</p>
+        <div class="prose">
+          <p>our digital products do exactly what they claim to do. no unnecessary features. no hidden agendas. no surprises.</p>
+          <p>your data belongs to you. we don't sell or share it with anyone. you're in control of your information.</p>
+          <p>we believe technology should work for people, not work against them.</p>
+          <p>privacy isn't an afterthought. transparency isn't optional. integrity isn't negotiable.</p>
+          <p class="sign">no half measures. nothing hidden.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <p class="eyebrow2">a little about us</p>
+      <h2 class="h2">small unit. big ideas.</h2>
+      <div class="cols">
+        <p class="big">we like good questions, ambitious ideas and getting our hands dirty.</p>
+        <div class="prose">
+          <p>we're not interested in making things complicated to look important. we like getting to the point, figuring things out and making something worth putting into the world.</p>
+          <p>independent in thinking. collaborative in approach. uncompromising in execution.</p>
+          <p class="sign">that's full auto.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="contact" id="contact">
     <div class="wrap">
-      <h2 class="h2">got an idea?</h2>
-      <p>tell us the one thing your app should do. we'll build it all the way.</p>
-      <button class="mail" id="mail" type="button"><span>hello@fullauto</span><span class="mono" id="mailHint">copy</span></button>
+      <p class="eyebrow2">got something in mind?</p>
+      <h2 class="h2">let's make something that matters.</h2>
+      <p>have a big idea? a brand that needs a rethink? a product waiting to happen?</p>
+      <p>we're all ears. tell us what you're working on. let's see where it goes.</p>
+      <p class="sign">lock in. let's go.</p>
+      <p class="btns center"><a class="btn" href="mailto:hello@fullauto.studio">get in touch</a></p>
+      <button class="mail" id="mail" type="button"><span>hello@fullauto.studio</span><span class="mono" id="mailHint">copy</span></button>
       <div class="foot">
         <div class="landing" id="landing" aria-hidden="true"></div>
-        <span class="mono">full auto · no-nonsense apps</span>
+        <p class="fname">full auto&reg;</p>
+        <p>independent creative &amp; digital studio.</p>
+        <p>no half measures. nothing hidden.</p>
+        <p class="copy">&copy; full auto. all rights reserved.</p>
       </div>
     </div>
   </section>
@@ -272,11 +362,10 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   // Work list: one row per project, built from projects.js, each opening its own page
   var list = document.getElementById('worklist');
   if (list && window.FA_PROJECTS) {
-    list.innerHTML = window.FA_PROJECTS.map(function (p, i) {
+    list.innerHTML = window.FA_PROJECTS.slice(0, 4).map(function (p, i) {
       return '<li><a href="work.html#' + p.slug + '"><span class="wl-n">' + String(i + 1).padStart(2, '0') + '</span>' +
         '<span class="wl-t">' + p.title + '</span><span class="wl-c">' + p.type + '<br><b>' + p.client + '</b></span></a></li>';
     }).join('');
-    var wc = document.getElementById('workcount'); if (wc) wc.textContent = window.FA_PROJECTS.length + ' selected projects';
   }
 
   // Copy the address; mailto links don't work for every viewer
