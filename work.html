@@ -203,10 +203,14 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   background:radial-gradient(120% 90% at 30% 20%,#f6f6f6 0%,#e4e4e4 55%,#d4d4d4 100%)}
 .ph b{font:400 clamp(28px,5vw,72px)/1 var(--display);color:#c2c2c2;position:absolute;left:16px;top:12px;letter-spacing:-0.03em}
 @media (max-width:560px){.p-gal{grid-template-columns:1fr}.p-gal figure{grid-column:1/-1}}
+.p-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.4vw,20px);margin:clamp(40px,6vw,80px) var(--gut) 0}
+.p-cols div{display:flex;flex-direction:column;gap:4px;font:500 13px var(--body)}
+.p-cols i{display:block;aspect-ratio:3/2;border:1px solid var(--line);margin-bottom:8px}
+.p-cols span{color:var(--mute)}
 .p-next{display:block;margin:clamp(64px,10vw,140px) var(--gut) 0;padding-top:18px;border-top:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .p-next small{display:flex;justify-content:space-between;font:500 13px var(--body);color:var(--mute)}
-.p-next span{display:block;margin-top:8px;font:400 clamp(56px,13vw,200px)/.85 var(--display);letter-spacing:-0.035em;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.p-next:hover span{transform:translateX(clamp(8px,2vw,32px));font-style:italic}
+.p-next > span{display:block;margin-top:8px;font:400 clamp(56px,13vw,200px)/.85 var(--display);letter-spacing:-0.035em;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.p-next:hover > span{transform:translateX(clamp(8px,2vw,32px));font-style:italic}
 .p-foot{display:flex;justify-content:space-between;gap:16px;margin:56px var(--gut) 0;padding:18px 0 28px;border-top:1px solid var(--line);font:500 13px var(--body);color:var(--mute)}
 .p-foot a{color:var(--ink)}
 </style>
@@ -255,6 +259,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
       '<div><dt>what we did</dt><dd>' + p.services.map(esc).join('<br>') + '</dd></div>' +
       '<div><dt>year</dt><dd>' + esc(p.year) + (p.url ? '<br><a href="' + esc(p.url) + '" target="_blank" rel="noopener">visit \u2197</a>' : '') + '</dd></div></dl>' +
       '<section class="p-copy"><p class="lead">' + esc(p.intro) + '</p><div class="body">' + p.body.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div></section>' +
+      (p.colors ? '<section class="p-cols">' + p.colors.map(function (c) { return '<div><i style="background:' + esc(c[1]) + '"></i><b>' + esc(c[0]) + '</b><span>' + esc(c[1]) + '</span></div>'; }).join('') + '</section>' : '') +
       '<section class="p-gal">' + gal + '</section>' +
       '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + ' \u2192</span></a>' +
       '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';

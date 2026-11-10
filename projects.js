@@ -9,6 +9,33 @@
  */
 window.FA_PROJECTS = [
   {
+    slug: 'aase', title: 'aase', lines: ['aase'],
+    client: 'aase', year: '2026', type: 'branding',
+    services: ['brand identity', 'logo design', 'illustration', 'packaging'],
+    url: '',
+    intro: 'an artisan bakery for small-batch cakes and desserts, made with care.',
+    body: [
+      'aase means desire, or craving. the brand celebrates the joy people feel when they give in to something sweet: simple ingredients, attention to detail and a love for the process.',
+      'the logo uses thick, rounded letterforms with an apple and a heart cut into the two a\u2019s. the soft curves feel warm, like something fresh out of the oven, and the solid shapes stay easy to spot on bags, signs and screens.',
+      'one bold red, cream white and baker\u2019s black, set with satoshi, a clean modern sans. playful hand-drawn illustrations of people baking and decorating add a human touch. small batch, artisan bakes.'
+    ],
+    colors: [['aase red', '#CE110D'], ['fresh cream white', '#FFFFFF'], ['baker\u2019s black', '#000000']],
+    images: [
+      { src: 'work/aase/logo-red.jpg', ratio: 16 / 9, wide: true, alt: 'aase logo in white on red' },
+      { src: 'work/aase/tart.jpg', ratio: 9 / 16, alt: 'aase poster with a custard pastry' },
+      { src: 'work/aase/cakes.jpg', ratio: 9 / 16, alt: 'aase poster with slices of cake' },
+      { src: 'work/aase/illustration.jpg', ratio: 9 / 16, alt: 'hand-drawn illustration of a baker piping a cake' },
+      { src: 'work/aase/pattern.jpg', ratio: 9 / 16, alt: 'repeating aase wordmark pattern' },
+      { src: 'work/aase/logo-white.jpg', ratio: 16 / 9, wide: true, alt: 'aase logo in red on white' },
+      { src: 'work/aase/muffins.jpg', ratio: 9 / 16, alt: 'aase poster with a tray of muffins' },
+      { src: 'work/aase/croissants.jpg', ratio: 9 / 16, alt: 'aase poster with croissants' },
+      { src: 'work/aase/croissants-oven.jpg', ratio: 9 / 16, alt: 'aase poster with croissants in an oven' },
+      { src: 'work/aase/cheesecake.jpg', ratio: 9 / 16, alt: 'aase poster with a slice of biscoff cheesecake' },
+      { src: 'work/aase/cookie.jpg', ratio: 9 / 16, alt: 'aase poster with a chocolate cookie' },
+      { src: 'work/aase/bag.jpg', ratio: 9 / 16, alt: 'aase paper bag' }
+    ]
+  },
+  {
     slug: 'ops', title: 'ops', lines: ['ops'],
     client: 'full auto', year: '2026', type: 'to-do app',
     services: ['product design', 'android app', 'illustration'],
