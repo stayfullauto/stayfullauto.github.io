@@ -147,6 +147,43 @@
     if (document.fonts && document.fonts.status === 'loaded') start(); else fonts.then(function () { requestAnimationFrame(start); });
   } else if (root.classList.contains('smart')) root.classList.remove('smart');
 
+
+  // ---- Logo home: the logo holds its place in the nav while the homepage appears around it ----
+  var HKEY = 'fa-home';
+  function logoCopy(el, r) {
+    var c = el.cloneNode(true); c.removeAttribute('href'); c.setAttribute('aria-hidden', 'true');
+    c.style.cssText = 'position:fixed;left:' + r.l + 'px;top:' + r.t + 'px;width:' + r.w + 'px;height:' + r.h + 'px;z-index:302;pointer-events:none;display:block;margin:0';
+    var sv = c.querySelector('svg'); if (sv) sv.style.cssText = 'display:block;width:100%;height:100%;fill:' + r.fill;
+    document.body.appendChild(c); return c;
+  }
+  function leaveHome(a, url) {
+    var sv = a.querySelector('svg') || a, b = sv.getBoundingClientRect();
+    var r = { l: b.left, t: b.top, w: b.width, h: b.height, fill: getComputedStyle(sv).fill };
+    var veil = document.createElement('div');
+    veil.style.cssText = 'position:fixed;inset:0;z-index:300;background:' + paper() + ';opacity:0;transition:opacity .4s ease';
+    document.body.appendChild(veil);
+    var held = logoCopy(a, r);
+    leftover = function () { veil.remove(); held.remove(); };
+    requestAnimationFrame(function () { veil.style.opacity = '1'; });
+    setTimeout(function () { try { sessionStorage.setItem(HKEY, JSON.stringify(r)); } catch (er) {} location.href = url.href; }, 420);
+  }
+  var homeIn = null;
+  try { homeIn = JSON.parse(sessionStorage.getItem(HKEY) || 'null'); sessionStorage.removeItem(HKEY); } catch (e) {}
+  if (homeIn) {
+    var logo = document.querySelector('.navlogo'), keepLogo = window.__homeLogo || (logo ? logoCopy(logo, homeIn) : null);
+    var shown = false, show = function () {
+      if (shown) return; shown = true;
+      scrollTo(0, 0); if (window.__glideJump) window.__glideJump();
+      requestAnimationFrame(function () {
+        root.classList.add('home-go');
+        setTimeout(function () { if (window.__onArrive) window.__onArrive(); }, 150);
+        setTimeout(function () { if (keepLogo) keepLogo.remove(); root.classList.remove('homing', 'home-go'); }, 900);
+      });
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(show);
+    setTimeout(show, 700);
+  } else root.classList.remove('homing');
+
   // Arriving from a transition: start covered, then lift the panel away
   var arriving = false;
   try { arriving = sessionStorage.getItem(KEY) === '1'; sessionStorage.removeItem(KEY); } catch (e) {}
@@ -177,6 +214,7 @@
     if (!/^(work\.html|index\.html)/.test(href) || a.target === '_blank') return;
     var url = new URL(href, location.href);
     if (url.pathname === location.pathname && url.hash === location.hash) return;
+    if (a.classList.contains('navlogo') && /^index\.html$/.test(href)) { e.preventDefault(); leaveHome(a, url); return; }
     if (/^work\.html#./.test(href) && document.querySelector('.p-title, .worklist')) { e.preventDefault(); if (leaveSmart(a, url)) return; }
     e.preventDefault();
     var samePage = url.pathname === location.pathname;
