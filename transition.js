@@ -43,12 +43,14 @@
   if (arriving && !reduce) {
     document.documentElement.classList.add('arriving');
     var s0 = size(); svg.style.display = 'block'; path.setAttribute('d', 'M0 0H' + s0[0] + 'V' + s0[1] + 'H0Z');
+    document.documentElement.classList.remove('wiping');
     var go = function () {
       // land on the section named in the address (the page scrolls a moving layer, so do it by hand)
       if (location.hash.length > 1) {
         var t = document.getElementById(location.hash.slice(1));
         if (t && document.getElementById('smooth')) { var y = 0, n = t; while (n && n.id !== 'smooth') { y += n.offsetTop; n = n.offsetParent; } scrollTo(0, Math.max(0, y - 16)); }
       }
+      if (window.__glideJump) window.__glideJump();
       setTimeout(function () { reveal(); }, 120);
     };
     if (document.readyState === 'complete') go(); else addEventListener('load', go);
@@ -65,7 +67,12 @@
     e.preventDefault();
     var samePage = url.pathname === location.pathname;
     cover(function () {
-      if (samePage) { location.hash = url.hash; setTimeout(function () { reveal(); }, 80); }
+      if (samePage) {
+        location.hash = url.hash;
+        // let the new content render and settle under the panel, with no scroll easing left to show
+        requestAnimationFrame(function () { scrollTo(0, 0); if (window.__glideJump) window.__glideJump();
+          setTimeout(function () { if (window.__glideJump) window.__glideJump(); reveal(); }, 120); });
+      }
       else { try { sessionStorage.setItem(KEY, '1'); } catch (er) {} location.href = url.href; }
     });
   });

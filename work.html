@@ -7,6 +7,8 @@
 <meta property="og:title" content="full auto">
 <meta property="og:description" content="no-nonsense apps. privacy first. no half measures.">
 <meta name="theme-color" content="#ffffff">
+<script>try{if(sessionStorage.getItem('fa-wipe')==='1')document.documentElement.classList.add('wiping')}catch(e){}</script>
+<style>html.wiping body::after{content:'';position:fixed;inset:0;background:#111;z-index:299}</style>
 <title>work · full auto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,6 +302,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
   map.setAttribute('href', c.toDataURL());
 
   var cur = scrollY, last = scrollY, vel = 0, on = false;
+  window.__glideJump = function () { cur = last = scrollY; vel = 0; };
   function measure() {
     document.body.style.height = layer.offsetHeight + 'px';
     var w = innerWidth, h = innerHeight;
