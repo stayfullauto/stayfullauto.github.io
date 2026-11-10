@@ -174,7 +174,6 @@ section{padding-block:96px clamp(64px,9vw,140px)}
 .foot .landing{width:min(420px,80vw);aspect-ratio:4/3;margin:0 auto}
 .foot .mono{display:block;color:var(--mute);margin-top:12px}
 
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 
 <style>
@@ -276,7 +275,6 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
 // Like dionpieters.dev: one smooth surface that bends as it moves. A displacement filter pulls the
 // sides in around the middle and bows every row, scaled by how fast you're scrolling.
 (function () {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var root = document.documentElement, layer = document.getElementById('smooth');
   root.classList.add('glide');
   var view = document.createElement('div'); view.id = 'view';

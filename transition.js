@@ -4,7 +4,7 @@
  * the next page loads underneath, then the panel carries on up and off the top.
  */
 (function () {
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce = false;
   var KEY = 'fa-wipe', NS = 'http://www.w3.org/2000/svg';
   var svg = document.createElementNS(NS, 'svg'), path = document.createElementNS(NS, 'path');
   svg.setAttribute('id', 'wipe'); svg.setAttribute('aria-hidden', 'true'); svg.appendChild(path);
