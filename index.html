@@ -469,6 +469,8 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   }
   // Wait for the splash to hand over before the logo starts moving
   if (document.documentElement.classList.contains('splashing')) window.__onSplashDone = function () { requestAnimationFrame(frame); };
+  // arriving from another page under the black panel: roll the letters in as the panel lifts
+  else if (document.documentElement.classList.contains('wiping')) window.__onArrive = function () { window.__onArrive = null; requestAnimationFrame(frame); };
   else requestAnimationFrame(frame);
 })();
 </script>

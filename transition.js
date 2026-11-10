@@ -161,9 +161,12 @@
         if (t && document.getElementById('smooth')) { var y = 0, n = t; while (n && n.id !== 'smooth') { y += n.offsetTop; n = n.offsetParent; } scrollTo(0, Math.max(0, y - 16)); }
       }
       if (window.__glideJump) window.__glideJump();
-      setTimeout(function () { reveal(); }, 120);
+      setTimeout(function () { reveal(); setTimeout(function () { if (window.__onArrive) window.__onArrive(); }, 200); }, 60);
     };
-    if (document.readyState === 'complete') go(); else addEventListener('load', go);
+    // lift as soon as the text is ready; don't hold the panel up for images or the 3D model
+    var went = false, once = function () { if (!went) { went = true; requestAnimationFrame(go); } };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(once);
+    setTimeout(once, 700);
   }
 
   // Leaving: links to project pages, the work list and back home get the wipe
