@@ -494,7 +494,7 @@ section{padding-block:96px 0}
 </script>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <script type="module">
-// The samurai mask: a real 3D model in carved grey stone, like the ink illustration.
+// The samurai mask: a real 3D model in matte black.
 // It faces you on load, turns only as you scroll, travels down the page with you,
 // and you can grab it to turn it yourself.
 import * as THREE from 'three';
@@ -530,16 +530,17 @@ if (art && renderer) {
       const nx = (x / S) * 2 - 1, ny = (y / S) * 2 - 1, r2 = nx * nx + ny * ny, i = (y * S + x) * 4;
       const nz = Math.sqrt(Math.max(0, 1 - r2));
       let l = Math.max(0, (nx * lx + ny * ly + nz * lz) / ll);
-      l = 0.1 + 0.8 * Math.pow(l, 1.25) + 0.12 * Math.pow(nz, 6);        // key light plus a soft front fill
-      l -= 0.2 * Math.pow(Math.min(1, r2), 3);                           // dark rims, like the deep cuts
-      l += (rnd() - 0.5) * 0.09;                                         // stone grain
-      const v = Math.max(0, Math.min(255, l * 238));
+      // matte black: a soft, wide light with no shine, just enough to show the carving
+      l = 0.035 + 0.3 * Math.pow(l, 1.6) + 0.05 * Math.pow(nz, 4);
+      l -= 0.03 * Math.pow(Math.min(1, r2), 3);                          // darker rims in the deep cuts
+      l += (rnd() - 0.5) * 0.025;                                        // faint grain, like powder-coat
+      const v = Math.max(0, Math.min(255, l * 255));
       d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
     }
     g.putImageData(img, 0, 0);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
   }
-  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xd6d6d6, side: THREE.DoubleSide });
+  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xffffff, side: THREE.DoubleSide });
 
   let ready = false, unit = 1, W = 0, H = 0;   // unit = world units per screen pixel at the model's depth
   function size() {
