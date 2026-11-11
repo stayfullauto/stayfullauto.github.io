@@ -94,16 +94,29 @@ window.FA_PROJECTS = [
     images: [{ ratio: 16 / 9, wide: true }, { ratio: 4 / 5 }, { ratio: 4 / 5 }, { ratio: 21 / 9, wide: true }]
   },
   {
-    slug: 'full-auto', title: 'full auto', lines: ['full', 'auto'],
-    client: 'full auto', year: '2025', type: 'daily tracker',
-    services: ['product design', 'android app', 'brand'],
+    slug: 'indyra', title: 'indyra', lines: ['indyra'],
+    client: 'indyra', year: '2026', type: 'branding & digital',
+    services: ['brand identity', 'website', 'illustration', 'motion', 'pitch deck'],
     url: '',
-    intro: 'the first app, and the name everything else runs under.',
+    intro: 'a digital ecosystem that rewards people for keeping their clothes in circulation.',
     body: [
-      'sample text: describe the app here. what it tracks, who it is for and the one idea behind it.',
-      'sample text: a second paragraph on how it looks and feels, and what you would do differently next time.'
+      'the way forward for fashion is circular. indyra collects old clothes from people\u2019s doorsteps, sorts them and sends each piece where it does the most good: resale, charity, fabric recycling or a new form entirely. in return, people earn indyra coins to spend with partner brands.',
+      'the vision is to turn 100 million wardrobes circular, and the work had to make a complicated supply chain feel simple and rewarding. we built the identity, the website and the story that brings customers and brands into one ecosystem.',
+      'a calm forest green and soft teal leaves give the brand a grounded, natural feel, with a warm gold coin as the reward. friendly illustrations of people and their wardrobes keep it human. responsible recycling, conscious buying.'
     ],
-    images: [{ ratio: 16 / 9, wide: true }, { ratio: 1 }, { ratio: 1 }]
+    colors: [['indyra green', '#4A6053'], ['leaf teal', '#49706B'], ['coin gold', '#FCD16B'], ['white', '#FFFFFF']],
+    images: [
+      { src: 'work/indyra/motion.mp4', poster: 'work/indyra/motion.jpg', ratio: 16 / 9, wide: true, alt: 'indyra logo reveal and website in motion' },
+      { src: 'work/indyra/cover.jpg', ratio: 16 / 9, alt: 'indyra wordmark on green' },
+      { src: 'work/indyra/about.jpg', ratio: 16 / 9, alt: 'about indyra: bringing post-consumer circularity in fashion' },
+      { src: 'work/indyra/vision.jpg', ratio: 16 / 9, wide: true, alt: 'the vision: turn 100mn wardrobes circular' },
+      { src: 'work/indyra/website.mp4', poster: 'work/indyra/website.jpg', ratio: 16 / 9, wide: true, alt: 'scrolling through the indyra website' },
+      { src: 'work/indyra/mission.jpg', ratio: 16 / 9, alt: 'the mission in three numbers' },
+      { src: 'work/indyra/incentive.jpg', ratio: 16 / 9, alt: 'how indyra coins move between customers and brands' },
+      { src: 'work/indyra/coin.jpg', ratio: 16 / 9, alt: 'the indyra coin' },
+      { src: 'work/indyra/users.jpg', ratio: 16 / 9, alt: 'why users love indyra' },
+      { src: 'work/indyra/together.jpg', ratio: 16 / 9, wide: true, alt: 'let\u2019s encourage a sustainable world together' }
+    ]
   },
   {
     slug: 'koji-coffee', title: 'kōji coffee', lines: ['kōji', 'coffee'],

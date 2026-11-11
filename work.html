@@ -209,7 +209,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
 .p-gal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.4vw,20px);margin:clamp(48px,8vw,120px) var(--gut) 0}
 .p-gal figure{margin:0;grid-column:span 1;position:relative;overflow:hidden;background:var(--wash)}
 .p-gal figure.wide{grid-column:1/-1}
-.p-gal img{display:block;width:100%;height:100%;object-fit:cover}
+.p-gal img,.p-gal video{display:block;width:100%;height:100%;object-fit:cover}
 .ph{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:space-between;padding:14px 16px;font:500 12px var(--body);color:var(--mute);
   background:radial-gradient(120% 90% at 30% 20%,#f6f6f6 0%,#e4e4e4 55%,#d4d4d4 100%)}
 .ph b{font:400 clamp(28px,5vw,72px)/1 var(--display);color:#c2c2c2;position:absolute;left:16px;top:12px;letter-spacing:-0.03em}
@@ -261,7 +261,8 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
     var gal = (p.images || []).map(function (im, k) {
       var n = String(k + 1).padStart(2, '0');
       return '<figure class="' + (im.wide ? 'wide' : '') + '" style="aspect-ratio:' + (im.ratio || 16 / 9) + '">' +
-        (im.src ? '<img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title + ' ' + n) + '" loading="lazy">'
+        (im.src && /\.mp4$/.test(im.src) ? '<video src="' + esc(im.src) + '"' + (im.poster ? ' poster="' + esc(im.poster) + '"' : '') + ' autoplay muted loop playsinline preload="metadata" aria-label="' + esc(im.alt || p.title + ' ' + n) + '"></video>'
+        : im.src ? '<img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title + ' ' + n) + '" loading="lazy">'
                 : '<div class="ph"><b>' + esc(p.title) + '</b><span>image ' + n + '</span><span>replace in projects.js</span></div>') + '</figure>';
     }).join('');
     el.innerHTML =
@@ -274,6 +275,8 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
       '<section class="p-gal">' + gal + '</section>' +
       '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + ' \u2192</span></a>' +
       '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';
+    // muted loops: start them explicitly, some browsers hold autoplay on injected video
+    el.querySelectorAll('.p-gal video').forEach(function (v) { v.muted = true; var pr = v.play && v.play(); if (pr && pr.catch) pr.catch(function () {}); });
     scrollTo(0, 0);
     window.dispatchEvent(new Event('resize'));
   }
