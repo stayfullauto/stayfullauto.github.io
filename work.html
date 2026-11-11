@@ -273,7 +273,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
       '<section class="p-copy"><p class="lead">' + esc(p.intro) + '</p><div class="body">' + p.body.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div></section>' +
       (p.colors ? '<section class="p-cols">' + p.colors.map(function (c) { return '<div><i style="background:' + esc(c[1]) + '"></i><b>' + esc(c[0]) + '</b><span>' + esc(c[1]) + '</span></div>'; }).join('') + '</section>' : '') +
       '<section class="p-gal">' + gal + '</section>' +
-      '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + ' \u2192</span></a>' +
+      '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + '</span></a>' +
       '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';
     // muted loops: start them explicitly, some browsers hold autoplay on injected video
     el.querySelectorAll('.p-gal video').forEach(function (v) { v.muted = true; var pr = v.play && v.play(); if (pr && pr.catch) pr.catch(function () {}); });
