@@ -34,7 +34,7 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .navnote i{width:7px;height:7px;border-radius:50%;background:var(--ink);animation:blink 1.6s steps(1) infinite}
 .navlinks{display:flex;gap:clamp(14px,2vw,28px)}
 .navlinks a{color:var(--mute);transition:color .2s}.navlinks a:hover{color:var(--ink)}
-.navcta{border-bottom:1.5px solid var(--ink);padding-bottom:3px}
+.navcta{font:inherit;border-bottom:1px solid var(--ink);padding-bottom:2px}
 @media (max-width:760px){.navnote,.navlinks{display:none}.topnav{grid-template-columns:auto 1fr}.navcta{justify-self:end}}
 .fold .art{position:absolute;left:0;right:0;top:9%;height:60%;width:auto;margin:0;pointer-events:none}
 .intro{position:absolute;z-index:55;right:var(--gut);top:calc(40% - 40px);margin:0;text-align:left;font:500 clamp(26px,3.4vw,52px)/.95 var(--body);letter-spacing:-0.045em;pointer-events:none}
@@ -218,7 +218,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     <a class="navlogo" href="#fold" aria-label="full auto, back to top"><svg viewBox="21 21 290 72" aria-hidden="true"><use href="#logoSym" x="21" y="21" width="290" height="72"/></svg></a>
     <span class="navnote"><i></i>independent design studio</span>
     <span class="navlinks"><a href="#work">work</a><a href="#services">what we do</a><a href="#about">about</a></span>
-    <a class="navcta" href="#contact">let's talk <span aria-hidden="true">↗</span></a>
+    <a class="navcta" href="#contact">let's talk</a>
   </nav>
   <script>/* coming home from the nav logo: hold the logo in place from the very first frame */
   try{var hr=JSON.parse(sessionStorage.getItem('fa-home')||'null'),hl=document.querySelector('.navlogo');if(hr&&hl){var hc=hl.cloneNode(true);hc.removeAttribute('href');hc.setAttribute('aria-hidden','true');hc.style.cssText='position:fixed;left:'+hr.l+'px;top:'+hr.t+'px;width:'+hr.w+'px;height:'+hr.h+'px;z-index:302;pointer-events:none;display:block;margin:0';var hs=hc.querySelector('svg');if(hs)hs.style.cssText='display:block;width:100%;height:100%;fill:'+hr.fill;document.documentElement.appendChild(hc);window.__homeLogo=hc}}catch(e){}</script>
