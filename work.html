@@ -253,7 +253,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
         '<div style="margin:clamp(40px,6vw,80px) var(--gut) 0"><ol class="worklist">' + all.map(function (q, k) {
           return '<li><a href="work.html#' + q.slug + '"><span class="wl-n">' + String(k + 1).padStart(2, '0') + '</span><span class="wl-t">' + esc(q.title) + '</span><span class="wl-c">' + esc(q.type) + '<br><b>' + esc(q.client) + '</b></span></a></li>';
         }).join('') + '</ol></div>' +
-        '<footer class="p-foot"><a href="index.html">\u2190 home</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';
+        '<footer class="p-foot"><a href="index.html">\u2190 home</a><span>full auto\u00ae \u00b7 no half measures. all in.</span></footer>';
       scrollTo(0, 0); window.dispatchEvent(new Event('resize')); return;
     }
     var next = all[(i + 1) % all.length];
@@ -274,7 +274,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
       (p.colors ? '<section class="p-cols">' + p.colors.map(function (c) { return '<div><i style="background:' + esc(c[1]) + '"></i><b>' + esc(c[0]) + '</b><span>' + esc(c[1]) + '</span></div>'; }).join('') + '</section>' : '') +
       '<section class="p-gal">' + gal + '</section>' +
       '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + '</span></a>' +
-      '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. nothing hidden.</span></footer>';
+      '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. all in.</span></footer>';
     // muted loops: start them explicitly, some browsers hold autoplay on injected video
     el.querySelectorAll('.p-gal video').forEach(function (v) { v.muted = true; var pr = v.play && v.play(); if (pr && pr.catch) pr.catch(function () {}); });
     scrollTo(0, 0);
