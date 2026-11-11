@@ -9,6 +9,11 @@
 <meta name="theme-color" content="#ffffff">
 <script>try{if(sessionStorage.getItem('fa-wipe')==='1')document.documentElement.classList.add('wiping');if(sessionStorage.getItem('fa-smart'))document.documentElement.classList.add('smart');if(sessionStorage.getItem('fa-home'))document.documentElement.classList.add('homing')}catch(e){}</script>
 <style>html.wiping body::after{content:'';position:fixed;inset:0;background:#111;z-index:299}html.smart,html.smart body,html.smart #view{background:var(--paper,#fff)!important}html.homing body::after{content:'';position:fixed;inset:0;background:var(--paper,#fff);z-index:299;transition:opacity .8s ease}html.homing.home-go body::after{opacity:0}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+<link rel="preload" href="model/mask.glb?v=m2s" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="vendor/three.module.min.js">
+<link rel="modulepreload" href="vendor/jsm/loaders/GLTFLoader.js">
+<link rel="modulepreload" href="vendor/jsm/utils/BufferGeometryUtils.js">
 <title>full auto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,12 +42,12 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .navcta{font:inherit;border-bottom:1px solid var(--ink);padding-bottom:2px}
 @media (max-width:760px){.navnote,.navlinks{display:none}.topnav{grid-template-columns:auto 1fr}.navcta{justify-self:end}}
 .fold .art{position:absolute;left:0;right:0;top:9%;height:60%;width:auto;margin:0;pointer-events:none}
-.intro{position:absolute;z-index:55;right:var(--gut);top:calc(40% - 40px);margin:0;text-align:left;font:500 clamp(26px,3.4vw,52px)/.95 var(--body);letter-spacing:-0.045em;pointer-events:none}
+.intro{position:absolute;z-index:55;right:var(--gut);top:calc(40% - 84px);margin:0;text-align:left;font:500 clamp(26px,3.4vw,52px)/.95 var(--body);letter-spacing:-0.045em;pointer-events:none}
 .intro .d{font:italic 400 1.1em/.9 var(--display);letter-spacing:-0.02em}
-.introsub{position:absolute;z-index:55;left:var(--gut);top:calc(46% - 40px);margin:0;max-width:24ch;font:500 13px/1.45 var(--body);color:#444;pointer-events:none}
+.introsub{position:absolute;z-index:55;left:var(--gut);top:calc(46% - 84px);margin:0;max-width:24ch;font:500 13px/1.45 var(--body);color:#444;pointer-events:none}
 .scatter{display:flex;justify-content:space-between;margin-top:auto;padding:0 calc(var(--gut) + 6%);font:500 13px/1 var(--body);color:var(--ink);position:relative;z-index:55}
 .fold .mark{padding:clamp(8px,1.2vw,16px) var(--gut) var(--gut)}
-@media (max-width:760px){.intro{top:auto;bottom:calc(31vw + 110px);right:auto;left:var(--gut);font-size:30px}.introsub{top:auto;bottom:calc(31vw + 190px);left:auto;right:var(--gut);text-align:right;max-width:20ch;font-size:12px}.scatter{padding:0 var(--gut)}.fold .art{top:8%;height:52%}}
+@media (max-width:760px){.intro{top:auto;bottom:calc(31vw + 146px);right:auto;left:var(--gut);font-size:30px}.introsub{top:auto;bottom:calc(31vw + 240px);left:auto;right:var(--gut);text-align:right;max-width:20ch;font-size:12px}.scatter{padding:0 var(--gut)}.fold .art{top:8%;height:52%}}
 
 /* Work list: big titles down the page, type and client on the right; each row opens the project */
 .worklist{list-style:none;margin:8px 0 0;padding:0}
@@ -492,10 +497,17 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   svg.setAttribute('viewBox', '-24 10 412 94'); svg.setAttribute('class', 'mini');
   svg.innerHTML = '<defs><clipPath id="miniO"><rect x="270" y="22" width="50" height="70"/></clipPath></defs>';
   var halves = [document.createElementNS(NS, 'g'), document.createElementNS(NS, 'g')], letters = [];
+  var spin = null, SPINS = 9;
   reels.forEach(function (r, i) {
     var g = document.createElementNS(NS, 'g'), path = r.querySelector('path').cloneNode(true);
     path.removeAttribute('transform');
-    if (i === reels.length - 1) { path.setAttribute('transform', 'translate(0,10)'); var c = document.createElementNS(NS, 'g'); c.setAttribute('clip-path', 'url(#miniO)'); c.appendChild(path); g.appendChild(c); }
+    if (i === reels.length - 1) {
+      // the O is a little reel: a stack of copies that rolls up and comes to rest halfway
+      var c = document.createElementNS(NS, 'g'); c.setAttribute('clip-path', 'url(#miniO)');
+      spin = document.createElementNS(NS, 'g');
+      for (var k = 0; k <= SPINS; k++) { var cp = path.cloneNode(true); cp.setAttribute('transform', 'translate(0,' + (10 + k * 76) + ')'); spin.appendChild(cp); }
+      c.appendChild(spin); g.appendChild(c);
+    }
     else g.appendChild(path);
     halves[i < 4 ? 0 : 1].appendChild(g); letters.push(g);
   });
@@ -533,6 +545,15 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     { opacity: 1, transform: 'scale(1)', filter: 'blur(0)' }
   ], { duration: 800, delay: T2 + 250, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
   std.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 500, delay: T2 + 650, easing: ease, fill: 'both' });
+  // the O rolls the whole time the logo builds, then slows and stops halfway once the mark is in
+  if (spin) {
+    var o0 = 150 + (letters.length - 1) * 75, oEnd = T2 + 1400;
+    spin.animate([
+      { transform: 'translateY(0)', easing: 'linear' },
+      { transform: 'translateY(' + (-76 * (SPINS - 2)) + 'px)', offset: .78, easing: 'cubic-bezier(.33,.33,.3,1)' },
+      { transform: 'translateY(' + (-76 * SPINS) + 'px)' }
+    ], { duration: oEnd - o0, delay: o0, fill: 'both' });
+  }
   // 3. hold, then the dark panel lifts away and the page (and the big logo) comes in underneath
   var T3 = T2 + 700 + 900;
   box.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-100%)' }], { duration: 900, delay: T3, easing: 'cubic-bezier(.76,0,.24,1)', fill: 'forwards' });
@@ -540,7 +561,6 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   setTimeout(finish, T3 + 950);
 })();
 </script>
-<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <script type="module">
 // The samurai mask: a real 3D model in carved grey stone, like the ink illustration.
 // It faces you on load, turns only as you scroll and travels down the page with you.
@@ -596,7 +616,7 @@ if (art && renderer) {
 
   // which way round the model faces when it arrives; this turns it to look straight at you
   const FRONT = qs.has('front') ? +qs.get('front') : 0;
-  new GLTFLoader().load('model/mask.glb?v=m2b', (gltf) => {
+  new GLTFLoader().load('model/mask.glb?v=m2s', (gltf) => {
     const m = gltf.scene;
     m.traverse((o) => { if (o.isMesh) o.material = mat; });
     m.updateMatrixWorld(true);
