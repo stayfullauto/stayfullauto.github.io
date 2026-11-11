@@ -264,7 +264,6 @@ section{padding-block:96px clamp(64px,9vw,140px)}
       <h2 class="h2">less talk. more show.</h2>
       <p class="lead2">a selection of brands, digital experiences and products we've brought to life. different challenges, different directions, one thing in common: we take the work seriously.</p>
       <ol class="worklist" id="worklist"></ol>
-      <p class="btns"><a class="btn" href="work.html">view all projects</a></p>
     </div>
   </section>
 
@@ -353,7 +352,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   // Work list: one row per project, built from projects.js, each opening its own page
   var list = document.getElementById('worklist');
   if (list && window.FA_PROJECTS) {
-    list.innerHTML = window.FA_PROJECTS.slice(0, 4).map(function (p, i) {
+    list.innerHTML = window.FA_PROJECTS.map(function (p, i) {
       return '<li><a href="work.html#' + p.slug + '"><span class="wl-n">' + String(i + 1).padStart(2, '0') + '</span>' +
         '<span class="wl-t">' + p.title + '</span><span class="wl-c">' + p.type + '<br><b>' + p.client + '</b></span></a></li>';
     }).join('');
