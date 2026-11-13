@@ -141,28 +141,4 @@ window.FA_PROJECTS = [
       { src: 'work/indyra/together.jpg', ratio: 16 / 9, wide: true, alt: 'let\u2019s encourage a sustainable world together' }
     ]
   },
-  {
-    slug: 'koji-coffee', title: 'kōji coffee', lines: ['kōji', 'coffee'],
-    client: 'kōji coffee co. (sample)', year: '2026', type: 'brand identity',
-    services: ['naming', 'wordmark', 'packaging'],
-    url: '',
-    intro: 'sample project: a small-batch roaster, named and branded from scratch.',
-    body: [
-      'sample text: replace with the brief, what you made and why. keep it to a few short lines.',
-      'sample text: a note on the outcome, like the launch, the shelf or the first order.'
-    ],
-    images: [{ ratio: 16 / 9, wide: true }, { ratio: 4 / 5 }, { ratio: 4 / 5 }, { ratio: 16 / 9, wide: true }]
-  },
-  {
-    slug: 'atlas-run-club', title: 'atlas run club', lines: ['atlas', 'run club'],
-    client: 'atlas (sample)', year: '2025', type: 'website',
-    services: ['web design', 'development', 'copy'],
-    url: '',
-    intro: 'sample project: a site for a running club that only meets at 5am.',
-    body: [
-      'sample text: replace with the brief, what you made and why.',
-      'sample text: a line on results, like sign-ups, speed or the one thing people mention.'
-    ],
-    images: [{ ratio: 16 / 9, wide: true }, { ratio: 1 }, { ratio: 1 }, { ratio: 21 / 9, wide: true }]
-  }
 ];
