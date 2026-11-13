@@ -82,16 +82,27 @@ window.FA_PROJECTS = [
     images: [{ ratio: 16 / 9, wide: true }, { ratio: 4 / 5 }, { ratio: 4 / 5 }, { ratio: 16 / 9, wide: true }]
   },
   {
-    slug: 'payload', title: 'payload', lines: ['pay', 'load'],
-    client: 'full auto', year: '2026', type: 'expense tracker',
-    services: ['product design', 'android app', 'sms parsing'],
+    slug: 'purple-b', title: 'purple b', lines: ['purple b'],
+    client: 'purple b', year: '2026', type: 'branding',
+    services: ['brand identity', 'logo design', 'art direction', 'photography direction', 'print & packaging'],
     url: '',
-    intro: 'an expense tracker that can’t go online.',
+    intro: 'from the coast to the clouds. a mangalore ice cream legacy, brought to bengaluru.',
     body: [
-      'payload reads bank and upi texts on the phone and turns them into what you spent today, where it went and what to cut.',
-      'it has no internet permission at all, so your money never leaves your phone. categories fall into the screen as balls you can throw around.'
+      'for generations, ideal ice cream has been more than dessert in mangalore. it is memory, nostalgia and the unmistakable taste of the coast. purple b was born to be the bridge, carrying that coastal legacy to hsr layout in bengaluru, untouched and uncompromised.',
+      'we built an identity that feels like the coast: easy days, sea air and moments meant to be savoured. a soft, rounded wordmark with an ice cream swirl, a pill-shaped \u201cice creams\u201d tag and the line \u201cfrom the coast to the clouds\u201d running across every layout.',
+      'photography keeps the ice cream as the hero: clean, editorial and minimal, with natural light and textured backgrounds. a signature purple with deep plum, lavender and coastal mint ties it all together, from posters to cups. scooped by the coast, loved everywhere.'
     ],
-    images: [{ ratio: 16 / 9, wide: true }, { ratio: 4 / 5 }, { ratio: 4 / 5 }, { ratio: 21 / 9, wide: true }]
+    colors: [['purple b signature', '#7C2B88'], ['deep plum', '#4A164F'], ['lavender tint', '#E6D6EB'], ['coastal mint', '#4FA3A5']],
+    images: [
+      { src: 'work/purple-b/cup.jpg', ratio: 1, alt: 'purple b cup held against a pink wall' },
+      { src: 'work/purple-b/texture.jpg', ratio: 1, alt: 'purple b logo over salted chocolate ice cream' },
+      { src: 'work/purple-b/berry.jpg', ratio: 1, alt: 'berry and vanilla scoops in a ceramic bowl' },
+      { src: 'work/purple-b/mango.jpg', ratio: 1, alt: 'mango scoops in a purple mug' },
+      { src: 'work/purple-b/chocolate.jpg', ratio: 1, alt: 'chocolate ice cream with coffee beans' },
+      { src: 'work/purple-b/saffron.jpg', ratio: 1, alt: 'saffron ice cream with lavender' },
+      { src: 'work/purple-b/vanilla.jpg', ratio: 1, alt: 'vanilla scoop in a stoneware bowl' },
+      { src: 'work/purple-b/coffee.jpg', ratio: 1, alt: 'coffee ice cream in a grey cup with lavender' }
+    ]
   },
   {
     slug: 'indyra', title: 'indyra', lines: ['indyra'],
