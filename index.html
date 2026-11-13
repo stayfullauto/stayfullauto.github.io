@@ -207,6 +207,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
 .contact{padding-block:120px 0;text-align:center}
 .contact .h2{font-size:clamp(64px,13vw,160px);margin-bottom:24px}
 .contact p{margin:0 auto;max-width:40ch;color:#444}
+.contact .cmsg{max-width:min(30ch,100%);margin:0 auto}.contact .cmsg p{max-width:none;margin-bottom:10px}
 .mail{display:inline-flex;align-items:center;gap:14px;margin-top:36px;padding:16px 22px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);cursor:pointer;font:600 15px var(--body);letter-spacing:-0.01em;transition:background .2s,color .2s}
 .mail:hover{background:var(--ink);color:var(--paper)}
 .mail .mono{color:inherit;opacity:.6}
@@ -352,9 +353,11 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     <div class="wrap">
       <p class="eyebrow2">MAKE CONTACT</p>
       <h2 class="h2">got something good? let's shoot.</h2>
-      <p>a fresh brand. a digital product. an idea that's been sitting in your head for too long. whatever you've got, we're all ears.</p>
-      <p>let's make something worth looking at.</p>
-      <p class="sign">LOCK IN. LET'S GO.</p>
+      <div class="cmsg">
+        <p>a fresh brand. a digital product. an idea that's been sitting in your head for too long. whatever you've got, we're all ears.</p>
+        <p>let's make something worth looking at.</p>
+        <p class="sign">LOCK IN. LET'S GO.</p>
+      </div>
       <button class="mail" id="mail" type="button"><span>hello@stayfullauto.com</span><span class="mono" id="mailHint">copy</span></button>
       <div class="foot">
         <div class="landing" id="landing" aria-hidden="true"></div>
