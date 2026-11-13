@@ -94,14 +94,20 @@ window.FA_PROJECTS = [
     ],
     colors: [['purple b signature', '#7C2B88'], ['deep plum', '#4A164F'], ['lavender tint', '#E6D6EB'], ['coastal mint', '#4FA3A5']],
     images: [
-      { src: 'work/purple-b/cup.jpg', ratio: 1, alt: 'purple b cup held against a pink wall' },
-      { src: 'work/purple-b/texture.jpg', ratio: 1, alt: 'purple b logo over salted chocolate ice cream' },
-      { src: 'work/purple-b/berry.jpg', ratio: 1, alt: 'berry and vanilla scoops in a ceramic bowl' },
-      { src: 'work/purple-b/mango.jpg', ratio: 1, alt: 'mango scoops in a purple mug' },
-      { src: 'work/purple-b/chocolate.jpg', ratio: 1, alt: 'chocolate ice cream with coffee beans' },
-      { src: 'work/purple-b/saffron.jpg', ratio: 1, alt: 'saffron ice cream with lavender' },
-      { src: 'work/purple-b/vanilla.jpg', ratio: 1, alt: 'vanilla scoop in a stoneware bowl' },
-      { src: 'work/purple-b/coffee.jpg', ratio: 1, alt: 'coffee ice cream in a grey cup with lavender' }
+      { src: 'work/purple-b/portrait.jpg', ratio: 1, alt: 'woman with a purple b cone against a purple wall' },
+      { src: 'work/purple-b/coastal-cup.jpg', ratio: 1, alt: 'scoops in a striped cup by the sea' },
+      { src: 'work/purple-b/scoops.jpg', ratio: 1, alt: 'berry and vanilla scoops in a ceramic bowl' },
+      { src: 'work/purple-b/street.jpg', ratio: 1, alt: 'enjoying a cone on a coastal street' },
+      { src: 'work/purple-b/poster-scooped.jpg', ratio: 1, alt: 'poster: scooped by the coast, loved everywhere.' },
+      { src: 'work/purple-b/poster-pause.jpg', ratio: 1, alt: 'poster: pause for a scoop' },
+      { src: 'work/purple-b/mangalore.jpg', ratio: 1, alt: 'print: from mangalore, with flavor' },
+      { src: 'work/purple-b/coastal-at-heart.jpg', ratio: 1, alt: 'print: coastal illustration of a lighthouse and boat' },
+      { src: 'work/purple-b/cups.jpg', ratio: 1, alt: 'purple b ice cream cups' },
+      { src: 'work/purple-b/small-batch.jpg', ratio: 1, alt: 'small batch. big feeling.' },
+      { src: 'work/purple-b/tub.jpg', ratio: 1, alt: 'purple b tub in hand' },
+      { src: 'work/purple-b/menu.jpg', ratio: 1, alt: 'the purple b menu' },
+      { src: 'work/purple-b/kraft-bag.jpg', ratio: 1, alt: 'kraft takeaway bag' },
+      { src: 'work/purple-b/white-bag.jpg', ratio: 1, alt: 'illustrated takeaway bag' }
     ]
   },
   {
