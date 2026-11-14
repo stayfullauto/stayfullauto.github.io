@@ -9,7 +9,7 @@
  */
 window.FA_PROJECTS = [
   {
-    slug: 'aase', title: 'aase', lines: ['aase'],
+    slug: 'aase', vary: false, title: 'aase', lines: ['aase'],
     client: 'aase', year: '2026', type: 'branding',
     services: ['brand identity', 'logo design', 'illustration', 'packaging'],
     url: '',
@@ -96,23 +96,23 @@ window.FA_PROJECTS = [
     images: [
       { src: 'work/purple-b/portrait.jpg', ratio: 1, alt: 'woman with a purple b cone against a purple wall' },
       { src: 'work/purple-b/pink-cup.jpg', ratio: 1, alt: 'pink scoops in a stoneware cup' },
-      { src: 'work/purple-b/poster-scooped.jpg', ratio: 1, alt: 'poster: scooped by the coast, loved everywhere.' },
+      { src: 'work/purple-b/poster-scooped.jpg', ratio: 1, keep: true, alt: 'poster: scooped by the coast, loved everywhere.' },
       { src: 'work/purple-b/cones.jpg', ratio: 1, alt: 'three cones held up together' },
       { src: 'work/purple-b/saffron.jpg', ratio: 1, alt: 'saffron ice cream with crocus flowers' },
-      { src: 'work/purple-b/mangalore.jpg', ratio: 1, alt: 'print: from mangalore, with flavor' },
+      { src: 'work/purple-b/mangalore.jpg', ratio: 1, keep: true, alt: 'print: from mangalore, with flavor' },
       { src: 'work/purple-b/street.jpg', ratio: 1, alt: 'enjoying a cone on a coastal street' },
       { src: 'work/purple-b/choc-almond.jpg', ratio: 1, alt: 'chocolate and berry scoops with almonds' },
-      { src: 'work/purple-b/cups.jpg', ratio: 1, alt: 'purple b ice cream cups' },
+      { src: 'work/purple-b/cups.jpg', ratio: 1, keep: true, alt: 'purple b ice cream cups' },
       { src: 'work/purple-b/pink-swirl.jpg', ratio: 1, alt: 'berry ripple scoops in a cup' },
-      { src: 'work/purple-b/menu.jpg', ratio: 1, alt: 'the purple b menu' },
+      { src: 'work/purple-b/menu.jpg', ratio: 1, keep: true, alt: 'the purple b menu' },
       { src: 'work/purple-b/coastal-cup.jpg', ratio: 1, alt: 'scoops in a striped cup by the sea' },
-      { src: 'work/purple-b/poster-pause.jpg', ratio: 1, alt: 'poster: pause for a scoop' },
+      { src: 'work/purple-b/poster-pause.jpg', ratio: 1, keep: true, alt: 'poster: pause for a scoop' },
       { src: 'work/purple-b/coral.jpg', ratio: 1, alt: 'coral scoops in a speckled cup' },
-      { src: 'work/purple-b/coastal-at-heart.jpg', ratio: 1, alt: 'print: coastal illustration of a lighthouse and boat' },
-      { src: 'work/purple-b/tub.jpg', ratio: 1, alt: 'purple b tub in hand' },
+      { src: 'work/purple-b/coastal-at-heart.jpg', ratio: 1, keep: true, alt: 'print: coastal illustration of a lighthouse and boat' },
+      { src: 'work/purple-b/tub.jpg', ratio: 1, keep: true, alt: 'purple b tub in hand' },
       { src: 'work/purple-b/scoops.jpg', ratio: 1, alt: 'berry and vanilla scoops in a ceramic bowl' },
-      { src: 'work/purple-b/small-batch.jpg', ratio: 1, alt: 'small batch. big feeling.' },
-      { src: 'work/purple-b/kraft-bag.jpg', ratio: 1, alt: 'kraft takeaway bag' },
+      { src: 'work/purple-b/small-batch.jpg', ratio: 1, keep: true, alt: 'small batch. big feeling.' },
+      { src: 'work/purple-b/kraft-bag.jpg', ratio: 1, keep: true, alt: 'kraft takeaway bag' },
       { src: 'work/purple-b/almond.jpg', ratio: 1, alt: 'vanilla scoops with almonds and dried berries' }
     ]
   },
