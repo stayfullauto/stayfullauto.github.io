@@ -21,18 +21,12 @@ window.FA_PROJECTS = [
     ],
     colors: [['aase red', '#CE110D'], ['fresh cream white', '#FFFFFF'], ['baker\u2019s black', '#000000']],
     images: [
-      { src: 'work/aase/logo-red.jpg', ratio: 16 / 9, wide: true, alt: 'aase logo in white on red' },
-      { src: 'work/aase/tart.jpg', ratio: 9 / 16, alt: 'aase poster with a custard pastry' },
-      { src: 'work/aase/cakes.jpg', ratio: 9 / 16, alt: 'aase poster with slices of cake' },
-      { src: 'work/aase/illustration.jpg', ratio: 9 / 16, alt: 'hand-drawn illustration of a baker piping a cake' },
-      { src: 'work/aase/pattern.jpg', ratio: 9 / 16, alt: 'repeating aase wordmark pattern' },
-      { src: 'work/aase/logo-white.jpg', ratio: 16 / 9, wide: true, alt: 'aase logo in red on white' },
-      { src: 'work/aase/muffins.jpg', ratio: 9 / 16, alt: 'aase poster with a tray of muffins' },
-      { src: 'work/aase/croissants.jpg', ratio: 9 / 16, alt: 'aase poster with croissants' },
-      { src: 'work/aase/croissants-oven.jpg', ratio: 9 / 16, alt: 'aase poster with croissants in an oven' },
-      { src: 'work/aase/cheesecake.jpg', ratio: 9 / 16, alt: 'aase poster with a slice of biscoff cheesecake' },
-      { src: 'work/aase/cookie.jpg', ratio: 9 / 16, alt: 'aase poster with a chocolate cookie' },
-      { src: 'work/aase/bag.jpg', ratio: 9 / 16, alt: 'aase paper bag' }
+      { src: 'work/aase/menu-poster.jpg', ratio: 0.8000, alt: 'aase poster: banoffee cookie with the menu of bakes' },
+      { src: 'work/aase/poster-print.jpg', ratio: 0.8000, alt: 'folded aase poster with the baker illustration, beside a croissant' },
+      { src: 'work/aase/made-for-you.jpg', ratio: 0.8000, alt: 'made for your aase. croissant held up on red' },
+      { src: 'work/aase/craving.jpg', ratio: 0.8000, alt: 'your craving, our craft. croissant pulled apart' },
+      { src: 'work/aase/every-bite.jpg', ratio: 0.8000, alt: 'aase, in every bite. honey cake on marble' },
+      { src: 'work/aase/illustration.jpg', ratio: 0.8000, alt: 'aase illustration of a happy baker eating cake' }
     ]
   },
   {
