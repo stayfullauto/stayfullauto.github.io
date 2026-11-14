@@ -113,7 +113,7 @@ window.FA_PROJECTS = [
       { src: 'work/purple-b/scoops.jpg', ratio: 1, alt: 'berry and vanilla scoops in a ceramic bowl' },
       { src: 'work/purple-b/small-batch.jpg', ratio: 1, alt: 'small batch. big feeling.' },
       { src: 'work/purple-b/kraft-bag.jpg', ratio: 1, alt: 'kraft takeaway bag' },
-      { src: 'work/purple-b/white-bag.jpg', ratio: 1, alt: 'illustrated takeaway bag' }
+      { src: 'work/purple-b/almond.jpg', ratio: 1, alt: 'vanilla scoops with almonds and dried berries' }
     ]
   },
   {
