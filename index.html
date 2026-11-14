@@ -10,7 +10,7 @@
 <script>try{if(sessionStorage.getItem('fa-wipe')==='1')document.documentElement.classList.add('wiping');if(sessionStorage.getItem('fa-smart'))document.documentElement.classList.add('smart');if(sessionStorage.getItem('fa-home'))document.documentElement.classList.add('homing')}catch(e){}</script>
 <style>html.wiping body::after{content:'';position:fixed;inset:0;background:#111;z-index:299}html.smart,html.smart body,html.smart #view{background:var(--paper,#fff)!important}html.homing body::after{content:'';position:fixed;inset:0;background:var(--paper,#fff);z-index:299;transition:opacity .8s ease}html.homing.home-go body::after{opacity:0}</style>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
-<link rel="preload" href="model/mask.glb?v=rg2" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="model/mask.glb?v=m2r" as="fetch" crossorigin="anonymous">
 <link rel="modulepreload" href="vendor/three.module.min.js">
 <link rel="modulepreload" href="vendor/jsm/loaders/GLTFLoader.js">
 <link rel="modulepreload" href="vendor/jsm/utils/BufferGeometryUtils.js">
@@ -613,7 +613,7 @@ if (art && renderer) {
 
   // Stone: a hand-made "matcap", a picture of a lit grey stone ball, wrapped onto the mask.
   // Pale highs, deep charcoal lows and a fine grain, so it reads like the carved relief in the illustration.
-  const TINT = [0xff, 0xff, 0xff];   // neutral: the red lacquer and gold trim are painted on the model itself
+  const TINT = [0xe0, 0x30, 0x1e];   // mask colour: signal red #E0301E
   function stone() {
     const S = 512, c = document.createElement('canvas'); c.width = c.height = S;
     const g = c.getContext('2d'), img = g.createImageData(S, S), d = img.data;
@@ -627,9 +627,9 @@ if (art && renderer) {
       l -= 0.2 * Math.pow(Math.min(1, r2), 3);                           // dark rims, like the deep cuts
       l += (rnd() - 0.5) * 0.09;                                         // stone grain
       // tint: shadows deepen toward near-black, mid-tones sit on #5539cc, highlights lift toward lavender
-      const t = Math.max(0, Math.min(1, l / 0.62)), u = Math.pow(Math.max(0, Math.min(1, (l - 0.62) / 0.38)), 1.6);
+      const t = Math.max(0, Math.min(1, l / 0.62)), u = Math.max(0, Math.min(1, (l - 0.62) / 0.38));
       for (let k = 0; k < 3; k++) {
-        const base = TINT[k], hi = Math.min(255, base * 1.9 + 30);
+        const base = TINT[k], hi = base + (255 - base) * 0.5;
         d[i + k] = Math.max(0, Math.min(255, l < 0.62 ? base * Math.pow(t, 1.15) : base + (hi - base) * u));
       }
       d[i + 3] = 255;
@@ -637,7 +637,7 @@ if (art && renderer) {
     g.putImageData(img, 0, 0);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
   }
-  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xffffff, vertexColors: true, side: THREE.DoubleSide });
+  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xffffff, side: THREE.DoubleSide });
 
   let ready = false, unit = 1, W = 0, H = 0;   // unit = world units per screen pixel at the model's depth
   function size() {
@@ -650,7 +650,7 @@ if (art && renderer) {
 
   // which way round the model faces when it arrives; this turns it to look straight at you
   const FRONT = qs.has('front') ? +qs.get('front') : 0;
-  new GLTFLoader().load('model/mask.glb?v=rg2', (gltf) => {
+  new GLTFLoader().load('model/mask.glb?v=m2r', (gltf) => {
     const m = gltf.scene;
     m.traverse((o) => { if (o.isMesh) o.material = mat; });
     m.updateMatrixWorld(true);
