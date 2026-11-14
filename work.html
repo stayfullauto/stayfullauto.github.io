@@ -210,14 +210,14 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
 .p-copy .body p{margin:0 0 1em;max-width:56ch;color:#444}
 @media (max-width:760px){.p-copy{grid-template-columns:1fr}}
 .p-gal{display:flex;flex-direction:column;gap:clamp(10px,1.4vw,20px);margin:clamp(48px,8vw,120px) var(--gut) 0}
-.p-mas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.4vw,20px);align-items:start}.p-mas>div{display:flex;flex-direction:column;gap:clamp(10px,1.4vw,20px)}.p-mas>div+div{padding-top:clamp(40px,7vw,120px)}
+.p-mas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.4vw,20px);align-items:start}
 .p-gal figure{margin:0;grid-column:span 1;position:relative;overflow:hidden;background:var(--wash)}
 .p-gal figure.wide{grid-column:1/-1}
 .p-gal img,.p-gal video{display:block;width:100%;height:100%;object-fit:cover}
 .ph{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:space-between;padding:14px 16px;font:500 12px var(--body);color:var(--mute);
   background:radial-gradient(120% 90% at 30% 20%,#f6f6f6 0%,#e4e4e4 55%,#d4d4d4 100%)}
 .ph b{font:400 clamp(28px,5vw,72px)/1 var(--display);color:#c2c2c2;position:absolute;left:16px;top:12px;letter-spacing:-0.03em}
-@media (max-width:560px){.p-mas{grid-template-columns:1fr}.p-mas>div+div{padding-top:0}}
+@media (max-width:560px){.p-mas{grid-template-columns:1fr}}
 .p-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:clamp(10px,1.4vw,20px);margin:clamp(40px,6vw,80px) var(--gut) 0}
 .p-cols div{display:flex;flex-direction:column;gap:4px;font:500 13px var(--body)}
 .p-cols i{display:block;aspect-ratio:3/2;border:1px solid var(--line);margin-bottom:8px}
@@ -269,16 +269,13 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
         : im.src ? '<img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title + ' ' + n) + '" loading="lazy">'
                 : '<div class="ph"><b>' + esc(p.title) + '</b><span>image ' + n + '</span><span>replace in projects.js</span></div>') + '</figure>';
     }
-    // Non-wide images flow into two columns, each image placed under the shorter column, so heights
-    // don't line up in rows. Photos and squares get a varied crop (taller / wider) for rhythm;
+    // Non-wide images sit in rows of two, top-aligned, heights free to differ. Photos and squares get a varied crop (taller / wider) for rhythm;
     // slides and pages (landscape) keep their own shape so nothing with text gets cut.
     var VARY = [1, 1.3, 1.12, 1.3, 1, 1.12];   // only ever wider: trims top and bottom, never the sides
     var gal = '', run = [], vi = 0;
     function flush() {
-      if (!run.length) return;
-      var cols = [[], []], h = [0, 0];
-      run.forEach(function (it) { var c = h[0] <= h[1] ? 0 : 1; cols[c].push(fig(it.im, it.k, it.r)); h[c] += 1 / it.r; });
-      gal += '<div class="p-mas"><div>' + cols[0].join('') + '</div><div>' + cols[1].join('') + '</div></div>';
+      // rows of two, tops aligned, each image keeping its own height
+      if (run.length) gal += '<div class="p-mas">' + run.map(function (it) { return fig(it.im, it.k, it.r); }).join('') + '</div>';
       run = [];
     }
     (p.images || []).forEach(function (im, k) {
