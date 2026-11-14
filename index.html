@@ -613,6 +613,7 @@ if (art && renderer) {
 
   // Stone: a hand-made "matcap", a picture of a lit grey stone ball, wrapped onto the mask.
   // Pale highs, deep charcoal lows and a fine grain, so it reads like the carved relief in the illustration.
+  const TINT = [0x55, 0x39, 0xcc];   // mask colour #5539cc
   function stone() {
     const S = 512, c = document.createElement('canvas'); c.width = c.height = S;
     const g = c.getContext('2d'), img = g.createImageData(S, S), d = img.data;
@@ -625,13 +626,18 @@ if (art && renderer) {
       l = 0.1 + 0.8 * Math.pow(l, 1.25) + 0.12 * Math.pow(nz, 6);        // key light plus a soft front fill
       l -= 0.2 * Math.pow(Math.min(1, r2), 3);                           // dark rims, like the deep cuts
       l += (rnd() - 0.5) * 0.09;                                         // stone grain
-      const v = Math.max(0, Math.min(255, l * 238));
-      d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+      // tint: shadows deepen toward near-black, mid-tones sit on #5539cc, highlights lift toward lavender
+      const t = Math.max(0, Math.min(1, l / 0.62)), u = Math.max(0, Math.min(1, (l - 0.62) / 0.38));
+      for (let k = 0; k < 3; k++) {
+        const base = TINT[k], hi = base + (255 - base) * 0.55;
+        d[i + k] = Math.max(0, Math.min(255, l < 0.62 ? base * Math.pow(t, 1.15) : base + (hi - base) * u));
+      }
+      d[i + 3] = 255;
     }
     g.putImageData(img, 0, 0);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
   }
-  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xd6d6d6, side: THREE.DoubleSide });
+  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xffffff, side: THREE.DoubleSide });
 
   let ready = false, unit = 1, W = 0, H = 0;   // unit = world units per screen pixel at the model's depth
   function size() {
