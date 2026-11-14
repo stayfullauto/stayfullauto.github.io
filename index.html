@@ -411,7 +411,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   for (var j = 0; j < N; j++) for (var i = 0; i < N; i++) {
     var cx = i / (N - 1) * 2 - 1, cy = j / (N - 1) * 2 - 1, o = (j * N + i) * 4;
     var ax = cx * (1 - cy * cy) * 0.7;          // sides pinch in around the middle of the screen
-    var ay = (cx * cx - 0.33) * 0.9;            // rows bow, ends trailing the middle
+    var ay = 0;                                 // rows stay straight: top and bottom edges don't bend
     img.data[o] = 128 + 127 * ax; img.data[o + 1] = 128 + 127 * ay; img.data[o + 2] = 128; img.data[o + 3] = 255;
   }
   g.putImageData(img, 0, 0);
