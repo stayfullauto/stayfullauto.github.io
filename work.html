@@ -343,10 +343,10 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
     var target = scrollY;
     cur += (target - cur) * 0.085;
     if (Math.abs(target - cur) < 0.05) cur = target;
-    vel += ((cur - last) - vel) * 0.12; last = cur;   // slower settle: the bend lingers a beat
-    var v = Math.max(-70, Math.min(70, vel));
+    vel += ((cur - last) - vel) * 0.2; last = cur;
+    var v = Math.max(-45, Math.min(45, vel));
     layer.style.transform = 'translate3d(0,' + (-cur).toFixed(2) + 'px,0)';
-    var amt = Math.max(-115, Math.min(115, v * Math.min(innerWidth, 900) / 210));   // stronger on bigger screens, signed by direction
+    var amt = v * Math.min(innerWidth, 900) / 300;   // stronger on bigger screens, signed by direction
     if (Math.abs(amt) > 0.4) {
       disp.setAttribute('scale', amt.toFixed(1));
       if (!on) { view.style.filter = 'url(#warp)'; on = true; }
