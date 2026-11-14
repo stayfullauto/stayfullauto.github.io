@@ -227,29 +227,6 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
 .p-next:hover > span{transform:translateX(clamp(8px,2vw,32px));font-style:italic}
 .p-foot{display:flex;justify-content:space-between;gap:16px;margin:56px var(--gut) 0;padding:18px 0 28px;border-top:1px solid var(--line);font:500 13px var(--body);color:var(--mute)}
 .p-foot a{color:var(--ink)}
-/* ---- split layout (try-out): project info pinned on the left, images scroll on the right ---- */
-html.split .ps{display:grid;grid-template-columns:minmax(0,34fr) minmax(0,66fr);gap:clamp(28px,4vw,72px);padding:0 var(--gut)}
-html.split .ps-info{align-self:start;padding-top:clamp(28px,6vh,64px);max-height:calc(100vh - 90px);overflow:auto;scrollbar-width:none;will-change:transform}
-html.split .ps-info::-webkit-scrollbar{display:none}
-html.split .ps-info .p-head{padding:0}html.split .ps-info > *{padding-left:0;padding-right:0}
-html.split .p-title{font-size:clamp(56px,7.4vw,128px)}
-html.split .p-title span:nth-child(2) i{padding-left:clamp(16px,3vw,48px)}
-html.split .ps-info .p-meta{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 20px;margin:clamp(20px,2.4vw,32px) 0 0;font-size:12px}html.split .ps-info .p-meta>div:nth-child(3){grid-column:1/-1;order:9}html.split .ps-info .p-meta>div:nth-child(3) dd br{display:none}html.split .ps-info .p-meta>div:nth-child(3) dd span:not(:first-child)::before{content:' · ';color:var(--mute)}
-html.split .ps-info .p-copy{display:block;margin:clamp(22px,2.6vw,34px) 0 0;padding:0}
-html.split .ps-info .p-copy .lead{font-size:clamp(18px,1.5vw,22px);margin-bottom:14px}
-html.split .ps-info .p-copy .body p{font-size:13px;line-height:1.5;margin-bottom:.8em}
-html.split .ps-info .p-cols{display:flex;flex-wrap:wrap;gap:14px;margin:clamp(18px,2vw,28px) 0 0;padding:0}
-html.split .ps-info .p-cols div{font-size:11px}
-html.split .ps-info .p-cols i{width:44px;height:44px;aspect-ratio:auto;margin-bottom:6px}html.split .ps-info .p-cols div{width:auto;min-width:56px}
-html.split .ps-main{padding-top:clamp(28px,6vh,64px)}
-html.split .ps-main .p-gal{margin:0;padding-top:0}
-html.split .ps-main .p-next,html.split .ps-main .p-foot{margin-left:0;margin-right:0}
-html.split .ps-main .p-next > span{font-size:clamp(48px,8vw,140px)}
-html.split.smart #proj > .ps{opacity:1;transform:none}
-html.split.smart .ps-info > :not(.p-head),html.split.smart .ps-main{opacity:0;transform:translateY(48px)}
-html.split.smart.smart-go .ps-info > :not(.p-head),html.split.smart.smart-go .ps-main{opacity:1;transform:none;transition:opacity .7s ease,transform 1s cubic-bezier(.2,.8,.2,1)}
-html.split.smart.smart-go .ps-main{transition-delay:.12s}
-
 </style>
 </head>
 <body>
@@ -269,12 +246,9 @@ html.split.smart.smart-go .ps-main{transition-delay:.12s}
 (function () {
   var all = window.FA_PROJECTS || [], el = document.getElementById('proj');
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  // try-out switch: work.html?layout=split (stays on in this tab) / ?layout=classic
-  var LAYOUT = (function () { try { var q = new URLSearchParams(location.search).get('layout'); if (q) sessionStorage.setItem('fa-layout', q); return q || sessionStorage.getItem('fa-layout') || ''; } catch (e) { return ''; } })();
   function render() {
     var slug = location.hash.slice(1), i = all.findIndex(function (p) { return p.slug === slug; }), p = all[i];
     if (!p) {
-      document.documentElement.classList.remove('split'); window.__pin = null;
       // no project named: the full list of work
       document.title = 'work · full auto';
       el.innerHTML = '<header class="p-head"><h1 class="p-title"><span><i>all work</i></span></h1></header>' +
@@ -294,22 +268,16 @@ html.split.smart.smart-go .ps-main{transition-delay:.12s}
         : im.src ? '<img src="' + esc(im.src) + '" alt="' + esc(im.alt || p.title + ' ' + n) + '" loading="lazy">'
                 : '<div class="ph"><b>' + esc(p.title) + '</b><span>image ' + n + '</span><span>replace in projects.js</span></div>') + '</figure>';
     }).join('');
-    var split = LAYOUT === 'split' && matchMedia('(min-width: 900px)').matches;
-    document.documentElement.classList.toggle('split', split);
-    var info =
+    el.innerHTML =
       '<header class="p-head"><h1 class="p-title">' + p.lines.map(function (l) { return '<span><i>' + esc(l) + '</i></span>'; }).join('') + '</h1></header>' +
       '<dl class="p-meta"><div><dt>client</dt><dd>' + esc(p.client) + '</dd></div><div><dt>what it is</dt><dd>' + esc(p.type) + '</dd></div>' +
-      '<div><dt>what we did</dt><dd>' + p.services.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('<br>') + '</dd></div>' +
+      '<div><dt>what we did</dt><dd>' + p.services.map(esc).join('<br>') + '</dd></div>' +
       '<div><dt>year</dt><dd>' + esc(p.year) + (p.url ? '<br><a href="' + esc(p.url) + '" target="_blank" rel="noopener">visit \u2197</a>' : '') + '</dd></div></dl>' +
       '<section class="p-copy"><p class="lead">' + esc(p.intro) + '</p><div class="body">' + p.body.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div></section>' +
       (p.colors ? '<section class="p-cols">' + p.colors.map(function (c) { return '<div><i style="background:' + esc(c[1]) + '"></i><b>' + esc(c[0]) + '</b><span>' + esc(c[1]) + '</span></div>'; }).join('') + '</section>' : '') +
-      '';
-    var rest =
       '<section class="p-gal">' + gal + '</section>' +
       '<a class="p-next" href="work.html#' + next.slug + '"><small><span>next project</span><span>' + (((i + 1) % all.length) + 1) + ' / ' + all.length + '</span></small><span>' + esc(next.title) + '</span></a>' +
       '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. all in.</span></footer>';
-    el.innerHTML = split ? '<div class="ps"><aside class="ps-info">' + info + '</aside><div class="ps-main">' + rest + '</div></div>' : info + rest;
-    window.__pin = split ? el.querySelector('.ps-info') : null;
     // muted loops: start them explicitly, some browsers hold autoplay on injected video
     el.querySelectorAll('.p-gal video').forEach(function (v) { v.muted = true; var pr = v.play && v.play(); if (pr && pr.catch) pr.catch(function () {}); });
     scrollTo(0, 0);
@@ -378,7 +346,6 @@ html.split.smart.smart-go .ps-main{transition-delay:.12s}
     vel += ((cur - last) - vel) * 0.2; last = cur;
     var v = Math.max(-45, Math.min(45, vel));
     layer.style.transform = 'translate3d(0,' + (-cur).toFixed(2) + 'px,0)';
-    if (window.__pin) window.__pin.style.transform = 'translate3d(0,' + cur.toFixed(2) + 'px,0)';
     var amt = v * Math.min(innerWidth, 900) / 300;   // stronger on bigger screens, signed by direction
     if (Math.abs(amt) > 0.4) {
       disp.setAttribute('scale', amt.toFixed(1));
