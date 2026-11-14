@@ -613,7 +613,7 @@ if (art && renderer) {
 
   // Stone: a hand-made "matcap", a picture of a lit grey stone ball, wrapped onto the mask.
   // Pale highs, deep charcoal lows and a fine grain, so it reads like the carved relief in the illustration.
-  const TINT = [0x2b, 0x2f, 0x36];   // mask colour: gunmetal #2B2F36
+  const TINT = [0xe0, 0x30, 0x1e];   // mask colour: signal red #E0301E
   function stone() {
     const S = 512, c = document.createElement('canvas'); c.width = c.height = S;
     const g = c.getContext('2d'), img = g.createImageData(S, S), d = img.data;
@@ -629,7 +629,7 @@ if (art && renderer) {
       // tint: shadows deepen toward near-black, mid-tones sit on #5539cc, highlights lift toward lavender
       const t = Math.max(0, Math.min(1, l / 0.62)), u = Math.max(0, Math.min(1, (l - 0.62) / 0.38));
       for (let k = 0; k < 3; k++) {
-        const base = TINT[k], hi = base + (255 - base) * 0.7;
+        const base = TINT[k], hi = base + (255 - base) * 0.5;
         d[i + k] = Math.max(0, Math.min(255, l < 0.62 ? base * Math.pow(t, 1.15) : base + (hi - base) * u));
       }
       d[i + 3] = 255;
