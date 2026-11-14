@@ -10,7 +10,7 @@
 <script>try{if(sessionStorage.getItem('fa-wipe')==='1')document.documentElement.classList.add('wiping');if(sessionStorage.getItem('fa-smart'))document.documentElement.classList.add('smart');if(sessionStorage.getItem('fa-home'))document.documentElement.classList.add('homing')}catch(e){}</script>
 <style>html.wiping body::after{content:'';position:fixed;inset:0;background:#111;z-index:299}html.smart,html.smart body,html.smart #view{background:var(--paper,#fff)!important}html.homing body::after{content:'';position:fixed;inset:0;background:var(--paper,#fff);z-index:299;transition:opacity .8s ease}html.homing.home-go body::after{opacity:0}</style>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
-<link rel="preload" href="model/mask.glb?v=m2s" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="model/mask.glb?v=rg2" as="fetch" crossorigin="anonymous">
 <link rel="modulepreload" href="vendor/three.module.min.js">
 <link rel="modulepreload" href="vendor/jsm/loaders/GLTFLoader.js">
 <link rel="modulepreload" href="vendor/jsm/utils/BufferGeometryUtils.js">
@@ -613,7 +613,7 @@ if (art && renderer) {
 
   // Stone: a hand-made "matcap", a picture of a lit grey stone ball, wrapped onto the mask.
   // Pale highs, deep charcoal lows and a fine grain, so it reads like the carved relief in the illustration.
-  const TINT = [0x6e, 0x48, 0x22];   // mask colour: bronze #6E4822
+  const TINT = [0xff, 0xff, 0xff];   // neutral: the red lacquer and gold trim are painted on the model itself
   function stone() {
     const S = 512, c = document.createElement('canvas'); c.width = c.height = S;
     const g = c.getContext('2d'), img = g.createImageData(S, S), d = img.data;
@@ -637,7 +637,7 @@ if (art && renderer) {
     g.putImageData(img, 0, 0);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
   }
-  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xffffff, side: THREE.DoubleSide });
+  const mat = new THREE.MeshMatcapMaterial({ matcap: stone(), color: 0xffffff, vertexColors: true, side: THREE.DoubleSide });
 
   let ready = false, unit = 1, W = 0, H = 0;   // unit = world units per screen pixel at the model's depth
   function size() {
@@ -650,7 +650,7 @@ if (art && renderer) {
 
   // which way round the model faces when it arrives; this turns it to look straight at you
   const FRONT = qs.has('front') ? +qs.get('front') : 0;
-  new GLTFLoader().load('model/mask.glb?v=m2s', (gltf) => {
+  new GLTFLoader().load('model/mask.glb?v=rg2', (gltf) => {
     const m = gltf.scene;
     m.traverse((o) => { if (o.isMesh) o.material = mat; });
     m.updateMatrixWorld(true);
