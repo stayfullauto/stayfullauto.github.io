@@ -84,16 +84,17 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .logos li{display:flex;align-items:center;justify-content:center;aspect-ratio:2/1;background:var(--wash);color:#b0b0b0;font:500 12px var(--body)}
 @media (max-width:760px){.logos{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .svc{list-style:none;margin:0;padding:0}
-/* what we do: pinned while rows of pills slide sideways with the scroll */
-.hs{position:relative;height:240vh;padding:0!important}
-.hs-pin{height:100vh;display:flex;flex-direction:column;justify-content:center;gap:clamp(20px,3vh,36px);overflow:hidden;will-change:transform}
-.hs .h2{margin-bottom:0}
-.hs-rows{display:flex;flex-direction:column;gap:clamp(10px,1.6vh,16px)}
-.hrow{display:flex;gap:clamp(10px,1.2vw,16px);width:max-content;will-change:transform}
-.hrow span{flex:none;padding:.55em 1.15em;border:1.5px dashed #bdbdbd;border-radius:999px;font:500 clamp(18px,2.3vw,32px)/1 var(--body);letter-spacing:-0.02em;color:var(--ink);white-space:nowrap}
-.hs-end{text-align:center}
-.hs-big{margin:0;font:600 clamp(28px,3.6vw,52px)/1.05 var(--body);letter-spacing:-0.035em}
-.hs-sub{margin:.35em 0 0;font:500 clamp(22px,2.6vw,38px)/1.1 var(--body);letter-spacing:-0.03em;color:#9a9893}
+/* what we do: three tickers that run on their own, the middle one the other way */
+.mqs{display:flex;flex-direction:column;gap:clamp(6px,1vw,14px);margin-top:clamp(36px,5vw,64px);overflow:hidden}
+.mq{display:flex;width:max-content}
+.mq-t{display:flex;align-items:center;flex:none;animation:mq 46s linear infinite}
+.mq.rev .mq-t{animation-direction:reverse;animation-duration:52s}
+.mq:nth-child(3) .mq-t{animation-duration:40s}
+.mq span{font:400 clamp(40px,7vw,104px)/1.05 var(--display);letter-spacing:-0.03em;white-space:nowrap;color:var(--ink)}
+.mq:nth-child(2) span{font-style:italic;color:#8a8a8a}
+.mq i{font-style:normal;font-size:clamp(16px,2vw,28px);color:var(--ink);margin:0 clamp(16px,2.4vw,36px)}
+.mqs:hover .mq-t{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-100%)}}
 
 .svc li{display:grid;grid-template-columns:3.2em minmax(0,.9fr) minmax(0,1.1fr);gap:20px;padding:28px 0 26px;border-bottom:1px solid var(--line);align-items:baseline}
 .svc .n{font:500 12px var(--body);color:var(--mute)}
@@ -280,21 +281,16 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     </div>
   </section>
 
-  <section id="services" class="hs">
-    <div class="hs-pin">
-      <div class="wrap">
-        <p class="eyebrow2">WHAT WE DO</p>
-        <h2 class="h2">we've got you covered.</h2>
-      </div>
-      <div class="hs-rows" aria-label="what we do">
-        <div class="hrow" data-dir="1"><span>websites</span><span>web design</span><span>front-end development</span><span>landing pages</span><span>ui/ux design</span><span>mobile apps</span><span>mvp builds</span><span>design systems</span><span>digital products</span><span>websites</span><span>web design</span><span>front-end development</span><span>landing pages</span><span>ui/ux design</span><span>mobile apps</span><span>mvp builds</span><span>design systems</span><span>digital products</span></div>
-        <div class="hrow" data-dir="-1"><span>branding</span><span>logos</span><span>visual identity</span><span>brand guides</span><span>brand strategy</span><span>art direction</span><span>icons</span><span>illustration</span><span>packaging</span><span>print design</span><span>branding</span><span>logos</span><span>visual identity</span><span>brand guides</span><span>brand strategy</span><span>art direction</span><span>icons</span><span>illustration</span><span>packaging</span><span>print design</span></div>
-        <div class="hrow" data-dir="1"><span>social media</span><span>campaigns</span><span>display ads</span><span>slide decks</span><span>pitch decks</span><span>email</span><span>motion</span><span>marketing collateral</span><span>+ more</span><span>social media</span><span>campaigns</span><span>display ads</span><span>slide decks</span><span>pitch decks</span><span>email</span><span>motion</span><span>marketing collateral</span><span>+ more</span></div>
-      </div>
-      <div class="wrap hs-end">
-        <p class="hs-big">apps, websites, logos &amp; more.</p>
-        <p class="hs-sub">all the things you need under one roof.</p>
-      </div>
+  <section id="services">
+    <div class="wrap">
+      <p class="eyebrow2">WHAT WE DO</p>
+      <h2 class="h2">we've got you covered.</h2>
+      <p class="lead2">from the first sketch to the final pixel, we make things that look the part and do the job.</p>
+    </div>
+    <div class="mqs" aria-label="what we do">
+      <div class="mq"><div class="mq-t"><span>websites</span><i aria-hidden="true">&#10033;</i><span>web design</span><i aria-hidden="true">&#10033;</i><span>front-end development</span><i aria-hidden="true">&#10033;</i><span>landing pages</span><i aria-hidden="true">&#10033;</i><span>ui/ux design</span><i aria-hidden="true">&#10033;</i><span>mobile apps</span><i aria-hidden="true">&#10033;</i><span>mvp builds</span><i aria-hidden="true">&#10033;</i><span>design systems</span><i aria-hidden="true">&#10033;</i><span>digital products</span><i aria-hidden="true">&#10033;</i></div><div class="mq-t" aria-hidden="true"><span>websites</span><i aria-hidden="true">&#10033;</i><span>web design</span><i aria-hidden="true">&#10033;</i><span>front-end development</span><i aria-hidden="true">&#10033;</i><span>landing pages</span><i aria-hidden="true">&#10033;</i><span>ui/ux design</span><i aria-hidden="true">&#10033;</i><span>mobile apps</span><i aria-hidden="true">&#10033;</i><span>mvp builds</span><i aria-hidden="true">&#10033;</i><span>design systems</span><i aria-hidden="true">&#10033;</i><span>digital products</span><i aria-hidden="true">&#10033;</i></div></div>
+      <div class="mq rev"><div class="mq-t"><span>branding</span><i aria-hidden="true">&#10033;</i><span>logos</span><i aria-hidden="true">&#10033;</i><span>visual identity</span><i aria-hidden="true">&#10033;</i><span>brand guides</span><i aria-hidden="true">&#10033;</i><span>brand strategy</span><i aria-hidden="true">&#10033;</i><span>art direction</span><i aria-hidden="true">&#10033;</i><span>icons</span><i aria-hidden="true">&#10033;</i><span>illustration</span><i aria-hidden="true">&#10033;</i><span>packaging</span><i aria-hidden="true">&#10033;</i><span>print design</span><i aria-hidden="true">&#10033;</i></div><div class="mq-t" aria-hidden="true"><span>branding</span><i aria-hidden="true">&#10033;</i><span>logos</span><i aria-hidden="true">&#10033;</i><span>visual identity</span><i aria-hidden="true">&#10033;</i><span>brand guides</span><i aria-hidden="true">&#10033;</i><span>brand strategy</span><i aria-hidden="true">&#10033;</i><span>art direction</span><i aria-hidden="true">&#10033;</i><span>icons</span><i aria-hidden="true">&#10033;</i><span>illustration</span><i aria-hidden="true">&#10033;</i><span>packaging</span><i aria-hidden="true">&#10033;</i><span>print design</span><i aria-hidden="true">&#10033;</i></div></div>
+      <div class="mq"><div class="mq-t"><span>social media</span><i aria-hidden="true">&#10033;</i><span>campaigns</span><i aria-hidden="true">&#10033;</i><span>display ads</span><i aria-hidden="true">&#10033;</i><span>slide decks</span><i aria-hidden="true">&#10033;</i><span>pitch decks</span><i aria-hidden="true">&#10033;</i><span>email</span><i aria-hidden="true">&#10033;</i><span>motion</span><i aria-hidden="true">&#10033;</i><span>marketing collateral</span><i aria-hidden="true">&#10033;</i></div><div class="mq-t" aria-hidden="true"><span>social media</span><i aria-hidden="true">&#10033;</i><span>campaigns</span><i aria-hidden="true">&#10033;</i><span>display ads</span><i aria-hidden="true">&#10033;</i><span>slide decks</span><i aria-hidden="true">&#10033;</i><span>pitch decks</span><i aria-hidden="true">&#10033;</i><span>email</span><i aria-hidden="true">&#10033;</i><span>motion</span><i aria-hidden="true">&#10033;</i><span>marketing collateral</span><i aria-hidden="true">&#10033;</i></div></div>
     </div>
   </section>
 
@@ -460,7 +456,6 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     vel += ((cur - last) - vel) * 0.2; last = cur;
     var v = Math.max(-45, Math.min(45, vel));
     layer.style.transform = 'translate3d(0,' + (-cur).toFixed(2) + 'px,0)';
-    if (window.__hs) window.__hs(cur);
     var amt = v * Math.min(innerWidth, 900) / 380;   // stronger on bigger screens, signed by direction
     if (Math.abs(amt) > 0.4) {
       disp.setAttribute('scale', amt.toFixed(1));
@@ -721,25 +716,5 @@ if (art && renderer) {
 </script>
 <script src="transition.js?v=1113"></script>
 
-<script>
-// what we do: hold the section on screen and slide the rows sideways as you scroll through it
-(function () {
-  var sec = document.getElementById('services'); if (!sec) return;
-  var pin = sec.querySelector('.hs-pin'), rows = [].slice.call(sec.querySelectorAll('.hrow'));
-  var layer = document.getElementById('smooth');
-  function top(el) { var y = 0; while (el && el !== layer) { y += el.offsetTop; el = el.offsetParent; } return y; }
-  window.__hs = function (cur) {
-    var t = top(sec), span = sec.offsetHeight - innerHeight;
-    var y = Math.max(0, Math.min(span, cur - t));
-    pin.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0)';
-    var p = span > 0 ? y / span : 0, W = innerWidth;
-    rows.forEach(function (r, i) {
-      var travel = Math.max(0, r.scrollWidth / 2 - W * 0.6) + W * 0.25, dir = +r.dataset.dir;
-      var x = dir > 0 ? -travel * p - i * 40 : -travel * (1 - p) - i * 40;
-      r.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,0)';
-    });
-  };
-})();
-</script>
 </body>
 </html>
