@@ -105,7 +105,7 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .lab-card:hover .lab-cta{transform:translateX(-50%) scale(1.06)}
 @media (max-width:760px){.lab-head{grid-template-columns:1fr;gap:0}.lab-head .h2{margin-bottom:24px}.lab-card{aspect-ratio:4/5}}
 /* the canvas */
-.pgm{position:fixed;inset:0;z-index:400;background:#0e0e0e;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .45s ease;touch-action:none;cursor:grab;
+.pgm{position:fixed;inset:0;z-index:400;user-select:none;-webkit-user-select:none;background:#0e0e0e;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .45s ease;touch-action:none;cursor:grab;
   background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1.2px);background-size:28px 28px}
 .pgm.open{opacity:1;pointer-events:auto}
 .pgm.drag{cursor:grabbing}
@@ -769,7 +769,7 @@ if (art && renderer) {
 <div class="pgm" id="pgm" role="dialog" aria-modal="true" aria-label="the lab" aria-hidden="true">
   <div class="pgm-world" id="pgmWorld"></div>
   <div class="pgm-top"><b>the lab</b><button type="button" class="pgm-close" id="pgmClose">close &times;</button></div>
-  <p class="pgm-hint">drag to explore &middot; scroll or pinch to zoom &middot; esc to close</p>
+  <p class="pgm-hint">drag to explore &middot; tap a piece to centre it &middot; esc to close</p>
 </div>
 <script>
 // Playground: carousel on the page; on click, every piece laid out on a canvas that repeats forever in every direction
@@ -818,35 +818,37 @@ if (art && renderer) {
     world.innerHTML = html;
     [].forEach.call(world.querySelectorAll('video'), function (v) { v.muted = true; });
   }
-  // camera: the world point at the centre of the screen, and the zoom
-  var cam = { x: 0, y: 0, s: 0.6 }, goal = null, raf = 0;
-  function minS() { return Math.max(innerWidth / (tileW * 1.6), innerHeight / (tileH * 1.6), 0.18); }
+  // camera: the world point at the centre of the screen. One fixed scale, no zooming.
+  // The view eases towards a target and keeps gliding after you let go, so dragging feels smooth.
+  var cam = { x: 0, y: 0, s: 1 }, tgt = { x: 0, y: 0 }, vel = { x: 0, y: 0 }, raf = 0, dragging = false;
+  function fixedScale() { return Math.max(0.36, Math.min(0.6, innerWidth / 1800)); }
   function apply() {
-    // keep the camera inside the middle tile; the copies around it make the edges seamless
-    cam.x = ((cam.x % tileW) + tileW) % tileW; cam.y = ((cam.y % tileH) + tileH) % tileH;
     var tx = innerWidth / 2 - cam.x * cam.s, ty = innerHeight / 2 - cam.y * cam.s;
     world.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + cam.s.toFixed(4) + ')';
-    var g = 28 * cam.s; M.style.backgroundSize = g + 'px ' + g + 'px'; M.style.backgroundPosition = tx + 'px ' + ty + 'px';
+    var g = 28 * cam.s; M.style.backgroundSize = g + 'px ' + g + 'px'; M.style.backgroundPosition = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px';
   }
-  function tick() {
-    raf = 0; if (!goal) return;
-    var k = 0.14; cam.x += (goal.x - cam.x) * k; cam.y += (goal.y - cam.y) * k; cam.s += (goal.s - cam.s) * k;
-    apply();
-    if (Math.abs(goal.x - cam.x) + Math.abs(goal.y - cam.y) > 0.5 || Math.abs(goal.s - cam.s) > 0.001) raf = requestAnimationFrame(tick); else goal = null;
+  function wrap() {
+    // keep the camera in the middle tile; the copies around it make the edges seamless
+    var ox = Math.floor(cam.x / tileW) * tileW, oy = Math.floor(cam.y / tileH) * tileH;
+    if (ox || oy) { cam.x -= ox; cam.y -= oy; tgt.x -= ox; tgt.y -= oy; }
   }
-  function flyTo(i, s) {
-    var sl = slots[i]; var cx = sl.x + sl.w / 2, cy = sl.y + sl.h / 2;
-    // pick the copy of that piece nearest to where the camera is
+  function loop() {
+    raf = 0;
+    if (!dragging) { tgt.x += vel.x; tgt.y += vel.y; vel.x *= 0.94; vel.y *= 0.94; }   // momentum after release
+    cam.x += (tgt.x - cam.x) * 0.18; cam.y += (tgt.y - cam.y) * 0.18;                   // eased follow
+    wrap(); apply();
+    var moving = Math.abs(tgt.x - cam.x) + Math.abs(tgt.y - cam.y) > 0.05 || Math.abs(vel.x) + Math.abs(vel.y) > 0.02;
+    if (dragging || moving) raf = requestAnimationFrame(loop);
+  }
+  function kick() { if (!raf) raf = requestAnimationFrame(loop); }
+  function centreOn(i, jump) {
+    var sl = slots[i], cx = sl.x + sl.w / 2, cy = sl.y + sl.h / 2;
     cx += Math.round((cam.x - cx) / tileW) * tileW; cy += Math.round((cam.y - cy) / tileH) * tileH;
-    goal = { x: cx, y: cy, s: s || Math.min(innerWidth * 0.78 / sl.w, (innerHeight - 160) / sl.h) };
-    if (!raf) raf = requestAnimationFrame(tick);
+    vel.x = vel.y = 0; tgt.x = cx; tgt.y = cy;
+    if (jump) { cam.x = cx; cam.y = cy; apply(); } else kick();
   }
   function open(i) {
-    build();
-    var sl = slots[i];
-    var fit = Math.min(innerWidth * 0.78 / sl.w, (innerHeight - 160) / sl.h);
-    cam = { x: sl.x + sl.w / 2, y: sl.y + sl.h / 2, s: fit * 0.82 }; apply();
-    goal = { x: cam.x, y: cam.y, s: fit }; if (!raf) raf = requestAnimationFrame(tick);
+    build(); cam.s = fixedScale(); centreOn(i, true);
     M.classList.add('open'); M.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('pg-open');
     [].forEach.call(world.querySelectorAll('video'), function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
     document.getElementById('pgmClose').focus({ preventScroll: true });
@@ -857,47 +859,44 @@ if (art && renderer) {
   }
   document.getElementById('pgmClose').addEventListener('click', close);
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && M.classList.contains('open')) close(); });
-  // pan with drag (mouse or one finger), pinch to zoom with two fingers
-  var pts = {}, last = null, pinch = null, travel = 0;
+  // drag to pan (mouse or finger); a tap on a piece glides it to the centre
+  var last = null, travel = 0, pid = null, hist = [];
   M.addEventListener('pointerdown', function (e) {
-    if (e.target.closest('.pgm-close')) return;
-    M.setPointerCapture(e.pointerId); pts[e.pointerId] = { x: e.clientX, y: e.clientY }; goal = null; travel = 0;
-    var ids = Object.keys(pts);
-    if (ids.length === 1) { last = { x: e.clientX, y: e.clientY }; M.classList.add('drag'); }
-    if (ids.length === 2) { var a = pts[ids[0]], b = pts[ids[1]]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: cam.s }; }
+    if (e.target.closest('.pgm-close') || pid !== null) return;
+    pid = e.pointerId; M.setPointerCapture(pid); dragging = true; travel = 0; vel.x = vel.y = 0;
+    last = { x: e.clientX, y: e.clientY }; hist = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
+    M.classList.add('drag'); kick();
   });
   M.addEventListener('pointermove', function (e) {
-    if (!pts[e.pointerId]) return; pts[e.pointerId] = { x: e.clientX, y: e.clientY };
-    var ids = Object.keys(pts);
-    if (ids.length === 2 && pinch) {
-      var a = pts[ids[0]], b = pts[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y);
-      zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, Math.max(minS(), Math.min(2.5, pinch.s * d / pinch.d)));
-      travel += 10; return;
-    }
-    if (last) { var dx = e.clientX - last.x, dy = e.clientY - last.y; travel += Math.abs(dx) + Math.abs(dy); cam.x -= dx / cam.s; cam.y -= dy / cam.s; last = { x: e.clientX, y: e.clientY }; apply(); }
+    if (e.pointerId !== pid) return;
+    var dx = e.clientX - last.x, dy = e.clientY - last.y; travel += Math.abs(dx) + Math.abs(dy);
+    tgt.x -= dx / cam.s; tgt.y -= dy / cam.s; last = { x: e.clientX, y: e.clientY };
+    var now = performance.now(); hist.push({ x: e.clientX, y: e.clientY, t: now }); while (hist.length > 2 && now - hist[0].t > 90) hist.shift();
   });
   function up(e) {
-    var wasTap = travel < 6 && Object.keys(pts).length === 1;
-    delete pts[e.pointerId]; if (Object.keys(pts).length < 2) pinch = null;
-    if (!Object.keys(pts).length) { last = null; M.classList.remove('drag'); }
-    else { var k = Object.keys(pts)[0]; last = { x: pts[k].x, y: pts[k].y }; }
-    if (wasTap) { var it = document.elementFromPoint(e.clientX, e.clientY); it = it && it.closest('.pgm-item'); if (it) flyTo(+it.dataset.i); }
+    if (e.pointerId !== pid) return;
+    pid = null; dragging = false; M.classList.remove('drag');
+    // throw: carry on with the speed of the last few moments of the drag
+    var a = hist[0], b = hist[hist.length - 1], dt = Math.max(16, b.t - a.t);
+    if (performance.now() - b.t < 80) { vel.x = -(b.x - a.x) / dt * 16 / cam.s; vel.y = -(b.y - a.y) / dt * 16 / cam.s; }
+    if (travel < 6) { var it = document.elementFromPoint(e.clientX, e.clientY); it = it && it.closest('.pgm-item'); if (it) centreOn(+it.dataset.i); }
+    kick();
   }
   M.addEventListener('pointerup', up); M.addEventListener('pointercancel', up);
-  function zoomAt(px, py, s) {
-    // keep the world point under the pointer still while zooming
-    var wx = cam.x + (px - innerWidth / 2) / cam.s, wy = cam.y + (py - innerHeight / 2) / cam.s;
-    cam.s = s; cam.x = wx - (px - innerWidth / 2) / s; cam.y = wy - (py - innerHeight / 2) / s; apply();
-  }
+  // wheel and trackpad move the canvas around; nothing zooms
   M.addEventListener('wheel', function (e) {
-    e.preventDefault(); goal = null;
-    if (e.ctrlKey) { zoomAt(e.clientX, e.clientY, Math.max(minS(), Math.min(2.5, cam.s * Math.exp(-e.deltaY * 0.01)))); return; }
-    // trackpads pan with two fingers; a mouse wheel zooms
-    var mouse = e.deltaMode === 1 || (Math.abs(e.deltaY) >= 40 && e.deltaX === 0 && Number.isInteger(e.deltaY));
-    if (mouse) zoomAt(e.clientX, e.clientY, Math.max(minS(), Math.min(2.5, cam.s * Math.exp(-e.deltaY * 0.0015))));
-    else { cam.x += e.deltaX / cam.s; cam.y += e.deltaY / cam.s; apply(); }
+    e.preventDefault(); vel.x = vel.y = 0;
+    var k = e.deltaMode === 1 ? 32 : 1;
+    tgt.x += (e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX) * k / cam.s;
+    tgt.y += (e.shiftKey && !e.deltaX ? 0 : e.deltaY) * k / cam.s;
+    kick();
   }, { passive: false });
-  addEventListener('resize', function () { if (M.classList.contains('open')) apply(); });
+  addEventListener('keydown', function (e) {
+    if (!M.classList.contains('open')) return;
+    var st = 320 / cam.s, m = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
+    if (m) { e.preventDefault(); vel.x = vel.y = 0; tgt.x += m[0]; tgt.y += m[1]; kick(); }
+  });
+  addEventListener('resize', function () { if (M.classList.contains('open')) { cam.s = fixedScale(); apply(); } });
 })();
 </script>
 <script src="transition.js?v=1113"></script>
