@@ -95,6 +95,33 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .mq i{font-style:normal;font-size:clamp(12px,1.4vw,20px);color:var(--ink);margin:0 clamp(12px,1.8vw,28px)}
 .mqs:hover .mq-t{animation-play-state:paused}
 @keyframes mq{to{transform:translateX(-100%)}}
+/* playground: a draggable carousel, and a full-page infinite canvas on click */
+.pg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.pg-nav{display:flex;gap:10px;margin-bottom:36px}
+.pg-btn{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);background:none;color:var(--ink);font:500 18px/1 var(--body);cursor:pointer;transition:background .2s,color .2s}
+.pg-btn:hover{background:var(--ink);color:#fff}
+.pg-strip{display:flex;gap:clamp(12px,1.6vw,20px);overflow-x:auto;padding:0 var(--gut) 8px;scroll-snap-type:x proximity;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
+.pg-strip::-webkit-scrollbar{display:none}
+.pg-strip.drag{cursor:grabbing;scroll-snap-type:none}
+.pg-card{flex:none;height:clamp(260px,34vw,460px);border-radius:14px;overflow:hidden;background:#f1f1ef;scroll-snap-align:start;position:relative;padding:0;border:0;cursor:zoom-in}
+.pg-card img,.pg-card video{display:block;height:100%;width:100%;object-fit:cover;pointer-events:none;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.pg-card:hover img,.pg-card:hover video{transform:scale(1.03)}
+@media (max-width:760px){.pg-nav{display:none}}
+/* the canvas */
+.pgm{position:fixed;inset:0;z-index:400;background:#0e0e0e;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .45s ease;touch-action:none;cursor:grab;
+  background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1.2px);background-size:28px 28px}
+.pgm.open{opacity:1;pointer-events:auto}
+.pgm.drag{cursor:grabbing}
+.pgm-world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.pgm-item{position:absolute;border-radius:12px;overflow:hidden;background:#1b1b1b;box-shadow:0 20px 60px rgba(0,0,0,.45);cursor:zoom-in}
+.pgm-item img,.pgm-item video{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.pgm-top{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;padding:22px var(--gut);pointer-events:none;color:#f2f2f0}
+.pgm-top b{font:400 26px/1 var(--display);letter-spacing:-.02em}
+.pgm-close{pointer-events:auto;height:44px;padding:0 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.7);background:rgba(14,14,14,.6);color:#f2f2f0;font:500 14px/1 var(--body);cursor:pointer;backdrop-filter:blur(6px)}
+.pgm-close:hover{background:#f2f2f0;color:#0e0e0e}
+.pgm-hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);font:500 12px/1 var(--body);color:#8c8c88;letter-spacing:.02em;pointer-events:none;white-space:nowrap;background:rgba(14,14,14,.7);padding:10px 16px;border-radius:999px}
+html.pg-open,html.pg-open body{overflow:hidden}
+
 /* what we do: the one dark section on the page */
 #services{background:#0e0e0e;color:#f2f2f0}
 #services .eyebrow2{color:#8c8c88}
@@ -249,7 +276,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   <nav class="topnav" aria-label="main">
     <a class="navlogo" href="#fold" aria-label="full auto, back to top"><svg viewBox="21 21 290 72" aria-hidden="true"><use href="#logoSym" x="21" y="21" width="290" height="72"/></svg></a>
     <span class="navnote"><i></i>independent design studio</span>
-    <span class="navlinks"><a href="#work">work</a><a href="#services">what we do</a><a href="#about">about</a></span>
+    <span class="navlinks"><a href="#work">work</a><a href="#playground">playground</a><a href="#services">what we do</a><a href="#about">about</a></span>
     <a class="navcta" href="#contact">let's talk</a>
   </nav>
   <script>/* coming home from the nav logo: hold the logo in place from the very first frame */
@@ -285,6 +312,18 @@ section{padding-block:96px clamp(64px,9vw,140px)}
       <p class="lead2">we could tell you how good we are. but where's the fun in that? here's a look at what happens when good ideas meet good execution. no filler. no fluff. just work we're proud to put our name on.</p>
       <ol class="worklist" id="worklist"></ol>
     </div>
+  </section>
+
+  <section id="playground" class="pg">
+    <div class="wrap">
+      <p class="eyebrow2">PLAYGROUND</p>
+      <div class="pg-head">
+        <h2 class="h2">side quests.</h2>
+        <div class="pg-nav"><button type="button" class="pg-btn" data-dir="-1" aria-label="previous">&larr;</button><button type="button" class="pg-btn" data-dir="1" aria-label="next">&rarr;</button></div>
+      </div>
+      <p class="lead2">illustration, 3d, motion and the odd experiment. the stuff we make when nobody's asked.</p>
+    </div>
+    <div class="pg-strip" id="pgStrip" aria-label="playground"></div>
   </section>
 
   <section id="services">
@@ -727,6 +766,155 @@ if (art && renderer) {
   }
   frame();
 }
+</script>
+<div class="pgm" id="pgm" role="dialog" aria-modal="true" aria-label="playground" aria-hidden="true">
+  <div class="pgm-world" id="pgmWorld"></div>
+  <div class="pgm-top"><b>playground</b><button type="button" class="pgm-close" id="pgmClose">close &times;</button></div>
+  <p class="pgm-hint">drag to explore &middot; scroll or pinch to zoom &middot; esc to close</p>
+</div>
+<script>
+// Playground: carousel on the page; on click, every piece laid out on a canvas that repeats forever in every direction
+(function () {
+  var ITEMS = [
+    { src: 'playground/shapes.jpg', poster: null, r: 1.3333, alt: 'playful 3d shapes for a banking campaign' },
+    { src: 'playground/lion.jpg', poster: null, r: 0.9347, alt: 'line-art lion head' },
+    { src: 'playground/commute.mp4', poster: 'playground/commute.jpg', r: 1.3333, alt: 'commute app, animated' },
+    { src: 'playground/oni-lines.jpg', poster: null, r: 1.0393, alt: 'oni mask in flowing lines' },
+    { src: 'playground/wick.gif', poster: null, r: 1.3333, alt: 'blue ink portrait with wave patterns' },
+    { src: 'playground/avatar.jpg', poster: null, r: 0.9427, alt: 'glossy 3d avatar' },
+    { src: 'playground/buyerzap.jpg', poster: null, r: 1.5402, alt: 'buyerzap landing page' },
+    { src: 'playground/tiger.jpg', poster: null, r: 1.0000, alt: 'tiger poster on kraft' },
+    { src: 'playground/skull.jpg', poster: null, r: 1.0485, alt: 'skull in stained glass' }
+  ];
+  function media(it, auto) {
+    if (/\.mp4$/.test(it.src)) return '<video src="' + it.src + '" poster="' + it.poster + '" muted loop playsinline autoplay preload="' + (auto ? 'auto' : 'metadata') + '" aria-label="' + it.alt + '"></video>';
+    return '<img src="' + it.src + '" alt="' + it.alt + '" loading="' + (auto ? 'eager' : 'lazy') + '" draggable="false">';
+  }
+  // ---- carousel ----
+  var strip = document.getElementById('pgStrip'); if (!strip) return;
+  strip.innerHTML = ITEMS.map(function (it, i) {
+    return '<button type="button" class="pg-card" data-i="' + i + '" style="aspect-ratio:' + it.r.toFixed(4) + '">' + media(it, false) + '</button>';
+  }).join('');
+  [].forEach.call(strip.querySelectorAll('video'), function (v) { v.muted = true; var p = v.play && v.play(); if (p && p.catch) p.catch(function () {}); });
+  [].forEach.call(document.querySelectorAll('.pg-btn'), function (b) {
+    b.addEventListener('click', function () { strip.scrollBy({ left: +b.dataset.dir * strip.clientWidth * 0.7, behavior: 'smooth' }); });
+  });
+  // drag to scroll with a mouse; a click that didn't move opens the canvas
+  var down = null, moved = 0;
+  strip.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') return; down = { x: e.clientX, s: strip.scrollLeft }; moved = 0; });
+  addEventListener('pointermove', function (e) { if (!down) return; var dx = e.clientX - down.x; moved = Math.max(moved, Math.abs(dx)); if (moved > 4) { strip.classList.add('drag'); strip.scrollLeft = down.s - dx; } });
+  addEventListener('pointerup', function () { down = null; setTimeout(function () { strip.classList.remove('drag'); }, 0); });
+  strip.addEventListener('click', function (e) {
+    var c = e.target.closest('.pg-card'); if (!c) return;
+    if (moved > 6) { moved = 0; return; }
+    open(+c.dataset.i);
+  });
+
+  // ---- infinite canvas ----
+  var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
+  // one tile: the pieces scattered on a loose grid with a little jitter; the tile repeats in every direction
+  var COLS = 3, CELL = 760, GAP = 120, tileW = COLS * CELL, tileH = Math.ceil(ITEMS.length / COLS) * CELL, slots = [];
+  var seed = 11; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+  ITEMS.forEach(function (it, i) {
+    var c = i % COLS, r = Math.floor(i / COLS), max = CELL - GAP;
+    var w = it.r >= 1 ? max : max * it.r, h = it.r >= 1 ? max / it.r : max;
+    w *= 0.82 + rnd() * 0.18; h = w / it.r;
+    var x = c * CELL + (CELL - w) / 2 + (rnd() - 0.5) * GAP * 0.8 + (r % 2 ? CELL * 0.35 : 0);
+    var y = r * CELL + (CELL - h) / 2 + (rnd() - 0.5) * GAP * 0.8;
+    slots.push({ x: x, y: y, w: w, h: h });
+  });
+  var els = [], built = false;
+  function build() {
+    if (built) return; built = true;
+    var html = '';
+    for (var ty = -1; ty <= 1; ty++) for (var tx = -1; tx <= 1; tx++) ITEMS.forEach(function (it, i) {
+      var sl = slots[i];
+      html += '<div class="pgm-item" data-i="' + i + '" style="left:' + (sl.x + tx * tileW).toFixed(1) + 'px;top:' + (sl.y + ty * tileH).toFixed(1) + 'px;width:' + sl.w.toFixed(1) + 'px;height:' + sl.h.toFixed(1) + 'px">' + media(it, true) + '</div>';
+    });
+    world.innerHTML = html;
+    [].forEach.call(world.querySelectorAll('video'), function (v) { v.muted = true; });
+  }
+  // camera: the world point at the centre of the screen, and the zoom
+  var cam = { x: 0, y: 0, s: 0.6 }, goal = null, raf = 0;
+  function minS() { return Math.max(innerWidth / (tileW * 1.6), innerHeight / (tileH * 1.6), 0.18); }
+  function apply() {
+    // keep the camera inside the middle tile; the copies around it make the edges seamless
+    cam.x = ((cam.x % tileW) + tileW) % tileW; cam.y = ((cam.y % tileH) + tileH) % tileH;
+    var tx = innerWidth / 2 - cam.x * cam.s, ty = innerHeight / 2 - cam.y * cam.s;
+    world.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + cam.s.toFixed(4) + ')';
+    var g = 28 * cam.s; M.style.backgroundSize = g + 'px ' + g + 'px'; M.style.backgroundPosition = tx + 'px ' + ty + 'px';
+  }
+  function tick() {
+    raf = 0; if (!goal) return;
+    var k = 0.14; cam.x += (goal.x - cam.x) * k; cam.y += (goal.y - cam.y) * k; cam.s += (goal.s - cam.s) * k;
+    apply();
+    if (Math.abs(goal.x - cam.x) + Math.abs(goal.y - cam.y) > 0.5 || Math.abs(goal.s - cam.s) > 0.001) raf = requestAnimationFrame(tick); else goal = null;
+  }
+  function flyTo(i, s) {
+    var sl = slots[i]; var cx = sl.x + sl.w / 2, cy = sl.y + sl.h / 2;
+    // pick the copy of that piece nearest to where the camera is
+    cx += Math.round((cam.x - cx) / tileW) * tileW; cy += Math.round((cam.y - cy) / tileH) * tileH;
+    goal = { x: cx, y: cy, s: s || Math.min(innerWidth * 0.78 / sl.w, (innerHeight - 160) / sl.h) };
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function open(i) {
+    build();
+    var sl = slots[i];
+    var fit = Math.min(innerWidth * 0.78 / sl.w, (innerHeight - 160) / sl.h);
+    cam = { x: sl.x + sl.w / 2, y: sl.y + sl.h / 2, s: fit * 0.82 }; apply();
+    goal = { x: cam.x, y: cam.y, s: fit }; if (!raf) raf = requestAnimationFrame(tick);
+    M.classList.add('open'); M.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('pg-open');
+    [].forEach.call(world.querySelectorAll('video'), function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
+    document.getElementById('pgmClose').focus({ preventScroll: true });
+  }
+  function close() {
+    M.classList.remove('open'); M.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('pg-open');
+    [].forEach.call(world.querySelectorAll('video'), function (v) { v.pause(); });
+  }
+  document.getElementById('pgmClose').addEventListener('click', close);
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && M.classList.contains('open')) close(); });
+  // pan with drag (mouse or one finger), pinch to zoom with two fingers
+  var pts = {}, last = null, pinch = null, travel = 0;
+  M.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('.pgm-close')) return;
+    M.setPointerCapture(e.pointerId); pts[e.pointerId] = { x: e.clientX, y: e.clientY }; goal = null; travel = 0;
+    var ids = Object.keys(pts);
+    if (ids.length === 1) { last = { x: e.clientX, y: e.clientY }; M.classList.add('drag'); }
+    if (ids.length === 2) { var a = pts[ids[0]], b = pts[ids[1]]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: cam.s }; }
+  });
+  M.addEventListener('pointermove', function (e) {
+    if (!pts[e.pointerId]) return; pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(pts);
+    if (ids.length === 2 && pinch) {
+      var a = pts[ids[0]], b = pts[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y);
+      zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, Math.max(minS(), Math.min(2.5, pinch.s * d / pinch.d)));
+      travel += 10; return;
+    }
+    if (last) { var dx = e.clientX - last.x, dy = e.clientY - last.y; travel += Math.abs(dx) + Math.abs(dy); cam.x -= dx / cam.s; cam.y -= dy / cam.s; last = { x: e.clientX, y: e.clientY }; apply(); }
+  });
+  function up(e) {
+    var wasTap = travel < 6 && Object.keys(pts).length === 1;
+    delete pts[e.pointerId]; if (Object.keys(pts).length < 2) pinch = null;
+    if (!Object.keys(pts).length) { last = null; M.classList.remove('drag'); }
+    else { var k = Object.keys(pts)[0]; last = { x: pts[k].x, y: pts[k].y }; }
+    if (wasTap) { var it = document.elementFromPoint(e.clientX, e.clientY); it = it && it.closest('.pgm-item'); if (it) flyTo(+it.dataset.i); }
+  }
+  M.addEventListener('pointerup', up); M.addEventListener('pointercancel', up);
+  function zoomAt(px, py, s) {
+    // keep the world point under the pointer still while zooming
+    var wx = cam.x + (px - innerWidth / 2) / cam.s, wy = cam.y + (py - innerHeight / 2) / cam.s;
+    cam.s = s; cam.x = wx - (px - innerWidth / 2) / s; cam.y = wy - (py - innerHeight / 2) / s; apply();
+  }
+  M.addEventListener('wheel', function (e) {
+    e.preventDefault(); goal = null;
+    if (e.ctrlKey) { zoomAt(e.clientX, e.clientY, Math.max(minS(), Math.min(2.5, cam.s * Math.exp(-e.deltaY * 0.01)))); return; }
+    // trackpads pan with two fingers; a mouse wheel zooms
+    var mouse = e.deltaMode === 1 || (Math.abs(e.deltaY) >= 40 && e.deltaX === 0 && Number.isInteger(e.deltaY));
+    if (mouse) zoomAt(e.clientX, e.clientY, Math.max(minS(), Math.min(2.5, cam.s * Math.exp(-e.deltaY * 0.0015))));
+    else { cam.x += e.deltaX / cam.s; cam.y += e.deltaY / cam.s; apply(); }
+  }, { passive: false });
+  addEventListener('resize', function () { if (M.classList.contains('open')) apply(); });
+})();
 </script>
 <script src="transition.js?v=1113"></script>
 
