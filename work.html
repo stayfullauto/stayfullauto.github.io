@@ -249,15 +249,8 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
   function render() {
     var slug = location.hash.slice(1), i = all.findIndex(function (p) { return p.slug === slug; }), p = all[i];
     if (!p) {
-      // no project named: the full list of work
-      document.title = 'work · full auto';
-      el.innerHTML = '<header class="p-head"><h1 class="p-title"><span><i>all work</i></span></h1></header>' +
-        '<section class="p-copy"><p class="lead">less talk. more show.</p><div class="body"><p>a selection of brands, digital experiences and products we\u2019ve brought to life. different challenges, different directions, one thing in common: we take the work seriously.</p></div></section>' +
-        '<div style="margin:clamp(40px,6vw,80px) var(--gut) 0"><ol class="worklist">' + all.map(function (q, k) {
-          return '<li><a href="work.html#' + q.slug + '"><span class="wl-n">' + String(k + 1).padStart(2, '0') + '</span><span class="wl-t">' + esc(q.title) + '</span><span class="wl-c">' + esc(q.type) + '<br><b>' + esc(q.client) + '</b></span></a></li>';
-        }).join('') + '</ol></div>' +
-        '<footer class="p-foot"><a href="index.html">\u2190 home</a><span>full auto\u00ae \u00b7 no half measures. all in.</span></footer>';
-      scrollTo(0, 0); window.dispatchEvent(new Event('resize')); return;
+      // no project named: there's no separate list page any more, so go to the work section on the homepage
+      location.replace('index.html#work'); return;
     }
     var next = all[(i + 1) % all.length];
     document.title = p.title + ' · full auto';
