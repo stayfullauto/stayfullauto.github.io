@@ -21,12 +21,18 @@ window.FA_PROJECTS = [
     ],
     colors: [['aase red', '#CE110D'], ['fresh cream white', '#FFFFFF'], ['baker\u2019s black', '#000000']],
     images: [
-      { src: 'work/aase/menu-poster.jpg', ratio: 0.8000, alt: 'aase poster: banoffee cookie with the menu of bakes' },
-      { src: 'work/aase/poster-print.jpg', ratio: 0.8000, alt: 'folded aase poster with the baker illustration, beside a croissant' },
-      { src: 'work/aase/made-for-you.jpg', ratio: 0.8000, alt: 'made for your aase. croissant held up on red' },
-      { src: 'work/aase/craving.jpg', ratio: 0.8000, alt: 'your craving, our craft. croissant pulled apart' },
-      { src: 'work/aase/every-bite.jpg', ratio: 0.8000, alt: 'aase, in every bite. honey cake on marble' },
-      { src: 'work/aase/illustration.jpg', ratio: 0.8000, alt: 'aase illustration of a happy baker eating cake' }
+      { src: 'work/aase/menu-poster.jpg', ratio: 0.8000, alt: 'banoffee cookie poster with the menu of bakes' },
+      { src: 'work/aase/cupcake-bite.jpg', ratio: 0.8000, alt: 'made for your aase. red velvet cupcake' },
+      { src: 'work/aase/kouign.jpg', ratio: 0.8000, alt: 'made for your aase. caramel pastry on red' },
+      { src: 'work/aase/bag.jpg', ratio: 0.8000, alt: 'aase takeaway bag' },
+      { src: 'work/aase/baker-red.jpg', ratio: 0.8000, alt: 'white baker illustration on red' },
+      { src: 'work/aase/cookie-jacket.jpg', ratio: 0.8000, alt: 'molten chocolate cookie held up' },
+      { src: 'work/aase/story.jpg', ratio: 0.7935, alt: 'the aase story: a deep desire, enna kai ruchi' },
+      { src: 'work/aase/cupcake-red.jpg', ratio: 0.8000, alt: 'made for your aase. caramel crumble cupcake on red' },
+      { src: 'work/aase/poster-cake.jpg', ratio: 0.8000, alt: 'aase poster with a strawberry cake slice' },
+      { src: 'work/aase/indulgence.jpg', ratio: 0.8000, alt: 'indulgence perfected. brownie' },
+      { src: 'work/aase/choc-cupcake.jpg', ratio: 0.8000, alt: 'chocolate cupcake with strawberry' },
+      { src: 'work/aase/cake-slice.jpg', ratio: 0.8000, alt: 'blueberry cake slice above the aase wordmark' }
     ]
   },
   {
