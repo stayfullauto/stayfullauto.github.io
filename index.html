@@ -622,7 +622,8 @@ if (art && renderer) {
 
   // Stone: a hand-made "matcap", a picture of a lit grey stone ball, wrapped onto the mask.
   // Pale highs, deep charcoal lows and a fine grain, so it reads like the carved relief in the illustration.
-  const TINT = [0x2b, 0x2f, 0x36];   // mask colour: gunmetal #2B2F36
+  // mask colour: polished brass, from the reference (dark olive shadow, gold body, pale gold shine)
+  const RAMP = [[0, [10, 8, 4]], [0.28, [42, 32, 14]], [0.5, [98, 78, 38]], [0.7, [156, 128, 68]], [0.86, [206, 182, 118]], [1, [255, 246, 214]]];
   function stone() {
     const S = 512, c = document.createElement('canvas'); c.width = c.height = S;
     const g = c.getContext('2d'), img = g.createImageData(S, S), d = img.data;
@@ -634,13 +635,14 @@ if (art && renderer) {
       let l = Math.max(0, (nx * lx + ny * ly + nz * lz) / ll);
       l = 0.1 + 0.8 * Math.pow(l, 1.25) + 0.12 * Math.pow(nz, 6);        // key light plus a soft front fill
       l -= 0.2 * Math.pow(Math.min(1, r2), 3);                           // dark rims, like the deep cuts
-      l += (rnd() - 0.5) * 0.09;                                         // stone grain
-      // tint: shadows deepen toward near-black, mid-tones sit on #5539cc, highlights lift toward lavender
-      const t = Math.max(0, Math.min(1, l / 0.62)), u = Math.max(0, Math.min(1, (l - 0.62) / 0.38));
-      for (let k = 0; k < 3; k++) {
-        const base = TINT[k], hi = base + (255 - base) * 0.7;
-        d[i + k] = Math.max(0, Math.min(255, l < 0.62 ? base * Math.pow(t, 1.15) : base + (hi - base) * u));
-      }
+      l += (rnd() - 0.5) * 0.02;                                         // faint grain: metal, not stone
+      // polished brass: a sharp highlight off the key light, then a dark-to-gold ramp
+      const sp = Math.pow(Math.max(0, (nx * -0.3 + ny * -0.45 + nz * 0.84)), 60) * 0.9;
+      const v = Math.max(0, Math.min(1, l * 0.92 + sp));
+      let s0 = RAMP[0], s1 = RAMP[RAMP.length - 1];
+      for (let q = 0; q < RAMP.length - 1; q++) if (v >= RAMP[q][0] && v <= RAMP[q + 1][0]) { s0 = RAMP[q]; s1 = RAMP[q + 1]; break; }
+      const f = s1[0] > s0[0] ? (v - s0[0]) / (s1[0] - s0[0]) : 0;
+      for (let k = 0; k < 3; k++) d[i + k] = s0[1][k] + (s1[1][k] - s0[1][k]) * f;
       d[i + 3] = 255;
     }
     g.putImageData(img, 0, 0);
