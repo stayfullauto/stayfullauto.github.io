@@ -95,18 +95,15 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .mq i{font-style:normal;font-size:clamp(12px,1.4vw,20px);color:var(--ink);margin:0 clamp(12px,1.8vw,28px)}
 .mqs:hover .mq-t{animation-play-state:paused}
 @keyframes mq{to{transform:translateX(-100%)}}
-/* playground: a draggable carousel, and a full-page infinite canvas on click */
-.pg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
-.pg-nav{display:flex;gap:10px;margin-bottom:36px}
-.pg-btn{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);background:none;color:var(--ink);font:500 18px/1 var(--body);cursor:pointer;transition:background .2s,color .2s}
-.pg-btn:hover{background:var(--ink);color:#fff}
-.pg-strip{display:flex;gap:clamp(12px,1.6vw,20px);overflow-x:auto;padding:0 var(--gut) 8px;scroll-snap-type:x proximity;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
-.pg-strip::-webkit-scrollbar{display:none}
-.pg-strip.drag{cursor:grabbing;scroll-snap-type:none}
-.pg-card{flex:none;height:clamp(260px,34vw,460px);border-radius:14px;overflow:hidden;background:#f1f1ef;scroll-snap-align:start;position:relative;padding:0;border:0;cursor:zoom-in}
-.pg-card img,.pg-card video{display:block;height:100%;width:100%;object-fit:cover;pointer-events:none;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
-.pg-card:hover img,.pg-card:hover video{transform:scale(1.03)}
-@media (max-width:760px){.pg-nav{display:none}}
+/* the lab: a looping title film; click it to open the canvas */
+.lab-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,38ch);gap:24px 48px;align-items:end}
+.lab-head .lead2{margin:0 0 40px}
+.lab-card{position:relative;display:block;width:100%;aspect-ratio:1738/1080;max-height:86vh;border:0;padding:0;border-radius:18px;overflow:hidden;background:#000;cursor:zoom-in}
+.lab-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.lab-card:hover video{transform:scale(1.03)}
+.lab-cta{position:absolute;left:50%;bottom:clamp(18px,3vw,36px);transform:translateX(-50%);padding:14px 24px;border-radius:999px;background:#f2f2f0;color:#0e0e0e;font:500 15px/1 var(--body);white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.lab-card:hover .lab-cta{transform:translateX(-50%) scale(1.06)}
+@media (max-width:760px){.lab-head{grid-template-columns:1fr;gap:0}.lab-head .h2{margin-bottom:24px}.lab-card{aspect-ratio:4/5}}
 /* the canvas */
 .pgm{position:fixed;inset:0;z-index:400;background:#0e0e0e;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .45s ease;touch-action:none;cursor:grab;
   background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1.2px);background-size:28px 28px}
@@ -276,7 +273,7 @@ section{padding-block:96px clamp(64px,9vw,140px)}
   <nav class="topnav" aria-label="main">
     <a class="navlogo" href="#fold" aria-label="full auto, back to top"><svg viewBox="21 21 290 72" aria-hidden="true"><use href="#logoSym" x="21" y="21" width="290" height="72"/></svg></a>
     <span class="navnote"><i></i>independent design studio</span>
-    <span class="navlinks"><a href="#work">work</a><a href="#playground">playground</a><a href="#services">what we do</a><a href="#about">about</a></span>
+    <span class="navlinks"><a href="#work">work</a><a href="#lab">lab</a><a href="#services">what we do</a><a href="#about">about</a></span>
     <a class="navcta" href="#contact">let's talk</a>
   </nav>
   <script>/* coming home from the nav logo: hold the logo in place from the very first frame */
@@ -314,16 +311,18 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     </div>
   </section>
 
-  <section id="playground" class="pg">
+  <section id="lab" class="lab">
     <div class="wrap">
-      <p class="eyebrow2">PLAYGROUND</p>
-      <div class="pg-head">
-        <h2 class="h2">side quests.</h2>
-        <div class="pg-nav"><button type="button" class="pg-btn" data-dir="-1" aria-label="previous">&larr;</button><button type="button" class="pg-btn" data-dir="1" aria-label="next">&rarr;</button></div>
+      <p class="eyebrow2">THE LAB</p>
+      <div class="lab-head">
+        <h2 class="h2">where we play.</h2>
+        <p class="lead2">illustration, 3d, motion and the odd experiment. the stuff we make when nobody's asked, because the best ideas usually start as side quests.</p>
       </div>
-      <p class="lead2">illustration, 3d, motion and the odd experiment. the stuff we make when nobody's asked.</p>
+      <button type="button" class="lab-card" id="labOpen" aria-label="open the lab">
+        <video src="playground/lab.mp4" poster="playground/lab.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        <span class="lab-cta">step inside <span aria-hidden="true">&rarr;</span></span>
+      </button>
     </div>
-    <div class="pg-strip" id="pgStrip" aria-label="playground"></div>
   </section>
 
   <section id="services">
@@ -767,9 +766,9 @@ if (art && renderer) {
   frame();
 }
 </script>
-<div class="pgm" id="pgm" role="dialog" aria-modal="true" aria-label="playground" aria-hidden="true">
+<div class="pgm" id="pgm" role="dialog" aria-modal="true" aria-label="the lab" aria-hidden="true">
   <div class="pgm-world" id="pgmWorld"></div>
-  <div class="pgm-top"><b>playground</b><button type="button" class="pgm-close" id="pgmClose">close &times;</button></div>
+  <div class="pgm-top"><b>the lab</b><button type="button" class="pgm-close" id="pgmClose">close &times;</button></div>
   <p class="pgm-hint">drag to explore &middot; scroll or pinch to zoom &middot; esc to close</p>
 </div>
 <script>
@@ -790,25 +789,10 @@ if (art && renderer) {
     if (/\.mp4$/.test(it.src)) return '<video src="' + it.src + '" poster="' + it.poster + '" muted loop playsinline autoplay preload="' + (auto ? 'auto' : 'metadata') + '" aria-label="' + it.alt + '"></video>';
     return '<img src="' + it.src + '" alt="' + it.alt + '" loading="' + (auto ? 'eager' : 'lazy') + '" draggable="false">';
   }
-  // ---- carousel ----
-  var strip = document.getElementById('pgStrip'); if (!strip) return;
-  strip.innerHTML = ITEMS.map(function (it, i) {
-    return '<button type="button" class="pg-card" data-i="' + i + '" style="aspect-ratio:' + it.r.toFixed(4) + '">' + media(it, false) + '</button>';
-  }).join('');
-  [].forEach.call(strip.querySelectorAll('video'), function (v) { v.muted = true; var p = v.play && v.play(); if (p && p.catch) p.catch(function () {}); });
-  [].forEach.call(document.querySelectorAll('.pg-btn'), function (b) {
-    b.addEventListener('click', function () { strip.scrollBy({ left: +b.dataset.dir * strip.clientWidth * 0.7, behavior: 'smooth' }); });
-  });
-  // drag to scroll with a mouse; a click that didn't move opens the canvas
-  var down = null, moved = 0;
-  strip.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') return; down = { x: e.clientX, s: strip.scrollLeft }; moved = 0; });
-  addEventListener('pointermove', function (e) { if (!down) return; var dx = e.clientX - down.x; moved = Math.max(moved, Math.abs(dx)); if (moved > 4) { strip.classList.add('drag'); strip.scrollLeft = down.s - dx; } });
-  addEventListener('pointerup', function () { down = null; setTimeout(function () { strip.classList.remove('drag'); }, 0); });
-  strip.addEventListener('click', function (e) {
-    var c = e.target.closest('.pg-card'); if (!c) return;
-    if (moved > 6) { moved = 0; return; }
-    open(+c.dataset.i);
-  });
+  // ---- the lab card opens the canvas ----
+  var card = document.getElementById('labOpen'); if (!card) return;
+  var lv = card.querySelector('video'); if (lv) { lv.muted = true; var lp = lv.play && lv.play(); if (lp && lp.catch) lp.catch(function () {}); }
+  card.addEventListener('click', function () { open(0); });
 
   // ---- infinite canvas ----
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
