@@ -100,7 +100,6 @@ window.FA_PROJECTS = [
       { src: 'work/purple-b/cones.jpg', ratio: 1, alt: 'three cones held up together' },
       { src: 'work/purple-b/saffron.jpg', ratio: 1, alt: 'saffron ice cream with crocus flowers' },
       { src: 'work/purple-b/mangalore.jpg', ratio: 1, alt: 'print: from mangalore, with flavor' },
-      { src: 'work/purple-b/street.jpg', ratio: 1, alt: 'enjoying a cone on a coastal street' },
       { src: 'work/purple-b/choc-almond.jpg', ratio: 1, alt: 'chocolate and berry scoops with almonds' },
       { src: 'work/purple-b/cups.jpg', ratio: 1, alt: 'purple b ice cream cups' },
       { src: 'work/purple-b/pink-swirl.jpg', ratio: 1, alt: 'berry ripple scoops in a cup' },
