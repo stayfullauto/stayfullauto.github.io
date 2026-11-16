@@ -801,12 +801,12 @@ if (art && renderer) {
   // ---- infinite canvas ----
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
   // one tile: the pieces scattered on a loose grid with a little jitter; the tile repeats in every direction
-  var COLS = 3, CELL = 760, GAP = 120, tileW = COLS * CELL, tileH = Math.ceil(ITEMS.length / COLS) * CELL, slots = [];
+  var COLS = 3, CELL = 640, GAP = 56, tileW = COLS * CELL, tileH = Math.ceil(ITEMS.length / COLS) * CELL, slots = [];
   var seed = 11; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
   ITEMS.forEach(function (it, i) {
     var c = i % COLS, r = Math.floor(i / COLS), max = CELL - GAP;
     var w = it.r >= 1 ? max : max * it.r, h = it.r >= 1 ? max / it.r : max;
-    w *= 0.82 + rnd() * 0.18; h = w / it.r;
+    w *= 0.9 + rnd() * 0.1; h = w / it.r;
     var x = c * CELL + (CELL - w) / 2 + (rnd() - 0.5) * GAP * 0.8 + (r % 2 ? CELL * 0.35 : 0);
     var y = r * CELL + (CELL - h) / 2 + (rnd() - 0.5) * GAP * 0.8;
     slots.push({ x: x, y: y, w: w, h: h });
@@ -825,7 +825,7 @@ if (art && renderer) {
   // camera: the world point at the centre of the screen. One fixed scale, no zooming.
   // The view eases towards a target and keeps gliding after you let go, so dragging feels smooth.
   var cam = { x: 0, y: 0, s: 1 }, tgt = { x: 0, y: 0 }, vel = { x: 0, y: 0 }, raf = 0, dragging = false;
-  function fixedScale() { return Math.max(0.36, Math.min(0.6, innerWidth / 1800)); }
+  function fixedScale() { return Math.max(0.44, Math.min(0.74, innerWidth / 1500)); }
   function apply() {
     var tx = innerWidth / 2 - cam.x * cam.s, ty = innerHeight / 2 - cam.y * cam.s;
     world.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + cam.s.toFixed(4) + ')';
