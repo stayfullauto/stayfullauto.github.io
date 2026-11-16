@@ -800,17 +800,37 @@ if (art && renderer) {
 
   // ---- infinite canvas ----
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
-  // one tile: the pieces scattered on a loose grid with a little jitter; the tile repeats in every direction
-  var COLS = 3, CELL = 640, GAP = 56, tileW = COLS * CELL, tileH = Math.ceil(ITEMS.length / COLS) * CELL, slots = [];
-  var seed = 11; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-  ITEMS.forEach(function (it, i) {
-    var c = i % COLS, r = Math.floor(i / COLS), max = CELL - GAP;
-    var w = it.r >= 1 ? max : max * it.r, h = it.r >= 1 ? max / it.r : max;
-    w *= 0.9 + rnd() * 0.1; h = w / it.r;
-    var x = c * CELL + (CELL - w) / 2 + (rnd() - 0.5) * GAP * 0.8 + (r % 2 ? CELL * 0.35 : 0);
-    var y = r * CELL + (CELL - h) / 2 + (rnd() - 0.5) * GAP * 0.8;
-    slots.push({ x: x, y: y, w: w, h: h });
-  });
+  // one tile: the pieces packed into justified rows with one even gap everywhere (no holes);
+  // each row is nudged sideways so it doesn't read as a grid. The tile repeats in every direction.
+  var ROWS = 4, GAP = 56, tileW = 1920, slots = [];
+  var n = ITEMS.length, pre = [0];
+  ITEMS.forEach(function (it, i) { pre.push(pre[i] + it.r); });
+  // split the list into ROWS contiguous rows whose widths-per-height are as even as possible
+  var avg = pre[n] / ROWS, best = {}, cut = {};
+  function solve(i, k) {
+    if (k === 0) return i === n ? 0 : 1e9;
+    var key = i + ',' + k; if (key in best) return best[key];
+    var b = 1e9, bj = n;
+    var lo = k === 1 ? n : i + 2, hi = k === 1 ? n : n - 2 * (k - 1);
+    for (var j = lo; j <= hi; j++) {
+      var d = pre[j] - pre[i] - avg, v = d * d + solve(j, k - 1);
+      if (v < b) { b = v; bj = j; }
+    }
+    cut[key] = bj; return (best[key] = b);
+  }
+  solve(0, ROWS);
+  var y = 0, i0 = 0, SHIFT = [0, 0.42, 0.16, 0.6];
+  for (var k = ROWS; k > 0; k--) {
+    var j = cut[i0 + ',' + k], cnt = j - i0;
+    var h = (tileW - cnt * GAP) / (pre[j] - pre[i0]), x = SHIFT[(ROWS - k) % 4] * tileW;
+    for (var i = i0; i < j; i++) {
+      var w = h * ITEMS[i].r;
+      slots[i] = { x: x % tileW, y: y, w: w, h: h };
+      x += w + GAP;
+    }
+    y += h + GAP; i0 = j;
+  }
+  var tileH = y;
   var els = [], built = false;
   function build() {
     if (built) return; built = true;
