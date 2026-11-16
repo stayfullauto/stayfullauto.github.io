@@ -80,7 +80,8 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .cols .big{margin:0;font:500 clamp(22px,2.6vw,34px)/1.2 var(--body);letter-spacing:-0.035em;text-wrap:balance}
 .cols p{margin:0 0 1em;color:#444;max-width:52ch}
 .sign{font-weight:600;color:var(--ink)!important}
-@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.cols .prose:only-child{grid-column:2}
+@media (max-width:760px){.cols{grid-template-columns:1fr}.cols .prose:only-child{grid-column:auto}}
 .btns{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0}
 .btns.center{justify-content:center}
 .btn{display:inline-flex;align-items:center;padding:14px 22px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font:600 14px var(--body);border:1.5px solid var(--ink);transition:background .2s,color .2s}
@@ -336,7 +337,6 @@ section{padding-block:96px clamp(64px,9vw,140px)}
       <p class="eyebrow2">WHAT WE BELIEVE</p>
       <h2 class="h2">cool is easy. doing it right is harder.</h2>
       <div class="cols">
-        <p class="big">we like things that look good. we love things that work well. and we respect people who stand behind what they make.</p>
         <div class="prose">
           <p>we believe in honest work, thoughtful design and technology that respects the people using it.</p>
           <p>our apps do exactly what they say. nothing more. nothing less.</p>
