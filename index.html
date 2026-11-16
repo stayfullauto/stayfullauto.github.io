@@ -479,9 +479,20 @@ section{padding-block:96px clamp(64px,9vw,140px)}
     });
   });
 
+  // wheel/trackpad: each flick travels a bit less, so the page scrolls heavier and slower
+  addEventListener('wheel', function (e) {
+    if (e.ctrlKey || e.defaultPrevented || (e.target.closest && e.target.closest('.pgm'))) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    var d = e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? innerHeight : 1);
+    rem += d * 0.8; var step = Math.trunc(rem); rem -= step;   // keep the fractions so slow trackpad moves aren't lost
+    if (step) scrollTo(0, Math.max(0, Math.min(document.documentElement.scrollHeight - innerHeight, scrollY + step)));
+  }, { passive: false });
+  var rem = 0;
+
   function frame() {
     var target = scrollY;
-    cur += (target - cur) * 0.085;
+    cur += (target - cur) * 0.07;
     if (Math.abs(target - cur) < 0.05) cur = target;
     vel += ((cur - last) - vel) * 0.2; last = cur;
     var v = Math.max(-45, Math.min(45, vel));
