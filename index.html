@@ -776,15 +776,20 @@ if (art && renderer) {
 (function () {
   var ITEMS = [
     { src: 'playground/easytiger.mp4', poster: 'playground/easytiger.jpg', r: 1.3309, alt: 'easytiger site, in motion' },
+    { src: 'playground/vault.jpg', poster: null, r: 1.0000, alt: 'brass bank vault shaped like a letter' },
     { src: 'playground/oni-lines.jpg', poster: null, r: 1.0393, alt: 'oni mask in flowing lines' },
     { src: 'playground/shapes.jpg', poster: null, r: 1.3333, alt: 'playful 3d shapes for a banking campaign' },
     { src: 'playground/outcast.mp4', poster: 'playground/outcast.jpg', r: 1.0084, alt: 'outcast, animated poster' },
+    { src: 'playground/stairs-o.jpg', poster: null, r: 1.0000, alt: 'staircases winding through a giant letter o' },
     { src: 'playground/buyerzap.jpg', poster: null, r: 1.5402, alt: 'buyerzap landing page' },
     { src: 'playground/lion.jpg', poster: null, r: 0.9347, alt: 'line-art lion head' },
-    { src: 'playground/avatar.jpg', poster: null, r: 0.9427, alt: 'glossy 3d avatar' },
+    { src: 'playground/hydrant.jpg', poster: null, r: 1.0964, alt: 'red fire hydrant shaped like a letter p' },
     { src: 'playground/skull-lines.mp4', poster: 'playground/skull-lines.jpg', r: 1.0609, alt: 'skull drawn in lines, animated' },
+    { src: 'playground/avatar.jpg', poster: null, r: 0.9427, alt: 'glossy 3d avatar' },
     { src: 'playground/credible.jpg', poster: null, r: 1.3333, alt: 'credible landing page illustration' },
+    { src: 'playground/deepavali.mp4', poster: 'playground/deepavali.jpg', r: 1.0000, alt: 'deepavali lamp, animated' },
     { src: 'playground/tiger.jpg', poster: null, r: 1.0000, alt: 'tiger poster on kraft' },
+    { src: 'playground/s-slide.jpg', poster: null, r: 1.0000, alt: 'pink letter s built as a water slide' },
     { src: 'playground/commute.mp4', poster: 'playground/commute.jpg', r: 1.3333, alt: 'commute app, animated' },
     { src: 'playground/wick.gif', poster: null, r: 1.3333, alt: 'blue ink portrait with wave patterns' },
     { src: 'playground/skull.jpg', poster: null, r: 1.0485, alt: 'skull in stained glass' }
@@ -802,7 +807,7 @@ if (art && renderer) {
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
   // one tile: the pieces packed into justified rows with one even gap everywhere (no holes);
   // each row is nudged sideways so it doesn't read as a grid. The tile repeats in every direction.
-  var ROWS = 4, GAP = 56, tileW = 1920, slots = [];
+  var ROWS = 5, GAP = 56, tileW = 1920, slots = [];
   var n = ITEMS.length, pre = [0];
   ITEMS.forEach(function (it, i) { pre.push(pre[i] + it.r); });
   // split the list into ROWS contiguous rows whose widths-per-height are as even as possible
@@ -819,10 +824,10 @@ if (art && renderer) {
     cut[key] = bj; return (best[key] = b);
   }
   solve(0, ROWS);
-  var y = 0, i0 = 0, SHIFT = [0, 0.42, 0.16, 0.6];
+  var y = 0, i0 = 0, SHIFT = [0, 0.42, 0.16, 0.6, 0.3];
   for (var k = ROWS; k > 0; k--) {
     var j = cut[i0 + ',' + k], cnt = j - i0;
-    var h = (tileW - cnt * GAP) / (pre[j] - pre[i0]), x = SHIFT[(ROWS - k) % 4] * tileW;
+    var h = (tileW - cnt * GAP) / (pre[j] - pre[i0]), x = SHIFT[(ROWS - k) % 5] * tileW;
     for (var i = i0; i < j; i++) {
       var w = h * ITEMS[i].r;
       slots[i] = { x: x % tileW, y: y, w: w, h: h };
