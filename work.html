@@ -243,6 +243,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
 <main class="proj" id="proj"></main>
 </div></div>
 <script src="projects.js?v=1115c"></script>
+<script src="reveal.js?v=1"></script>
 <script>
 // Project page: reads the project named in the address (work.html#slug) from projects.js
 (function () {
@@ -275,6 +276,7 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
       '<footer class="p-foot"><a href="index.html#work">\u2190 all work</a><span>full auto\u00ae \u00b7 no half measures. all in.</span></footer>';
     // muted loops: start them explicitly, some browsers hold autoplay on injected video
     el.querySelectorAll('.p-gal video').forEach(function (v) { v.muted = true; var pr = v.play && v.play(); if (pr && pr.catch) pr.catch(function () {}); });
+    if (window.faReveal) faReveal(el.querySelectorAll('.p-meta dt, .p-meta dd, .p-copy .lead, .p-copy .body p'));
     scrollTo(0, 0);
     window.dispatchEvent(new Event('resize'));
   }
@@ -334,9 +336,20 @@ html.arriving .p-title span i{animation-delay:.45s}html.arriving .p-title span:n
     });
   });
 
+  // wheel/trackpad: each flick travels a bit less, so the page scrolls heavier and slower
+  addEventListener('wheel', function (e) {
+    if (e.ctrlKey || e.defaultPrevented || (e.target.closest && e.target.closest('.pgm'))) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    var d = e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? innerHeight : 1);
+    rem += d * 0.8; var step = Math.trunc(rem); rem -= step;   // keep the fractions so slow trackpad moves aren't lost
+    if (step) scrollTo(0, Math.max(0, Math.min(document.documentElement.scrollHeight - innerHeight, scrollY + step)));
+  }, { passive: false });
+  var rem = 0;
+
   function frame() {
     var target = scrollY;
-    cur += (target - cur) * 0.085;
+    cur += (target - cur) * 0.07;
     if (Math.abs(target - cur) < 0.05) cur = target;
     vel += ((cur - last) - vel) * 0.2; last = cur;
     var v = Math.max(-45, Math.min(45, vel));
