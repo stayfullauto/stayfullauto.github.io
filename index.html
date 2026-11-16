@@ -775,19 +775,19 @@ if (art && renderer) {
 // Playground: carousel on the page; on click, every piece laid out on a canvas that repeats forever in every direction
 (function () {
   var ITEMS = [
-    { src: 'playground/shapes.jpg', poster: null, r: 1.3333, alt: 'playful 3d shapes for a banking campaign' },
-    { src: 'playground/lion.jpg', poster: null, r: 0.9347, alt: 'line-art lion head' },
-    { src: 'playground/commute.mp4', poster: 'playground/commute.jpg', r: 1.3333, alt: 'commute app, animated' },
-    { src: 'playground/oni-lines.jpg', poster: null, r: 1.0393, alt: 'oni mask in flowing lines' },
-    { src: 'playground/wick.gif', poster: null, r: 1.3333, alt: 'blue ink portrait with wave patterns' },
-    { src: 'playground/avatar.jpg', poster: null, r: 0.9427, alt: 'glossy 3d avatar' },
-    { src: 'playground/buyerzap.jpg', poster: null, r: 1.5402, alt: 'buyerzap landing page' },
-    { src: 'playground/tiger.jpg', poster: null, r: 1.0000, alt: 'tiger poster on kraft' },
-    { src: 'playground/skull.jpg', poster: null, r: 1.0485, alt: 'skull in stained glass' },
-    { src: 'playground/outcast.mp4', poster: 'playground/outcast.jpg', r: 1.0084, alt: 'outcast, animated poster' },
-    { src: 'playground/credible.jpg', poster: null, r: 1.3333, alt: 'credible landing page illustration' },
     { src: 'playground/easytiger.mp4', poster: 'playground/easytiger.jpg', r: 1.3309, alt: 'easytiger site, in motion' },
-    { src: 'playground/skull-lines.mp4', poster: 'playground/skull-lines.jpg', r: 1.0609, alt: 'skull drawn in lines, animated' }
+    { src: 'playground/oni-lines.jpg', poster: null, r: 1.0393, alt: 'oni mask in flowing lines' },
+    { src: 'playground/shapes.jpg', poster: null, r: 1.3333, alt: 'playful 3d shapes for a banking campaign' },
+    { src: 'playground/outcast.mp4', poster: 'playground/outcast.jpg', r: 1.0084, alt: 'outcast, animated poster' },
+    { src: 'playground/buyerzap.jpg', poster: null, r: 1.5402, alt: 'buyerzap landing page' },
+    { src: 'playground/lion.jpg', poster: null, r: 0.9347, alt: 'line-art lion head' },
+    { src: 'playground/avatar.jpg', poster: null, r: 0.9427, alt: 'glossy 3d avatar' },
+    { src: 'playground/skull-lines.mp4', poster: 'playground/skull-lines.jpg', r: 1.0609, alt: 'skull drawn in lines, animated' },
+    { src: 'playground/credible.jpg', poster: null, r: 1.3333, alt: 'credible landing page illustration' },
+    { src: 'playground/tiger.jpg', poster: null, r: 1.0000, alt: 'tiger poster on kraft' },
+    { src: 'playground/commute.mp4', poster: 'playground/commute.jpg', r: 1.3333, alt: 'commute app, animated' },
+    { src: 'playground/wick.gif', poster: null, r: 1.3333, alt: 'blue ink portrait with wave patterns' },
+    { src: 'playground/skull.jpg', poster: null, r: 1.0485, alt: 'skull in stained glass' }
   ];
   function media(it, auto) {
     if (/\.mp4$/.test(it.src)) return '<video src="' + it.src + '" poster="' + it.poster + '" muted loop playsinline autoplay preload="' + (auto ? 'auto' : 'metadata') + '" aria-label="' + it.alt + '"></video>';
