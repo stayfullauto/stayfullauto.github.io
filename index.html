@@ -783,7 +783,11 @@ if (art && renderer) {
     { src: 'playground/avatar.jpg', poster: null, r: 0.9427, alt: 'glossy 3d avatar' },
     { src: 'playground/buyerzap.jpg', poster: null, r: 1.5402, alt: 'buyerzap landing page' },
     { src: 'playground/tiger.jpg', poster: null, r: 1.0000, alt: 'tiger poster on kraft' },
-    { src: 'playground/skull.jpg', poster: null, r: 1.0485, alt: 'skull in stained glass' }
+    { src: 'playground/skull.jpg', poster: null, r: 1.0485, alt: 'skull in stained glass' },
+    { src: 'playground/outcast.mp4', poster: 'playground/outcast.jpg', r: 1.0084, alt: 'outcast, animated poster' },
+    { src: 'playground/credible.jpg', poster: null, r: 1.3333, alt: 'credible landing page illustration' },
+    { src: 'playground/easytiger.mp4', poster: 'playground/easytiger.jpg', r: 1.3309, alt: 'easytiger site, in motion' },
+    { src: 'playground/skull-lines.mp4', poster: 'playground/skull-lines.jpg', r: 1.0609, alt: 'skull drawn in lines, animated' }
   ];
   function media(it, auto) {
     if (/\.mp4$/.test(it.src)) return '<video src="' + it.src + '" poster="' + it.poster + '" muted loop playsinline autoplay preload="' + (auto ? 'auto' : 'metadata') + '" aria-label="' + it.alt + '"></video>';
