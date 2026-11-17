@@ -810,7 +810,7 @@ if (art && renderer) {
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
   var n = ITEMS.length, H, GX, PITCH, P, cum = [];
   function metrics() {
-    H = Math.round(Math.max(64, Math.min(116, innerWidth * 0.075)));
+    H = Math.round(Math.max(76, Math.min(140, innerWidth * 0.09)));
     GX = H; PITCH = H * 2; cum = []; var x = 0;
     for (var i = 0; i < n; i++) { cum.push(x); x += H * ITEMS[i].r + GX; }
     P = x; rows = {}; rowsN = 0;
