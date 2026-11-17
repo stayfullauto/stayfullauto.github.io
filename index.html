@@ -108,13 +108,14 @@ section.fold{position:relative;height:100vh;height:100svh;min-height:540px;displ
 .lab-card:hover .lab-cta{transform:translateX(-50%) scale(1.06)}
 @media (max-width:760px){.lab-head{grid-template-columns:1fr;gap:0}.lab-head .h2{margin-bottom:24px}.lab-card{aspect-ratio:4/5}}
 /* the canvas */
-.pgm{position:fixed;inset:0;z-index:400;user-select:none;-webkit-user-select:none;background:#0e0e0e;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .45s ease;touch-action:none;cursor:grab;
-  background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1.2px);background-size:28px 28px}
+.pgm{position:fixed;inset:0;z-index:400;user-select:none;-webkit-user-select:none;background:#050505;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .45s ease;touch-action:none;cursor:grab}
 .pgm.open{opacity:1;pointer-events:auto}
 .pgm.drag{cursor:grabbing}
-.pgm-world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
-.pgm-item{position:absolute;border-radius:12px;overflow:hidden;background:#1b1b1b;box-shadow:0 20px 60px rgba(0,0,0,.45);cursor:inherit}
-.pgm-item img,.pgm-item video{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.pgm-world{position:absolute;inset:0}
+.pgm-item{position:absolute;left:0;top:0;overflow:hidden;background:#141414;cursor:pointer;will-change:transform}
+.pgm-item img,.pgm-item video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+@media (hover:hover){.pgm-item:not(.big):hover img{transform:scale(1.08)}}
+.pgm-item.big{z-index:2;cursor:pointer}
 .pgm-top{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;padding:22px var(--gut);pointer-events:none;color:#f2f2f0}
 .pgm-top b{font:400 26px/1 var(--display);letter-spacing:-.02em}
 .pgm-close{pointer-events:auto;height:44px;padding:0 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.7);background:rgba(14,14,14,.6);color:#f2f2f0;font:500 14px/1 var(--body);cursor:pointer;backdrop-filter:blur(6px)}
@@ -767,7 +768,7 @@ if (art && renderer) {
 <div class="pgm" id="pgm" role="dialog" aria-modal="true" aria-label="the lab" aria-hidden="true">
   <div class="pgm-world" id="pgmWorld"></div>
   <div class="pgm-top"><b>the lab</b><button type="button" class="pgm-close" id="pgmClose">close &times;</button></div>
-  <p class="pgm-hint">drag to explore &middot; tap a piece to centre it &middot; esc to close</p>
+  <p class="pgm-hint">drag or scroll to explore &middot; tap a piece to open it &middot; esc to close</p>
 </div>
 <script>
 // Playground: carousel on the page; on click, every piece laid out on a canvas that repeats forever in every direction
@@ -799,94 +800,148 @@ if (art && renderer) {
   // ---- the lab card opens the canvas ----
   var card = document.getElementById('labOpen'); if (!card) return;
   var lv = card.querySelector('video'); if (lv) { lv.muted = true; var lp = lv.play && lv.play(); if (lp && lp.catch) lp.catch(function () {}); }
-  card.addEventListener('click', function () { open(0); });
+  card.addEventListener('click', function () { open(); });
 
   // ---- infinite canvas ----
+  // Endless rows of small thumbnails on a dark speckled field. Every row runs the whole set from a
+  // different starting piece, so the wall never repeats in an obvious way. Tap a piece: it grows in
+  // place to fill the middle of the screen, its row parts to make room and the other rows fade away.
+  // Drag, scroll or tap again and it settles back into the wall.
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
-  // one tile: the pieces packed into justified rows with one even gap everywhere (no holes);
-  // each row is nudged sideways so it doesn't read as a grid. The tile repeats in every direction.
-  var ROWS = 5, GAP = 56, tileW = 1920, slots = [];
-  var n = ITEMS.length, pre = [0];
-  ITEMS.forEach(function (it, i) { pre.push(pre[i] + it.r); });
-  // split the list into ROWS contiguous rows whose widths-per-height are as even as possible
-  var avg = pre[n] / ROWS, best = {}, cut = {};
-  function solve(i, k) {
-    if (k === 0) return i === n ? 0 : 1e9;
-    var key = i + ',' + k; if (key in best) return best[key];
-    var b = 1e9, bj = n;
-    var lo = k === 1 ? n : i + 2, hi = k === 1 ? n : n - 2 * (k - 1);
-    for (var j = lo; j <= hi; j++) {
-      var d = pre[j] - pre[i] - avg, v = d * d + solve(j, k - 1);
-      if (v < b) { b = v; bj = j; }
+  var n = ITEMS.length, H, GX, PITCH, P, cum = [];
+  function metrics() {
+    H = Math.round(Math.max(64, Math.min(116, innerWidth * 0.075)));
+    GX = H; PITCH = H * 2; cum = []; var x = 0;
+    for (var i = 0; i < n; i++) { cum.push(x); x += H * ITEMS[i].r + GX; }
+    P = x; rows = {}; rowsN = 0;
+  }
+  function mod(a, b) { return ((a % b) + b) % b; }
+  // each row gets its own shuffled order of the whole set (same shuffle every visit)
+  var rows = {}, rowsN = 0;
+  function row(r) {
+    var R = rows[r]; if (R) return R;
+    if (++rowsN > 400) { rows = {}; rowsN = 1; }
+    var seed = mod(r * 9301 + 49297, 233280) + 1, o = [];
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    for (var i = 0; i < n; i++) o.push(i);
+    for (i = n - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = o[i]; o[i] = o[j]; o[j] = t; }
+    var xs = [], x = 0; for (i = 0; i < n; i++) { xs.push(x); x += H * ITEMS[o[i]].r + GX; }
+    return (rows[r] = { o: o, xs: xs, off: rnd() * P });
+  }
+  function rowOff(r) { return row(r).off; }
+  function slotX(r, k) { return row(r).xs[k]; }
+  function bigSize(i) {
+    var r = ITEMS[i].r, mw = innerWidth * (innerWidth < 760 ? 0.86 : 0.56), mh = innerHeight * 0.72;
+    var w = Math.min(mw, mh * r); return { w: w, h: w / r };
+  }
+
+  // speckled background, like dust on black card
+  (function () {
+    var c = document.createElement('canvas'), S = 560; c.width = c.height = S;
+    var g = c.getContext('2d'), seed = 7;
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    for (var d = 0; d < 260; d++) {
+      var cl = rnd() < 0.3, x = rnd() * S, y = rnd() * S, m = cl ? 6 : 1;
+      for (var q = 0; q < m; q++) {
+        g.fillStyle = 'rgba(255,255,255,' + (0.12 + rnd() * 0.55).toFixed(2) + ')';
+        g.beginPath(); g.arc(mod(x + (rnd() - 0.5) * 30 * (cl ? 1 : 0), S), mod(y + (rnd() - 0.5) * 30 * (cl ? 1 : 0), S), 0.4 + rnd() * 1.1, 0, 7); g.fill();
+      }
     }
-    cut[key] = bj; return (best[key] = b);
+    M.style.backgroundImage = 'url(' + c.toDataURL() + ')';
+  })();
+
+  // pooled tiles: only the ones on screen exist
+  var live = {}, pool = [], cam = { x: 0, y: 0 }, tgt = { x: 0, y: 0 }, vel = { x: 0, y: 0 }, raf = 0, dragging = false;
+  var ex = [];   // pieces that are open or closing: {key, r, m, k, i, cx, cy, p, t}
+  for (var q = 0; q < n; q++) pool.push([]);
+  function make(i) {
+    var it = ITEMS[i], d = document.createElement('div');
+    d.className = 'pgm-item'; d.dataset.i = i;
+    d.innerHTML = '<img src="' + (it.poster || it.src) + '" alt="' + it.alt + '" draggable="false" decoding="async">';
+    world.appendChild(d); return d;
   }
-  solve(0, ROWS);
-  var y = 0, i0 = 0, SHIFT = [0, 0.42, 0.16, 0.6, 0.3];
-  for (var k = ROWS; k > 0; k--) {
-    var j = cut[i0 + ',' + k], cnt = j - i0;
-    var h = (tileW - cnt * GAP) / (pre[j] - pre[i0]), x = SHIFT[(ROWS - k) % 5] * tileW;
-    for (var i = i0; i < j; i++) {
-      var w = h * ITEMS[i].r;
-      slots[i] = { x: x % tileW, y: y, w: w, h: h };
-      x += w + GAP;
+  function render() {
+    var W = innerWidth, Hh = innerHeight, seen = {}, mx = W;
+    var r0 = Math.floor((cam.y - Hh / 2 - PITCH) / PITCH), r1 = Math.ceil((cam.y + Hh / 2 + PITCH) / PITCH);
+    for (var r = r0; r <= r1; r++) {
+      var alpha = 1, rowEx = [];
+      ex.forEach(function (e) { if (e.r === r) rowEx.push(e); else alpha = Math.min(alpha, 1 - e.p); });
+      if (alpha < 0.003) continue;
+      var off = rowOff(r), y = r * PITCH + H / 2;
+      var m0 = Math.floor((cam.x - W / 2 - mx - off) / P) - 1, m1 = Math.floor((cam.x + W / 2 + mx - off) / P) + 1;
+      for (var m = m0; m <= m1; m++) for (var k = 0; k < n; k++) {
+        var i = row(r).o[k], w = H * ITEMS[i].r, cx = off + m * P + slotX(r, k) + w / 2, cy = y;
+        var ww = w, hh = H, mine = null;
+        for (var z = 0; z < rowEx.length; z++) {
+          var e = rowEx[z], b = bigSize(e.i), ew = H * ITEMS[e.i].r, push = ((b.w - ew) / 2 + GX * 0.6) * e.p;
+          if (e.m === m && e.k === k) { mine = e; ww = w + (b.w - w) * e.p; hh = H + (b.h - H) * e.p; }
+          else cx += cx < e.cx ? -push : push;
+        }
+        var sx = cx - cam.x + W / 2, sy = cy - cam.y + Hh / 2;
+        if (sx + ww / 2 < -40 || sx - ww / 2 > W + 40 || sy + hh / 2 < -40 || sy - hh / 2 > Hh + 40) continue;
+        var key = r + '|' + m + '|' + k, node = live[key];
+        if (!node) { node = pool[i].pop() || make(i); node.style.display = ''; live[key] = node; }
+        seen[key] = 1;
+        node.dataset.key = key; node.__pos = { r: r, m: m, k: k, i: i, cx: cx, cy: cy };
+        node.style.width = ww.toFixed(1) + 'px'; node.style.height = hh.toFixed(1) + 'px';
+        node.style.transform = 'translate3d(' + (sx - ww / 2).toFixed(1) + 'px,' + (sy - hh / 2).toFixed(1) + 'px,0)';
+        node.style.opacity = alpha < 1 ? alpha.toFixed(3) : '';
+        node.classList.toggle('big', !!mine);
+        // moving pieces play only while open
+        var wantV = mine && mine.t === 1 && /\.mp4$/.test(ITEMS[i].src);
+        if (wantV && !node.__v) {
+          var v = document.createElement('video'); v.src = ITEMS[i].src; v.poster = ITEMS[i].poster; v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', '');
+          node.appendChild(v); node.__v = v; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+        } else if (!wantV && node.__v && (!mine || mine.p < 0.5)) { node.__v.remove(); node.__v = null; }
+      }
     }
-    y += h + GAP; i0 = j;
-  }
-  var tileH = y;
-  var els = [], built = false;
-  function build() {
-    if (built) return; built = true;
-    var html = '';
-    for (var ty = -1; ty <= 1; ty++) for (var tx = -1; tx <= 1; tx++) ITEMS.forEach(function (it, i) {
-      var sl = slots[i];
-      html += '<div class="pgm-item" data-i="' + i + '" style="left:' + (sl.x + tx * tileW).toFixed(1) + 'px;top:' + (sl.y + ty * tileH).toFixed(1) + 'px;width:' + sl.w.toFixed(1) + 'px;height:' + sl.h.toFixed(1) + 'px">' + media(it, true) + '</div>';
-    });
-    world.innerHTML = html;
-    [].forEach.call(world.querySelectorAll('video'), function (v) { v.muted = true; });
-  }
-  // camera: the world point at the centre of the screen. One fixed scale, no zooming.
-  // The view eases towards a target and keeps gliding after you let go, so dragging feels smooth.
-  var cam = { x: 0, y: 0, s: 1 }, tgt = { x: 0, y: 0 }, vel = { x: 0, y: 0 }, raf = 0, dragging = false;
-  function fixedScale() { return Math.max(0.44, Math.min(0.74, innerWidth / 1500)); }
-  function apply() {
-    var tx = innerWidth / 2 - cam.x * cam.s, ty = innerHeight / 2 - cam.y * cam.s;
-    world.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + cam.s.toFixed(4) + ')';
-    var g = 28 * cam.s; M.style.backgroundSize = g + 'px ' + g + 'px'; M.style.backgroundPosition = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px';
-  }
-  function wrap() {
-    // keep the camera in the middle tile; the copies around it make the edges seamless
-    var ox = Math.floor(cam.x / tileW) * tileW, oy = Math.floor(cam.y / tileH) * tileH;
-    if (ox || oy) { cam.x -= ox; cam.y -= oy; tgt.x -= ox; tgt.y -= oy; }
+    for (var key2 in live) if (!seen[key2]) {
+      var nd = live[key2]; delete live[key2]; nd.style.display = 'none'; nd.classList.remove('big');
+      if (nd.__v) { nd.__v.remove(); nd.__v = null; }
+      pool[+nd.dataset.i].push(nd);
+    }
+    M.style.backgroundPosition = (-cam.x * 0.6).toFixed(1) + 'px ' + (-cam.y * 0.6).toFixed(1) + 'px';
   }
   function loop() {
     raf = 0;
     if (!dragging) { tgt.x += vel.x; tgt.y += vel.y; vel.x *= 0.94; vel.y *= 0.94; }   // momentum after release
-    cam.x += (tgt.x - cam.x) * 0.18; cam.y += (tgt.y - cam.y) * 0.18;                   // eased follow
-    wrap(); apply();
+    cam.x += (tgt.x - cam.x) * 0.14; cam.y += (tgt.y - cam.y) * 0.14;                   // eased follow
+    var busy = false;
+    ex = ex.filter(function (e) {
+      e.p += (e.t - e.p) * 0.12; if (Math.abs(e.t - e.p) < 0.002) e.p = e.t; else busy = true;
+      return !(e.t === 0 && e.p === 0);
+    });
+    render();
     var moving = Math.abs(tgt.x - cam.x) + Math.abs(tgt.y - cam.y) > 0.05 || Math.abs(vel.x) + Math.abs(vel.y) > 0.02;
-    if (dragging || moving) raf = requestAnimationFrame(loop);
+    if (dragging || moving || busy) raf = requestAnimationFrame(loop);
   }
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
-  function centreOn(i, jump) {
-    var sl = slots[i], cx = sl.x + sl.w / 2, cy = sl.y + sl.h / 2;
-    cx += Math.round((cam.x - cx) / tileW) * tileW; cy += Math.round((cam.y - cy) / tileH) * tileH;
-    vel.x = vel.y = 0; tgt.x = cx; tgt.y = cy;
-    if (jump) { cam.x = cx; cam.y = cy; apply(); } else kick();
+  function collapse() { ex.forEach(function (e) { e.t = 0; }); kick(); }
+  function expand(pos) {
+    var key = pos.r + '|' + pos.m + '|' + pos.k, cur = ex.filter(function (e) { return e.key === key; })[0];
+    if (cur && cur.t === 1) { collapse(); return; }
+    // pieces in the row shift around an open one, so measure this one where it sits when the wall is closed
+    ex.forEach(function (e) { e.t = 0; });
+    var w = H * ITEMS[pos.i].r, cx = rowOff(pos.r) + pos.m * P + slotX(pos.r, pos.k) + w / 2, cy = pos.r * PITCH + H / 2;
+    if (cur) cur.t = 1; else ex.push({ key: key, r: pos.r, m: pos.m, k: pos.k, i: pos.i, cx: cx, cy: cy, p: 0, t: 1 });
+    vel.x = vel.y = 0; tgt.x = cx; tgt.y = cy; kick();
   }
-  function open(i) {
-    build(); cam.s = fixedScale(); centreOn(i, true);
+  function open() {
+    metrics(); ex = []; cam.x = tgt.x = 0; cam.y = tgt.y = 0; vel.x = vel.y = 0; render();
     M.classList.add('open'); M.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('pg-open');
-    [].forEach.call(world.querySelectorAll('video'), function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
     document.getElementById('pgmClose').focus({ preventScroll: true });
   }
   function close() {
     M.classList.remove('open'); M.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('pg-open');
-    [].forEach.call(world.querySelectorAll('video'), function (v) { v.pause(); });
+    ex = []; render();
+    for (var k in live) if (live[k].__v) { live[k].__v.remove(); live[k].__v = null; }
   }
   document.getElementById('pgmClose').addEventListener('click', close);
-  addEventListener('keydown', function (e) { if (e.key === 'Escape' && M.classList.contains('open')) close(); });
-  // drag to pan (mouse or finger); a tap on a piece glides it to the centre
+  addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !M.classList.contains('open')) return;
+    if (ex.some(function (x) { return x.t === 1; })) collapse(); else close();
+  });
+  // drag to pan (mouse or finger); a tap opens a piece, a tap on the open piece or the background closes it
   var last = null, travel = 0, pid = null, hist = [];
   M.addEventListener('pointerdown', function (e) {
     if (e.target.closest('.pgm-close') || pid !== null) return;
@@ -897,33 +952,42 @@ if (art && renderer) {
   M.addEventListener('pointermove', function (e) {
     if (e.pointerId !== pid) return;
     var dx = e.clientX - last.x, dy = e.clientY - last.y; travel += Math.abs(dx) + Math.abs(dy);
-    tgt.x -= dx / cam.s; tgt.y -= dy / cam.s; last = { x: e.clientX, y: e.clientY };
+    if (travel > 8 && ex.length) collapse();
+    tgt.x -= dx; tgt.y -= dy; last = { x: e.clientX, y: e.clientY };
     var now = performance.now(); hist.push({ x: e.clientX, y: e.clientY, t: now }); while (hist.length > 2 && now - hist[0].t > 90) hist.shift();
   });
   function up(e) {
     if (e.pointerId !== pid) return;
     pid = null; dragging = false; M.classList.remove('drag');
-    // throw: carry on with the speed of the last few moments of the drag
     var a = hist[0], b = hist[hist.length - 1], dt = Math.max(16, b.t - a.t);
-    if (performance.now() - b.t < 80) { vel.x = -(b.x - a.x) / dt * 16 / cam.s; vel.y = -(b.y - a.y) / dt * 16 / cam.s; }
-    if (travel < 6) { var it = document.elementFromPoint(e.clientX, e.clientY); it = it && it.closest('.pgm-item'); if (it) centreOn(+it.dataset.i); }
+    if (performance.now() - b.t < 80) { vel.x = -(b.x - a.x) / dt * 16; vel.y = -(b.y - a.y) / dt * 16; }
+    if (travel < 6) {
+      var it = document.elementFromPoint(e.clientX, e.clientY); it = it && it.closest('.pgm-item');
+      if (it && it.__pos) expand(it.__pos); else if (ex.length) collapse();
+    }
     kick();
   }
   M.addEventListener('pointerup', up); M.addEventListener('pointercancel', up);
-  // wheel and trackpad move the canvas around; nothing zooms
+  // wheel and trackpad move the wall around (and settle an open piece back); nothing zooms
   M.addEventListener('wheel', function (e) {
     e.preventDefault(); vel.x = vel.y = 0;
+    if (ex.some(function (x) { return x.t === 1; })) collapse();
     var k = e.deltaMode === 1 ? 32 : 1;
-    tgt.x += (e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX) * k / cam.s;
-    tgt.y += (e.shiftKey && !e.deltaX ? 0 : e.deltaY) * k / cam.s;
+    tgt.x += (e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX) * k;
+    tgt.y += (e.shiftKey && !e.deltaX ? 0 : e.deltaY) * k;
     kick();
   }, { passive: false });
   addEventListener('keydown', function (e) {
     if (!M.classList.contains('open')) return;
-    var st = 320 / cam.s, m = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
-    if (m) { e.preventDefault(); vel.x = vel.y = 0; tgt.x += m[0]; tgt.y += m[1]; kick(); }
+    var st = PITCH * 1.5, m = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
+    if (m) { e.preventDefault(); if (ex.length) collapse(); vel.x = vel.y = 0; tgt.x += m[0]; tgt.y += m[1]; kick(); }
   });
-  addEventListener('resize', function () { if (M.classList.contains('open')) { cam.s = fixedScale(); apply(); } });
+  addEventListener('resize', function () {
+    if (!M.classList.contains('open')) return;
+    var oh = H; metrics(); var f = H / oh; cam.x *= f; cam.y *= f; tgt.x *= f; tgt.y *= f;
+    ex.forEach(function (e) { e.cx *= f; e.cy *= f; });
+    render();
+  });
 })();
 </script>
 <script src="transition.js?v=1113"></script>
