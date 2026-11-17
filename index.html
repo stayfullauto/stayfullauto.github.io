@@ -808,28 +808,39 @@ if (art && renderer) {
   // place to fill the middle of the screen, its row parts to make room and the other rows fade away.
   // Drag, scroll or tap again and it settles back into the wall.
   var M = document.getElementById('pgm'), world = document.getElementById('pgmWorld');
-  var n = ITEMS.length, H, GX, PITCH, P, cum = [];
+  // One long random sequence of the pieces, read row by row: row r starts K pieces after row r-1,
+  // where K is about how many fit across the screen. So whatever is on screen is one stretch of the
+  // sequence, and the sequence never repeats a piece within 15 steps, so copies sit far apart.
+  var n = ITEMS.length, H, GX, PITCH, K, L = n * 60, S = [], pre = [], PL;
+  (function () {
+    var seed = 20261117, seen = [], WIN = Math.max(1, Math.min(n - 3, 15));
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    for (var a = 0; a < n; a++) seen.push(-1e9);
+    for (var t = 0; t < L; t++) {
+      var cand = [];
+      var head = S.slice(0, Math.max(0, t + WIN + 1 - L));          // the sequence loops: the end must not clash with the start
+      for (a = 0; a < n; a++) if (t - seen[a] > WIN && head.indexOf(a) < 0) cand.push(a);
+      if (!cand.length) for (a = 0; a < n; a++) if (t - seen[a] > WIN) cand.push(a);
+      var pk = cand[Math.floor(rnd() * cand.length)]; S.push(pk); seen[pk] = t;
+    }
+  })();
   function metrics() {
     H = Math.round(Math.max(76, Math.min(140, innerWidth * 0.09)));
-    GX = H; PITCH = H * 2; cum = []; var x = 0;
-    for (var i = 0; i < n; i++) { cum.push(x); x += H * ITEMS[i].r + GX; }
-    P = x; rows = {}; rowsN = 0;
+    GX = H; PITCH = H * 2; pre = [0];
+    for (var t = 0; t < L; t++) pre.push(pre[t] + H * ITEMS[S[t]].r + GX);
+    PL = pre[L];
+    K = Math.max(4, Math.round(innerWidth / (PL / L)) + 3);   // a little more than fits across, so row ends never meet
   }
   function mod(a, b) { return ((a % b) + b) % b; }
-  // each row gets its own shuffled order of the whole set (same shuffle every visit)
-  var rows = {}, rowsN = 0;
-  function row(r) {
-    var R = rows[r]; if (R) return R;
-    if (++rowsN > 400) { rows = {}; rowsN = 1; }
-    var seed = mod(r * 9301 + 49297, 233280) + 1, o = [];
-    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-    for (var i = 0; i < n; i++) o.push(i);
-    for (i = n - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = o[i]; o[i] = o[j]; o[j] = t; }
-    var xs = [], x = 0; for (i = 0; i < n; i++) { xs.push(x); x += H * ITEMS[o[i]].r + GX; }
-    return (rows[r] = { o: o, xs: xs, off: rnd() * P });
+  function itemAt(i) { return S[mod(i + L / 2, L)]; }   // start in the middle of the loop, far from where it joins up
+  function pref(i) { i += L / 2; var q = Math.floor(i / L); return q * PL + pre[i - q * L]; }
+  function idxAt(X) {                     // last index whose left edge is at or before X
+    var q = Math.floor(X / PL), rem = X - q * PL, lo = 0, hi = L - 1;
+    while (lo < hi) { var md = (lo + hi + 1) >> 1; if (pre[md] <= rem) lo = md; else hi = md - 1; }
+    return q * L + lo - L / 2;
   }
-  function rowOff(r) { return row(r).off; }
-  function slotX(r, k) { return row(r).xs[k]; }
+  function rowOff(r) { var h = Math.sin(r * 12.9898) * 43758.5453; return (h - Math.floor(h)) * (PL / L); }
+  function xOf(r, i) { return rowOff(r) + pref(i) - pref(r * K); }
   function bigSize(i) {
     var r = ITEMS[i].r, mw = innerWidth * (innerWidth < 760 ? 0.86 : 0.56), mh = innerHeight * 0.72;
     var w = Math.min(mw, mh * r); return { w: w, h: w / r };
@@ -860,6 +871,10 @@ if (art && renderer) {
     d.innerHTML = '<img src="' + (it.poster || it.src) + '" alt="' + it.alt + '" draggable="false" decoding="async">';
     world.appendChild(d); return d;
   }
+  function flush() {   // the layout changed: send every tile back to its pool
+    for (var k in live) { var nd = live[k]; nd.style.display = 'none'; nd.classList.remove('big'); if (nd.__v) { nd.__v.remove(); nd.__v = null; } pool[+nd.dataset.i].push(nd); }
+    live = {};
+  }
   function render() {
     var W = innerWidth, Hh = innerHeight, seen = {}, mx = W;
     var r0 = Math.floor((cam.y - Hh / 2 - PITCH) / PITCH), r1 = Math.ceil((cam.y + Hh / 2 + PITCH) / PITCH);
@@ -867,22 +882,22 @@ if (art && renderer) {
       var alpha = 1, rowEx = [];
       ex.forEach(function (e) { if (e.r === r) rowEx.push(e); else alpha = Math.min(alpha, 1 - e.p); });
       if (alpha < 0.003) continue;
-      var off = rowOff(r), y = r * PITCH + H / 2;
-      var m0 = Math.floor((cam.x - W / 2 - mx - off) / P) - 1, m1 = Math.floor((cam.x + W / 2 + mx - off) / P) + 1;
-      for (var m = m0; m <= m1; m++) for (var k = 0; k < n; k++) {
-        var i = row(r).o[k], w = H * ITEMS[i].r, cx = off + m * P + slotX(r, k) + w / 2, cy = y;
+      var y = r * PITCH + H / 2, base = pref(r * K) - rowOff(r);
+      var i0 = idxAt(cam.x - W / 2 - mx + base) - 1, i1 = idxAt(cam.x + W / 2 + mx + base) + 1;
+      for (var ii = i0; ii <= i1; ii++) {
+        var i = itemAt(ii), w = H * ITEMS[i].r, cx = pref(ii) - base + w / 2, cy = y;
         var ww = w, hh = H, mine = null;
         for (var z = 0; z < rowEx.length; z++) {
           var e = rowEx[z], b = bigSize(e.i), ew = H * ITEMS[e.i].r, push = ((b.w - ew) / 2 + GX * 0.6) * e.p;
-          if (e.m === m && e.k === k) { mine = e; ww = w + (b.w - w) * e.p; hh = H + (b.h - H) * e.p; }
+          if (e.ii === ii) { mine = e; ww = w + (b.w - w) * e.p; hh = H + (b.h - H) * e.p; }
           else cx += cx < e.cx ? -push : push;
         }
         var sx = cx - cam.x + W / 2, sy = cy - cam.y + Hh / 2;
         if (sx + ww / 2 < -40 || sx - ww / 2 > W + 40 || sy + hh / 2 < -40 || sy - hh / 2 > Hh + 40) continue;
-        var key = r + '|' + m + '|' + k, node = live[key];
+        var key = r + '|' + ii, node = live[key];
         if (!node) { node = pool[i].pop() || make(i); node.style.display = ''; live[key] = node; }
         seen[key] = 1;
-        node.dataset.key = key; node.__pos = { r: r, m: m, k: k, i: i, cx: cx, cy: cy };
+        node.dataset.key = key; node.__pos = { r: r, ii: ii, i: i };
         node.style.width = ww.toFixed(1) + 'px'; node.style.height = hh.toFixed(1) + 'px';
         node.style.transform = 'translate3d(' + (sx - ww / 2).toFixed(1) + 'px,' + (sy - hh / 2).toFixed(1) + 'px,0)';
         node.style.opacity = alpha < 1 ? alpha.toFixed(3) : '';
@@ -918,16 +933,16 @@ if (art && renderer) {
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
   function collapse() { ex.forEach(function (e) { e.t = 0; }); kick(); }
   function expand(pos) {
-    var key = pos.r + '|' + pos.m + '|' + pos.k, cur = ex.filter(function (e) { return e.key === key; })[0];
+    var key = pos.r + '|' + pos.ii, cur = ex.filter(function (e) { return e.key === key; })[0];
     if (cur && cur.t === 1) { collapse(); return; }
     // pieces in the row shift around an open one, so measure this one where it sits when the wall is closed
     ex.forEach(function (e) { e.t = 0; });
-    var w = H * ITEMS[pos.i].r, cx = rowOff(pos.r) + pos.m * P + slotX(pos.r, pos.k) + w / 2, cy = pos.r * PITCH + H / 2;
-    if (cur) cur.t = 1; else ex.push({ key: key, r: pos.r, m: pos.m, k: pos.k, i: pos.i, cx: cx, cy: cy, p: 0, t: 1 });
+    var w = H * ITEMS[pos.i].r, cx = xOf(pos.r, pos.ii) + w / 2, cy = pos.r * PITCH + H / 2;
+    if (cur) cur.t = 1; else ex.push({ key: key, r: pos.r, ii: pos.ii, i: pos.i, cx: cx, cy: cy, p: 0, t: 1 });
     vel.x = vel.y = 0; tgt.x = cx; tgt.y = cy; kick();
   }
   function open() {
-    metrics(); ex = []; cam.x = tgt.x = 0; cam.y = tgt.y = 0; vel.x = vel.y = 0; render();
+    metrics(); flush(); ex = []; cam.x = tgt.x = 0; cam.y = tgt.y = 0; vel.x = vel.y = 0; render();
     M.classList.add('open'); M.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('pg-open');
     document.getElementById('pgmClose').focus({ preventScroll: true });
   }
@@ -984,8 +999,8 @@ if (art && renderer) {
   });
   addEventListener('resize', function () {
     if (!M.classList.contains('open')) return;
-    var oh = H; metrics(); var f = H / oh; cam.x *= f; cam.y *= f; tgt.x *= f; tgt.y *= f;
-    ex.forEach(function (e) { e.cx *= f; e.cy *= f; });
+    var oh = H; metrics(); flush(); var f = H / oh; cam.x *= f; cam.y *= f; tgt.x *= f; tgt.y *= f;
+    ex = [];
     render();
   });
 })();
